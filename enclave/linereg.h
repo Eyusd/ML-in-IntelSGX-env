@@ -11,7 +11,7 @@ class ecall_regression
         // Stockés en A + Bx + Cy + Dz ==> {A;B;C;D}
     public:
         void initialize();
-        bool train(double values[9], double expected);
+        double train(double values[9], double expected);
         double infer(double values[9]);
         void new_to_old();
         void old_to_new();

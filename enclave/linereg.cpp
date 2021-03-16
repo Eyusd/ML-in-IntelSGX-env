@@ -1,4 +1,6 @@
 #include "linereg.h"
+#include <stdlib.h>
+#include <math.h>
 #include <openenclave/enclave.h>
 #include <stdio.h>
 
@@ -9,8 +11,7 @@ void ecall_regression::initialize()
     uint8_t samples[10];
     for (i=0;i<10;i++)
     {
-        result = oe_random(&samples[i], sizeof(samples[i]));
-        coeffs[i] = (double) (samples[i] % 10);
+        coeffs[i] = ((double) rand()) / ((double) RAND_MAX/100.000);
     }
 }
 
@@ -25,22 +26,27 @@ double ecall_regression::infer(double values[9])
     return r;
 }
 
-bool ecall_regression::train(double values[9], double expected)
+double ecall_regression::train(double values[9], double expected)
 {
-    double y = coeffs[0];
+    double y;
     double learning_rate = 0.00002;
+    double dist;
 
     int i;
+    y += coeffs[0];
     for (i=1;i<10;i++)
     {
-        y = y +  coeffs[i]*values[i];
+        y +=  coeffs[i]*values[i-1];
     }
-    coeffs[0] = coeffs[0] + learning_rate*(expected - y);
+
+    dist = (expected - y);
+
+    coeffs[0] += learning_rate*dist;
     for (i=1;i<10;i++)
     {
-        coeffs[i] = coeffs[i] + learning_rate*values[i]*(expected-y);
+        coeffs[i] += learning_rate*values[i-1]*dist;
     }
-    return true;
+    return fabs(dist/expected);
 }
 
 void ecall_regression::new_to_old()

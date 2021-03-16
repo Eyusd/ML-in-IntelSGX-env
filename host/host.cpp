@@ -12,12 +12,15 @@ int main(int argc, const char* argv[])
     char choice;
     char useless;
     bool run = true;
+    bool print = true;
     //Train
         FILE *csv_file;
         double values_t[9];
         double expected;
-        bool ok;
         bool allgood = true;
+        double loss = 0.00000;
+        double mean_loss;
+        int compt;
     //Infer
         double values[9];
         double output;
@@ -48,27 +51,33 @@ int main(int argc, const char* argv[])
 
     while (run)
     {
-        fprintf(stderr, "\n");    
-        fprintf(stderr, "Train, Infer, or Exit ? [t/i/e] ");
-        scanf("%c%c", &choice, &useless);
+        if (print) {
+            fprintf(stderr, "\n");    
+            fprintf(stderr, "Train, Infer, or Exit ? [t/i/e] ");
+        }
+        print = false;
+        scanf("%c", &choice);
         switch (choice)
         {
             case 't':
                 enclave_new_to_old(enclave);
-                csv_file = fopen("trainingset.csv", "r");
-                // Trained with coeffs = 1
+                csv_file = fopen("trainingset2.csv", "r");
+                compt = 0;
                 while (fscanf(csv_file, "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf\n", &values_t[0],&values_t[1],&values_t[2],&values_t[3],&values_t[4],&values_t[5],&values_t[6],&values_t[7],&values_t[8],&expected) == 10)
                 {
-                    enclave_train(enclave, values_t, expected, &ok);
-                    if (!ok)
-                    {
+                    enclave_train(enclave, values_t, expected, &loss);
+                    compt+=1;
+                    if (loss > 100000000) {
                         allgood = false;
-                        break;
+                    }
+                    else {
+                        mean_loss += loss;
                     }
                 }
                 if (allgood)
                 {
-                    fprintf(stderr, "Training set registered successfully \n");
+                    mean_loss = mean_loss / ((double) compt);
+                    fprintf(stderr, "Training set registered successfully \nMean Loss : %lf\nSets : %i\n", mean_loss, compt);
                     enclave_new_to_old(enclave);
                 }
                 else
@@ -88,6 +97,10 @@ int main(int argc, const char* argv[])
             
             case 'e':
                 run = false;
+                break;
+
+            default:
+                print = true;
                 break;
         }
     }

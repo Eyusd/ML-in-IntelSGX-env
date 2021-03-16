@@ -12,7 +12,7 @@ enclave {
         public void enclave_train(
             [in] double values [9],
             double expected,
-            [out] bool* output);
+            [out] double* output);
 
         public void enclave_infer(
             [in] double values [9],

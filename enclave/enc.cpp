@@ -9,7 +9,7 @@ void enclave_init()
     regression.initialize();
 }
 
-void enclave_train(double values[9], double expected, bool* output)
+void enclave_train(double values[9], double expected, double* output)
 {
     *output = regression.train(values, expected);
 }
