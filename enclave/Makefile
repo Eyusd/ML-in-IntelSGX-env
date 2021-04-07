@@ -42,7 +42,7 @@ sign:
 	oesign sign -e lineregenc -c enc.conf -k private.pem
 
 clean:
-	rm -f *.o lineregenc *.signed enc.o lineregenc lineregenc.signed private.pem public.pem linereg_t.o linereg_t.h linereg_t.c linereg_args.h linereg.o
+	rm -f *.o lineregenc *.signed enc.o lineregenc lineregenc.signed private.pem public.pem linereg_t.o linereg_t.h linereg_t.c linereg_args.h linereg.o ../common/linereg_args.h enclave_pubkey.h
 
 keys:
 	openssl genrsa -out private.pem -3 3072

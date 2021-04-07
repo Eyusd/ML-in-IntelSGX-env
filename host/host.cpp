@@ -36,12 +36,6 @@ void terminate_enclave(oe_enclave_t* enclave)
     printf("Host: Enclave successfully terminated.\n");
 }
 
-exit:
-    free(pem_key);
-    free(evidence);
-    free(format_settings);
-    return ret;
-}
 //Fin Att
 
 int main(int argc, const char* argv[])

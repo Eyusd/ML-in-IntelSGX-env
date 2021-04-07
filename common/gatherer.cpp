@@ -6,4 +6,3 @@ ecall_gatherer::ecall_gatherer(const char* name, enclave_config_data_t* enclave_
 {
     dispatcher.initialize(name, enclave_config);
 };
-ecall_gatherer::~ecall_gatherer(){};
