@@ -2,12 +2,13 @@ import hashlib
 from Crypto import Random
 from Crypto.Cipher import AES
 from base64 import b64encode, b64decode
+import json
 
+with open("./quotes/a.json", "r") as read_file:
 
-with open("../quotes/keys.json", "r") as read_file:
-
-    secret = json.load(read_file)['cle publique']**opération**private_key_enclave/client
-key = secret
+    secret = json.load(read_file)['cle_publique']
+    #"**opération**private_key_enclave/client"
+print(secret)
 
 class AESCipher(object):
     def __init__(self, key):
