@@ -3,6 +3,12 @@ from Crypto import Random
 from Crypto.Cipher import AES
 from base64 import b64encode, b64decode
 
+
+with open("../quotes/keys.json", "r") as read_file:
+
+    secret = json.load(read_file)['cle publique']**opération**private_key_enclave/client
+key = secret
+
 class AESCipher(object):
     def __init__(self, key):
         self.block_size = AES.block_size
