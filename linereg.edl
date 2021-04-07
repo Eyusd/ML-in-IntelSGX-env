@@ -1,4 +1,5 @@
 enclave {
+    from "openenclave/edl/attestation.edl" import *;
     from "openenclave/edl/syscall.edl" import *;
     from "platform.edl" import *;
 
@@ -18,10 +19,32 @@ enclave {
             [in] double values [9],
             [out] double* output);
         
-        public int get_remote_report_with_pubkey([out] uint8_t **pem_key, 
-                                                 [out] size_t *key_size,
-                                                 [out] uint8_t **remote_report,
-                                                 [out] size_t  *remote_report_size);
+        public int get_enclave_format_settings(
+            [in] const oe_uuid_t* format_id,
+            [out] uint8_t** format_settings,
+            [out] size_t* format_settings_size);
+
+        public int get_evidence_with_public_key(
+            [in] const oe_uuid_t* format_id,
+            [in, size=format_settings_size] uint8_t* format_settings_buffer,
+            size_t format_settings_size,
+            [out] uint8_t **pem_key,
+            [out] size_t *pem_key_size,
+            [out] uint8_t **evidence_buffer,
+            [out] size_t *evidence_buffer_size);
+
+        public int verify_evidence_and_set_public_key(
+            [in] const oe_uuid_t* format_id,
+            [in, count=pem_key_size] uint8_t *pem_key,
+            size_t pem_key_size,
+            [in, count=evidence_size] uint8_t *evidence,
+            size_t evidence_size);
+
+        public int generate_encrypted_message( [out] uint8_t** data,
+                                               [out] size_t*  size);
+
+        public int process_encrypted_message(  [in, count=size] uint8_t* data,
+                                               size_t  size);
     };
 
     untrusted {
