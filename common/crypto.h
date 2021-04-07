@@ -61,7 +61,7 @@ class Crypto
         size_t* data_size);
 
     // Public key of another enclave.
-    uint8_t* get_the_other_enclave_public_key()
+    uint8_t* get_client_public_key()
     {
         return m_other_enclave_pubkey;
     }

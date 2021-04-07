@@ -18,25 +18,8 @@ void ecall_dispatcher::initialize(const char* name, enclave_config_data_t* encla
     {
         goto exit;
     }
-
-    {
-        size_t other_enclave_signer_id_size = sizeof(m_other_enclave_signer_id);
-        // TODO: the following call is not TEE-agnostic.
-        if (oe_sgx_get_signer_id_from_public_key(
-                m_enclave_config->other_enclave_public_key_pem,
-                m_enclave_config->other_enclave_public_key_pem_size,
-                m_other_enclave_signer_id,
-                &other_enclave_signer_id_size) != OE_OK)
-        {
-            goto exit;
-        }
-    }
-
-    m_attestation = new Attestation(m_crypto, m_other_enclave_signer_id);
-    if (m_attestation == nullptr)
-    {
-        goto exit;
-    }
+    //               m_enclave_config->other_enclave_public_key_pem,
+    //               m_enclave_config->other_enclave_public_key_pem_size
     ret = true;
 
     exit:
@@ -185,37 +168,6 @@ exit:
     return ret;
 }
 
-int ecall_dispatcher::verify_evidence_and_set_public_key(
-    const oe_uuid_t* format_id,
-    uint8_t* pem_key,
-    size_t pem_key_size,
-    uint8_t* evidence,
-    size_t evidence_size)
-{
-    int ret = 1;
-
-    if (m_initialized == false)
-    {
-        TRACE_ENCLAVE("ecall_dispatcher initialization failed.");
-        goto exit;
-    }
-
-    // Attest the evidence and accompanying key.
-    if (m_attestation->attest_attestation_evidence(
-            format_id, evidence, evidence_size, pem_key, pem_key_size) == false)
-    {
-        TRACE_ENCLAVE("verify_evidence_and_set_public_key failed.");
-        goto exit;
-    }
-
-    memcpy(m_crypto->get_the_other_enclave_public_key(), pem_key, pem_key_size);
-
-    ret = 0;
-    TRACE_ENCLAVE("verify_evidence_and_set_public_key succeeded.");
-
-exit:
-    return ret;
-}
 
 int ecall_dispatcher::generate_encrypted_message(uint8_t** data, size_t* size)
 {
@@ -232,7 +184,7 @@ int ecall_dispatcher::generate_encrypted_message(uint8_t** data, size_t* size)
 
     encrypted_data_size = sizeof(encrypted_data_buffer);
     if (m_crypto->Encrypt(
-            m_crypto->get_the_other_enclave_public_key(),
+            m_crypto->get_client_public_key(),
             m_enclave_config->enclave_secret_data,
             ENCLAVE_SECRET_DATA_SIZE,
             encrypted_data_buffer,

@@ -24,7 +24,6 @@ class ecall_dispatcher
     Attestation* m_attestation;
     string m_name;
     enclave_config_data_t* m_enclave_config;
-    unsigned char m_other_enclave_signer_id[32];
 
   public:
     int get_enclave_format_settings(
@@ -40,12 +39,6 @@ class ecall_dispatcher
         size_t* pem_key_size,
         uint8_t** evidence_buffer,
         size_t* evidence_buffer_size);
-    int verify_evidence_and_set_public_key(
-        const oe_uuid_t* format_id,
-        uint8_t* pem_key,
-        size_t pem_key_size,
-        uint8_t* evidence,
-        size_t evidence_size);
 
     int generate_encrypted_message(uint8_t** data, size_t* size);
 

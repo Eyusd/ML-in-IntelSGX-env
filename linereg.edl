@@ -33,13 +33,6 @@ enclave {
             [out] uint8_t **evidence_buffer,
             [out] size_t *evidence_buffer_size);
 
-        public int verify_evidence_and_set_public_key(
-            [in] const oe_uuid_t* format_id,
-            [in, count=pem_key_size] uint8_t *pem_key,
-            size_t pem_key_size,
-            [in, count=evidence_size] uint8_t *evidence,
-            size_t evidence_size);
-
         public int generate_encrypted_message( [out] uint8_t** data,
                                                [out] size_t*  size);
 

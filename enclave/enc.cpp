@@ -10,14 +10,13 @@
 uint8_t g_enclave_secret_data[ENCLAVE_SECRET_DATA_SIZE] =
     {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 
-enclave_config_data_t config_data = {g_enclave_secret_data,
+enclave_config_data_t config_data = {g_enclave_secret_data, "erijbeirbe", 17};
                                     //Client pubkey,
                                     //Pubkey size
-                                    };
 
 // Declare a static dispatcher object for enabling
 // for better organizing enclave-wise global variables
-static ecall_gatherer gatherer("Enclave1", config_data);
+static ecall_gatherer gatherer("Enclave1", &config_data);
 
 const char* enclave_name = "Enclave1";
 int get_enclave_format_settings(
@@ -51,18 +50,6 @@ int get_evidence_with_public_key(
         pem_key_size,
         evidence,
         evidence_size);
-}
-
-// Attest and store the public key of another enclave.
-int verify_evidence_and_set_public_key(
-    const oe_uuid_t* format_id,
-    uint8_t* pem_key,
-    size_t pem_key_size,
-    uint8_t* evidence,
-    size_t evidence_size)
-{
-    return gatherer.dispatcher.verify_evidence_and_set_public_key(
-        format_id, pem_key, pem_key_size, evidence, evidence_size);
 }
 
 // Encrypt message for another enclave using the public key stored for it.
