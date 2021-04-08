@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "validatequotes": {
-      "commandName": "Project",
-      "commandLineArgs": "../../../../genquotes/out/enclave.info.debug.json"
-    }
-  }
-}
