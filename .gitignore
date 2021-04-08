@@ -6,7 +6,8 @@
 *.signed
 
 # Specific file names
-genquote_host
-genquote_enclave
+project_host
+project_enclave
 
 # Directories
+.vscode
