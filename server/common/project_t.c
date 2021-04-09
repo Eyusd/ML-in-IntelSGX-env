@@ -11,18 +11,19 @@ OE_EXTERNC_BEGIN
 enum
 {
     project_fcn_id_get_remote_report_with_pubkey = 0,
-    project_fcn_id_retrieve_ecdh_key = 1,
-    project_fcn_id_generate_secret = 2,
-    project_fcn_id_enclave_init = 3,
-    project_fcn_id_enclave_old_to_new = 4,
-    project_fcn_id_enclave_new_to_old = 5,
-    project_fcn_id_enclave_train = 6,
-    project_fcn_id_enclave_infer = 7,
-    project_fcn_id_oe_get_sgx_report_ecall = 8,
-    project_fcn_id_oe_get_report_v2_ecall = 9,
-    project_fcn_id_oe_verify_local_report_ecall = 10,
-    project_fcn_id_oe_sgx_init_context_switchless_ecall = 11,
-    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 12,
+    project_fcn_id_retrieve_client_public_key = 1,
+    project_fcn_id_retrieve_ecdh_key = 2,
+    project_fcn_id_generate_secret = 3,
+    project_fcn_id_enclave_init = 4,
+    project_fcn_id_enclave_old_to_new = 5,
+    project_fcn_id_enclave_new_to_old = 6,
+    project_fcn_id_enclave_train = 7,
+    project_fcn_id_enclave_infer = 8,
+    project_fcn_id_oe_get_sgx_report_ecall = 9,
+    project_fcn_id_oe_get_report_v2_ecall = 10,
+    project_fcn_id_oe_verify_local_report_ecall = 11,
+    project_fcn_id_oe_sgx_init_context_switchless_ecall = 12,
+    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 13,
     project_fcn_id_trusted_call_id_max = OE_ENUM_MAX
 };
 
@@ -38,6 +39,14 @@ typedef struct _get_remote_report_with_pubkey_args_t
     uint8_t** remote_report;
     size_t* remote_report_size;
 } get_remote_report_with_pubkey_args_t;
+
+typedef struct _retrieve_client_public_key_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned char* pem_client_public_key;
+} retrieve_client_public_key_args_t;
 
 typedef struct _retrieve_ecdh_key_args_t
 {
@@ -204,6 +213,67 @@ static void ecall_get_remote_report_with_pubkey(
         _pargs_in->key_size,
         _pargs_in->remote_report,
         _pargs_in->remote_report_size);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (output_buffer_size >= sizeof(*_pargs_out) &&
+        oe_is_within_enclave(_pargs_out, output_buffer_size))
+        _pargs_out->result = _result;
+}
+
+static void ecall_retrieve_client_public_key(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+
+    /* Prepare parameters. */
+    retrieve_client_public_key_args_t* _pargs_in = (retrieve_client_public_key_args_t*)input_buffer;
+    retrieve_client_public_key_args_t* _pargs_out = (retrieve_client_public_key_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers lie within the enclave. */
+    /* oe_is_within_enclave explicitly checks if buffers are null or not. */
+    if (!oe_is_within_enclave(input_buffer, input_buffer_size))
+        goto done;
+
+    if (!oe_is_within_enclave(output_buffer, output_buffer_size))
+        goto done;
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pem_client_public_key)
+        OE_SET_IN_POINTER(pem_client_public_key, 1, sizeof(unsigned char[1024]), unsigned char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Check that in/in-out strings are null terminated. */
+    /* There were no in nor in-out string parameters. */
+
+    /* lfence after checks. */
+    oe_lfence();
+
+    /* Call user function. */
+    retrieve_client_public_key(
+        *(unsigned char(*)[1024])_pargs_in->pem_client_public_key);
 
     /* There is no deep-copyable out parameter. */
     _pargs_out->deepcopy_out_buffer = NULL;
@@ -968,6 +1038,7 @@ done:
 
 oe_ecall_func_t oe_ecalls_table[] = {
     (oe_ecall_func_t) ecall_get_remote_report_with_pubkey,
+    (oe_ecall_func_t) ecall_retrieve_client_public_key,
     (oe_ecall_func_t) ecall_retrieve_ecdh_key,
     (oe_ecall_func_t) ecall_generate_secret,
     (oe_ecall_func_t) ecall_enclave_init,

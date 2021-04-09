@@ -27,6 +27,10 @@ oe_result_t get_remote_report_with_pubkey(
     uint8_t** remote_report,
     size_t* remote_report_size);
 
+oe_result_t retrieve_client_public_key(
+    oe_enclave_t* enclave,
+    unsigned char pem_client_public_key[1024]);
+
 oe_result_t retrieve_ecdh_key(
     oe_enclave_t* enclave,
     unsigned char key[32]);

@@ -11,18 +11,19 @@ OE_EXTERNC_BEGIN
 enum
 {
     project_fcn_id_get_remote_report_with_pubkey = 0,
-    project_fcn_id_retrieve_ecdh_key = 1,
-    project_fcn_id_generate_secret = 2,
-    project_fcn_id_enclave_init = 3,
-    project_fcn_id_enclave_old_to_new = 4,
-    project_fcn_id_enclave_new_to_old = 5,
-    project_fcn_id_enclave_train = 6,
-    project_fcn_id_enclave_infer = 7,
-    project_fcn_id_oe_get_sgx_report_ecall = 8,
-    project_fcn_id_oe_get_report_v2_ecall = 9,
-    project_fcn_id_oe_verify_local_report_ecall = 10,
-    project_fcn_id_oe_sgx_init_context_switchless_ecall = 11,
-    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 12,
+    project_fcn_id_retrieve_client_public_key = 1,
+    project_fcn_id_retrieve_ecdh_key = 2,
+    project_fcn_id_generate_secret = 3,
+    project_fcn_id_enclave_init = 4,
+    project_fcn_id_enclave_old_to_new = 5,
+    project_fcn_id_enclave_new_to_old = 6,
+    project_fcn_id_enclave_train = 7,
+    project_fcn_id_enclave_infer = 8,
+    project_fcn_id_oe_get_sgx_report_ecall = 9,
+    project_fcn_id_oe_get_report_v2_ecall = 10,
+    project_fcn_id_oe_verify_local_report_ecall = 11,
+    project_fcn_id_oe_sgx_init_context_switchless_ecall = 12,
+    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 13,
     project_fcn_id_trusted_call_id_max = OE_ENUM_MAX
 };
 
@@ -30,6 +31,7 @@ enum
 static const oe_ecall_info_t _project_ecall_info_table[] = 
 {
     { "get_remote_report_with_pubkey" },
+    { "retrieve_client_public_key" },
     { "retrieve_ecdh_key" },
     { "generate_secret" },
     { "enclave_init" },
@@ -56,6 +58,14 @@ typedef struct _get_remote_report_with_pubkey_args_t
     uint8_t** remote_report;
     size_t* remote_report_size;
 } get_remote_report_with_pubkey_args_t;
+
+typedef struct _retrieve_client_public_key_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned char* pem_client_public_key;
+} retrieve_client_public_key_args_t;
 
 typedef struct _retrieve_ecdh_key_args_t
 {
@@ -279,6 +289,104 @@ done:
 }
 
 OE_WEAK_ALIAS(project_get_remote_report_with_pubkey, get_remote_report_with_pubkey);
+
+oe_result_t project_retrieve_client_public_key(
+    oe_enclave_t* enclave,
+    unsigned char pem_client_public_key[1024])
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+    retrieve_client_public_key_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+    _args.pem_client_public_key = (unsigned char*)pem_client_public_key;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(retrieve_client_public_key_args_t));
+    if (pem_client_public_key)
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(unsigned char[1024]));
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(retrieve_client_public_key_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+    _pargs_in = (retrieve_client_public_key_args_t*)_input_buffer;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    if (pem_client_public_key)
+        OE_WRITE_IN_PARAM(pem_client_public_key, 1, sizeof(unsigned char[1024]), unsigned char*);
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_call_enclave_function(
+             enclave,
+             &global_id,
+             _project_ecall_info_table[project_fcn_id_retrieve_client_public_key].name,
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+    _pargs_out = (retrieve_client_public_key_args_t*)_output_buffer;
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    /* No return value. */
+
+    /* There were no out nor in-out parameters. */
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+OE_WEAK_ALIAS(project_retrieve_client_public_key, retrieve_client_public_key);
 
 oe_result_t project_retrieve_ecdh_key(
     oe_enclave_t* enclave,
@@ -2371,7 +2479,7 @@ oe_result_t oe_create_project_enclave(
                _project_ocall_function_table,
                10,
                _project_ecall_info_table,
-                13,
+                14,
                enclave);
 }
 

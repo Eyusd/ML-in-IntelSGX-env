@@ -218,3 +218,5 @@ void ecall_dispatcher::reg_old_to_new() {m_regression.old_to_new();}
 void ecall_dispatcher::retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);}
 
 void ecall_dispatcher::generate_secret() {m_crypto->generate_secret();}
+
+void ecall_dispatcher::retrieve_client_public_key(unsigned char pem_client_public_key[1024]) {m_crypto->retrieve_client_public_key(pem_client_public_key);}

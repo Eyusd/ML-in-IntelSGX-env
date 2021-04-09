@@ -17,6 +17,8 @@ int get_remote_report_with_pubkey(
     uint8_t** remote_report,
     size_t* remote_report_size);
 
+void retrieve_client_public_key(unsigned char pem_client_public_key[1024]);
+
 void retrieve_ecdh_key(unsigned char key[32]);
 
 void generate_secret(void);

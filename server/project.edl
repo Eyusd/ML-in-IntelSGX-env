@@ -11,6 +11,8 @@ enclave {
                                                  [out] uint8_t **remote_report,
                                                  [out] size_t  *remote_report_size);
         
+        public void retrieve_client_public_key([in] unsigned char pem_client_public_key[1024]);
+        
         public void retrieve_ecdh_key([in] unsigned char key[32]);
 
         public void generate_secret();

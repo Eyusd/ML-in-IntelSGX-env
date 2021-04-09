@@ -32,6 +32,8 @@ class ecall_dispatcher
     int process_encrypted_message(
         uint8_t* encrypted_data,
         size_t encrypted_data_size);
+
+    void retrieve_client_public_key(unsigned char pem_client_public_key[1024]);
     
     void retrieve_ecdh_key(unsigned char key[32]);
     void generate_secret();

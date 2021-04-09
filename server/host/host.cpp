@@ -215,7 +215,5 @@ exit:
     myprintf("Host: Terminating enclave\n");
     if (enclave)
         terminate_enclave(enclave);
-
-    myprintf("Host:  %s \n", (ret == 0) ? "succeeded" : "failed");
     return ret;
 }

@@ -26,7 +26,7 @@ class Crypto
     mbedtls_entropy_context m_entropy_context;
     mbedtls_pk_context m_pk_context;
     mbedtls_ecdh_context m_ecdh_context;
-    uint8_t m_public_key[512];
+    uint8_t m_public_key[PUBLIC_KEY_SIZE];
     bool m_initialized;
     unsigned char srv_to_cli[32];
     unsigned char cli_to_srv[32];
@@ -38,6 +38,7 @@ class Crypto
     ~Crypto();
 
     void retrieve_public_key(uint8_t pem_public_key[512]);
+    void retrieve_client_public_key(unsigned char pem_client_public_key[1024]);
 
     void retrieve_ecdh_key(unsigned char key[32]);
     void generate_secret();
