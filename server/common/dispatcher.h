@@ -27,6 +27,15 @@ class ecall_dispatcher
         size_t* key_size,
         uint8_t** remote_report,
         size_t* remote_report_size);
+    
+    int generate_encrypted_message(uint8_t* message, uint8_t** data, size_t* size);
+    int process_encrypted_message(
+        uint8_t* encrypted_data,
+        size_t encrypted_data_size);
+    
+    void retrieve_ecdh_key(unsigned char key[32]);
+    void generate_secret();
+
     void reg_initialize();
     double reg_infer(double values[9]);
     double reg_train(double values[9], double expected);

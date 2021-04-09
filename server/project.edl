@@ -6,13 +6,14 @@ enclave {
     from "platform.edl" import *;
 
     trusted {
-        // Return the public key of this enclave along with the enclave's remote report.
-        // Another enclave can use the remote report to attest the enclave and verify
-        // the integrity of the public key.
         public int get_remote_report_with_pubkey([out] uint8_t **pem_key, 
                                                  [out] size_t *key_size,
                                                  [out] uint8_t **remote_report,
                                                  [out] size_t  *remote_report_size);
+        
+        public void retrieve_ecdh_key([in] unsigned char key[32]);
+
+        public void generate_secret();
         
         public void enclave_init();
 

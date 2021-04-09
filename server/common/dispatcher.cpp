@@ -117,6 +117,94 @@ exit:
     return ret;
 }
 
+int ecall_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** data, size_t* size)
+{
+    uint8_t encrypted_data_buffer[1024];
+    size_t encrypted_data_size;
+    uint8_t* host_buffer;
+    int ret = 1;
+
+    if (m_initialized == false)
+    {
+        TRACE_ENCLAVE("ecall_dispatcher initialization failed");
+        goto exit;
+    }
+
+    encrypted_data_size = sizeof(encrypted_data_buffer);
+    if (m_crypto->Encrypt(
+            m_crypto->get_client_public_key(),
+            message,
+            PUBLIC_KEY_SIZE,
+            encrypted_data_buffer,
+            &encrypted_data_size) == false)
+    {
+        TRACE_ENCLAVE("enclave: generate_encrypted_message failed");
+        goto exit;
+    }
+
+    // TODO: the following code is not TEE-agnostic, as it assumes the
+    // enclave can directly write into host memory
+    host_buffer = (uint8_t*)oe_host_malloc(encrypted_data_size);
+    if (host_buffer == nullptr)
+    {
+        ret = OE_OUT_OF_MEMORY;
+        TRACE_ENCLAVE("copying host_buffer failed, out of memory");
+        goto exit;
+    }
+    memcpy(host_buffer, encrypted_data_buffer, encrypted_data_size);
+    TRACE_ENCLAVE(
+        "enclave: generate_encrypted_message: encrypted_data_size = %ld",
+        encrypted_data_size);
+    *data = host_buffer;
+    *size = encrypted_data_size;
+
+    ret = 0;
+exit:
+    return ret;
+}
+
+int ecall_dispatcher::process_encrypted_message(
+    uint8_t* encrypted_data,
+    size_t encrypted_data_size)
+{
+    uint8_t data[1024];
+    size_t data_size = 0;
+    int ret = 1;
+
+    if (m_initialized == false)
+    {
+        TRACE_ENCLAVE("ecall_dispatcher initialization failed");
+        goto exit;
+    }
+
+    data_size = sizeof(data);
+    if (m_crypto->decrypt(
+            encrypted_data, encrypted_data_size, data, &data_size))
+    {
+        // This is where the business logic for verifying the data should be.
+        // In this sample, both enclaves start with identical data in
+        // m_enclave_config->enclave_secret_data.
+        // The following checking is to make sure the decrypted values are what
+        // we have expected.
+        TRACE_ENCLAVE("Decrypted data: ");
+        for (uint32_t i = 0; i < data_size; ++i)
+        {
+            printf("%d ", data[i]);
+        }
+        printf("\n");
+    }
+    else
+    {
+        TRACE_ENCLAVE("Encalve:ecall_dispatcher::process_encrypted_msg failed");
+        goto exit;
+    }
+    TRACE_ENCLAVE("Decrypted data matches with the enclave internal secret "
+                  "data: descryption validation succeeded");
+    ret = 0;
+exit:
+    return ret;
+}
+
 void ecall_dispatcher::reg_initialize() {m_regression.initialize();}
 
 double ecall_dispatcher::reg_infer(double values[9]) {m_regression.infer(values);}
@@ -126,3 +214,7 @@ double ecall_dispatcher::reg_train(double values[9], double expected) {m_regress
 void ecall_dispatcher::reg_new_to_old() {m_regression.new_to_old();}
 
 void ecall_dispatcher::reg_old_to_new() {m_regression.old_to_new();}
+
+void ecall_dispatcher::retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);}
+
+void ecall_dispatcher::generate_secret() {m_crypto->generate_secret();}

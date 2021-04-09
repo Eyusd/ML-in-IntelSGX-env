@@ -11,6 +11,7 @@
 #include <mbedtls/config.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/entropy.h>
+#include <mbedtls/ecdh.h>
 #include <mbedtls/pk.h>
 #include <mbedtls/rsa.h>
 #include <mbedtls/sha256.h>
@@ -24,22 +25,23 @@ class Crypto
     mbedtls_ctr_drbg_context m_ctr_drbg_contex;
     mbedtls_entropy_context m_entropy_context;
     mbedtls_pk_context m_pk_context;
+    mbedtls_ecdh_context m_ecdh_context;
     uint8_t m_public_key[512];
     bool m_initialized;
+    unsigned char srv_to_cli[32];
+    unsigned char cli_to_srv[32];
+
+    uint8_t m_client_pubkey[PUBLIC_KEY_SIZE];
 
   public:
     Crypto();
     ~Crypto();
 
-    /**
-     * Get this enclave's own public key
-     */
     void retrieve_public_key(uint8_t pem_public_key[512]);
 
-    /**
-     * Encrypt encrypts the given data using the given public key.
-     * Used to encrypt data using the public key of another enclave.
-     */
+    void retrieve_ecdh_key(unsigned char key[32]);
+    void generate_secret();
+
     bool Encrypt(
         const uint8_t* pem_public_key,
         const uint8_t* data,
@@ -47,48 +49,27 @@ class Crypto
         uint8_t* encrypted_data,
         size_t* encrypted_data_size);
 
-    /**
-     * decrypt decrypts the given data using current enclave's private key.
-     * Used to receive encrypted data from another enclave.
-     */
     bool decrypt(
         const uint8_t* encrypted_data,
         size_t encrypted_data_size,
         uint8_t* data,
         size_t* data_size);
 
-    /**
-     * get_rsa_modulus_from_pem returns the RSA modulus in big endian format
-     * from the public key PEM data. This is needed to verify the MRSIGNER
-     * of the other enclave, which ensures that the other enclave has been
-     * signed by the right key. MRSIGNER is the SHA256 hash of the modulus
-     * in little endian.
-     */
     bool get_rsa_modulus_from_pem(
         const char* pem_data,
         size_t pem_size,
         uint8_t** modulus,
         size_t* modulus_size);
 
-    /**
-     * Compute the sha256 hash of given data.
-     */
     int Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32]);
 
-  private:
-    /**
-     * Crypto demonstrates use of mbedtls within the enclave to generate keys
-     * and perform encryption. In this sample, each enclave instance generates
-     * an ephemeral 2048-bit RSA key pair and shares the public key with the
-     * other instance. The other enclave instance then replies with data
-     * encrypted to the provided public key.
-     */
+    uint8_t* get_client_public_key() {return m_client_pubkey;};
 
-    /** init_mbedtls initializes the crypto module.
-     */
+  private:
+
     bool init_mbedtls(void);
 
     void cleanup_mbedtls(void);
 };
 
-#endif // OE_SAMPLES_ATTESTATION_ENC_CRYPTO_H
+#endif

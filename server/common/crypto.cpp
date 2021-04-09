@@ -18,11 +18,6 @@ Crypto::~Crypto()
     cleanup_mbedtls();
 }
 
-/**
- * init_mbedtls initializes the crypto module.
- * mbedtls initialization. Please refer to mbedtls documentation for detailed
- * information about the functions used.
- */
 bool Crypto::init_mbedtls(void)
 {
     bool ret = false;
@@ -31,8 +26,8 @@ bool Crypto::init_mbedtls(void)
     mbedtls_ctr_drbg_init(&m_ctr_drbg_contex);
     mbedtls_entropy_init(&m_entropy_context);
     mbedtls_pk_init(&m_pk_context);
+    mbedtls_ecdh_init(&m_ecdh_context);
 
-    // Initialize entropy.
     res = mbedtls_ctr_drbg_seed(
         &m_ctr_drbg_contex, mbedtls_entropy_func, &m_entropy_context, NULL, 0);
     if (res != 0)
@@ -41,7 +36,6 @@ bool Crypto::init_mbedtls(void)
         goto exit;
     }
 
-    // Initialize RSA context.
     res = mbedtls_pk_setup(
         &m_pk_context, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
     if (res != 0)
@@ -50,8 +44,6 @@ bool Crypto::init_mbedtls(void)
         goto exit;
     }
 
-    // Generate an ephemeral 2048-bit RSA key pair with
-    // exponent 65537 for the enclave.
     res = mbedtls_rsa_gen_key(
         mbedtls_pk_rsa(m_pk_context),
         mbedtls_ctr_drbg_random,
@@ -64,7 +56,6 @@ bool Crypto::init_mbedtls(void)
         goto exit;
     }
 
-    // Write out the public key in PEM format for exchange with other enclaves.
     res = mbedtls_pk_write_pubkey_pem(
         &m_pk_context, m_public_key, sizeof(m_public_key));
     if (res != 0)
@@ -72,33 +63,57 @@ bool Crypto::init_mbedtls(void)
         TRACE_ENCLAVE("mbedtls_pk_write_pubkey_pem failed (%d)\n", res);
         goto exit;
     }
+
+    ret = mbedtls_ecp_group_load( &m_ecdh_context.grp, MBEDTLS_ECP_DP_CURVE25519 );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_ecp_group_load returned %d\n", ret );
+        goto exit;
+    }
+
+    ret = mbedtls_ecdh_gen_public( &m_ecdh_context.grp, &m_ecdh_context.d, &m_ecdh_context.Q,
+                                   mbedtls_ctr_drbg_random, &m_ctr_drbg_contex );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_ecdh_gen_public returned %d\n", ret );
+        goto exit;
+    }
+
+    ret = mbedtls_mpi_write_binary( &m_ecdh_context.Q.X, srv_to_cli, 32 );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret );
+        goto exit;
+    }
+
+    ret = mbedtls_mpi_lset( &m_ecdh_context.Qp.Z, 1 );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_lset returned %d\n", ret );
+        goto exit;
+    }
+
     ret = true;
     TRACE_ENCLAVE("mbedtls initialized.");
 exit:
     return ret;
 }
 
-/**
- * mbedtls cleanup during shutdown.
- */
 void Crypto::cleanup_mbedtls(void)
 {
     mbedtls_pk_free(&m_pk_context);
     mbedtls_entropy_free(&m_entropy_context);
     mbedtls_ctr_drbg_free(&m_ctr_drbg_contex);
+    mbedtls_ecdh_free(&m_ecdh_context);
 
     TRACE_ENCLAVE("mbedtls cleaned up.");
 }
 
-/**
- * Get the public key for this enclave.
- */
 void Crypto::retrieve_public_key(uint8_t pem_public_key[512])
 {
     memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
 }
 
-// Compute the sha256 hash of given data.
 int Crypto::Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32])
 {
     int ret = 0;
@@ -123,10 +138,6 @@ exit:
     return ret;
 }
 
-/**
- * Encrypt encrypts the given data using the given public key.
- * Used to encrypt data using the public key of another enclave.
- */
 bool Crypto::Encrypt(
     const uint8_t* pem_public_key,
     const uint8_t* data,
@@ -190,10 +201,6 @@ exit:
     return result;
 }
 
-/**
- * decrypt the given data using current enclave's private key.
- * Used to receive encrypted data from another enclave.
- */
 bool Crypto::decrypt(
     const uint8_t* encrypted_data,
     size_t encrypted_data_size,
@@ -309,4 +316,36 @@ exit:
 
 exit_preinit:
     return ret;
+}
+
+void Crypto::retrieve_ecdh_key(unsigned char key[32])
+{   
+    int ret;
+
+    memcpy(&cli_to_srv, key, 32);
+    ret = mbedtls_mpi_read_binary( &m_ecdh_context.Qp.X, cli_to_srv, 32 );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_read_binary returned %d\n", ret );
+        mbedtls_ecdh_free( &m_ecdh_context );
+        mbedtls_ctr_drbg_free( &m_ctr_drbg_contex );
+        mbedtls_entropy_free( &m_entropy_context );
+    }
+
+}
+
+void Crypto::generate_secret()
+{
+    int ret;
+    ret = mbedtls_ecdh_compute_shared( &m_ecdh_context.grp, &m_ecdh_context.z,
+                                       &m_ecdh_context.Qp, &m_ecdh_context.d,
+                                       mbedtls_ctr_drbg_random, &m_ctr_drbg_contex );
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_ecdh_compute_shared returned %d\n", ret );
+        mbedtls_ecdh_free( &m_ecdh_context );
+        mbedtls_ctr_drbg_free( &m_ctr_drbg_contex );
+        mbedtls_entropy_free( &m_entropy_context );
+    }
+
 }

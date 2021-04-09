@@ -50,3 +50,13 @@ void enclave_new_to_old()
 {
     dispatcher.reg_new_to_old();
 }
+
+void retrieve_ecdh_key(unsigned char key[32])
+{
+    dispatcher.retrieve_ecdh_key(key);
+}
+
+void generate_secret()
+{
+    dispatcher.generate_secret();
+}
