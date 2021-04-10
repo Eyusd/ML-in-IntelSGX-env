@@ -9,7 +9,7 @@
 #include "project_u.h"
 #include "quotefile.h"
 
-static bool EnableVerbosePrintf = true;
+static bool EnableVerbosePrintf = false;
 
 void myprintf(const char *format, ...)
 {

@@ -117,12 +117,32 @@ void Crypto::retrieve_public_key(uint8_t pem_public_key[512])
 void Crypto::retrieve_client_public_key(unsigned char pem_client_public_key[513])
 {   
     int keyLen = strlen((const char*) pem_client_public_key);
+    int ret;
     mbedtls_pk_context g_RSAKeyContex;
-    mbedtls_pk_init(&g_RSAKeyContex);
-    mbedtls_pk_setup(&g_RSAKeyContex, mbedtls_pk_info_from_type((mbedtls_pk_type_t)MBEDTLS_PK_RSA));
-    mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_client_public_key, (size_t)keyLen);
 
-    mbedtls_pk_write_pubkey_pem(&g_RSAKeyContex, m_client_pubkey, sizeof(m_client_pubkey));
+    mbedtls_pk_init(&g_RSAKeyContex);
+    
+    ret = mbedtls_pk_setup(&g_RSAKeyContex, mbedtls_pk_info_from_type((mbedtls_pk_type_t)MBEDTLS_PK_RSA));
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_pk_setup returned %d\n", ret );
+        goto exit;
+    }
+    
+    ret = mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_client_public_key, (size_t)keyLen);
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_pk_parse_key returned %d\n", ret );
+        goto exit;
+    }
+    ret = mbedtls_pk_write_pubkey_pem(&g_RSAKeyContex, m_client_pubkey, sizeof(m_client_pubkey));
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_pk_write_pubkey_pem returned %d\n", ret );
+        goto exit;
+    }
+exit:
+    mbedtls_pk_free(&g_RSAKeyContex);
 }
 
 int Crypto::Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32])
