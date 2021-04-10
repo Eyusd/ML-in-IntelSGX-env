@@ -61,7 +61,7 @@ void generate_secret()
     dispatcher.generate_secret();
 }
 
-void retrieve_client_public_key(unsigned char pem_client_public_key[1024])
+void retrieve_client_public_key(unsigned char pem_client_public_key[513])
 {
     dispatcher.retrieve_client_public_key(pem_client_public_key);
 }

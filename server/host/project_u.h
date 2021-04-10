@@ -29,7 +29,7 @@ oe_result_t get_remote_report_with_pubkey(
 
 oe_result_t retrieve_client_public_key(
     oe_enclave_t* enclave,
-    unsigned char pem_client_public_key[1024]);
+    unsigned char pem_client_public_key[513]);
 
 oe_result_t write_pem(
     oe_enclave_t* enclave,

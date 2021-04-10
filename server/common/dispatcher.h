@@ -33,7 +33,7 @@ class ecall_dispatcher
         uint8_t* encrypted_data,
         size_t encrypted_data_size);
 
-    void retrieve_client_public_key(unsigned char pem_client_public_key[1024]) {m_crypto->retrieve_client_public_key(pem_client_public_key);};
+    void retrieve_client_public_key(unsigned char pem_client_public_key[513]) {m_crypto->retrieve_client_public_key(pem_client_public_key);};
     void write_pem(unsigned char buff[513]) {m_crypto->write_pem(buff);};
     
     void retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);};

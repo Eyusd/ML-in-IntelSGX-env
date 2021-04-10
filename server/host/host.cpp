@@ -3,6 +3,7 @@
 
 #include <openenclave/host.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "project_u.h"
@@ -18,6 +19,22 @@ void myprintf(const char *format, ...)
       printf(format, ap);
     }
     va_end(ap);
+}
+
+unsigned char* file_into_buffer(const char name[])
+{
+    FILE *f = fopen(name, "rb");
+    if (f == NULL) {fprintf(stderr, "Failed to open file");};
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
+
+    char *string = new char[fsize + 1];
+    fread(string, 1, fsize, f);
+    fclose(f);
+
+    string[fsize] = 0;
+    return (unsigned char*) string;
 }
 
 oe_enclave_t* create_enclave(const char* enclave_path)
@@ -147,8 +164,8 @@ int main(int argc, const char* argv[])
         }
     }
 
-    write_pem(enclave, buff);
-    fprintf(stderr, "Buffer: \n%s ", buff);
+    memcpy(&buff,file_into_buffer("../client/client_rsa_pubkey.pem"),513);
+    retrieve_client_public_key(enclave, buff);
     enclave_init(enclave);
 
     // Main Loop

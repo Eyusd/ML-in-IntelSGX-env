@@ -268,7 +268,7 @@ static void ecall_retrieve_client_public_key(
 
     /* Set in and in-out pointers. */
     if (_pargs_in->pem_client_public_key)
-        OE_SET_IN_POINTER(pem_client_public_key, 1, sizeof(unsigned char[1024]), unsigned char*);
+        OE_SET_IN_POINTER(pem_client_public_key, 1, sizeof(unsigned char[513]), unsigned char*);
 
     /* Set out and in-out pointers. */
     /* In-out parameters are copied to output buffer. */
@@ -282,7 +282,7 @@ static void ecall_retrieve_client_public_key(
 
     /* Call user function. */
     retrieve_client_public_key(
-        *(unsigned char(*)[1024])_pargs_in->pem_client_public_key);
+        *(unsigned char(*)[513])_pargs_in->pem_client_public_key);
 
     /* There is no deep-copyable out parameter. */
     _pargs_out->deepcopy_out_buffer = NULL;

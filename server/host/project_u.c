@@ -302,7 +302,7 @@ OE_WEAK_ALIAS(project_get_remote_report_with_pubkey, get_remote_report_with_pubk
 
 oe_result_t project_retrieve_client_public_key(
     oe_enclave_t* enclave,
-    unsigned char pem_client_public_key[1024])
+    unsigned char pem_client_public_key[513])
 {
     oe_result_t _result = OE_FAILURE;
 
@@ -328,7 +328,7 @@ oe_result_t project_retrieve_client_public_key(
     /* Compute input buffer size. Include in and in-out parameters. */
     OE_ADD_SIZE(_input_buffer_size, sizeof(retrieve_client_public_key_args_t));
     if (pem_client_public_key)
-        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(unsigned char[1024]));
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(unsigned char[513]));
     
     /* Compute output buffer size. Include out and in-out parameters. */
     OE_ADD_SIZE(_output_buffer_size, sizeof(retrieve_client_public_key_args_t));
@@ -350,7 +350,7 @@ oe_result_t project_retrieve_client_public_key(
     _pargs_in = (retrieve_client_public_key_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     if (pem_client_public_key)
-        OE_WRITE_IN_PARAM(pem_client_public_key, 1, sizeof(unsigned char[1024]), unsigned char*);
+        OE_WRITE_IN_PARAM(pem_client_public_key, 1, sizeof(unsigned char[513]), unsigned char*);
     
     /* Copy args structure (now filled) to input buffer. */
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));

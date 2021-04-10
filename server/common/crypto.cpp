@@ -114,9 +114,9 @@ void Crypto::retrieve_public_key(uint8_t pem_public_key[512])
     memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
 }
 
-void Crypto::retrieve_client_public_key(unsigned char pem_client_public_key[1024])
+void Crypto::retrieve_client_public_key(unsigned char pem_client_public_key[513])
 {   
-    int keyLen = strlen((const char*) pem_client_public_key) + 1;
+    int keyLen = strlen((const char*) pem_client_public_key);
     mbedtls_pk_context g_RSAKeyContex;
     mbedtls_pk_init(&g_RSAKeyContex);
     mbedtls_pk_setup(&g_RSAKeyContex, mbedtls_pk_info_from_type((mbedtls_pk_type_t)MBEDTLS_PK_RSA));
