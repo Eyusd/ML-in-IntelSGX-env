@@ -65,3 +65,8 @@ void retrieve_client_public_key(unsigned char pem_client_public_key[1024])
 {
     dispatcher.retrieve_client_public_key(pem_client_public_key);
 }
+
+void write_pem(unsigned char buff[513])
+{
+    dispatcher.write_pem(buff);
+}

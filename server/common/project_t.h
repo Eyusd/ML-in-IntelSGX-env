@@ -19,6 +19,8 @@ int get_remote_report_with_pubkey(
 
 void retrieve_client_public_key(unsigned char pem_client_public_key[1024]);
 
+void write_pem(unsigned char buff[513]);
+
 void retrieve_ecdh_key(unsigned char key[32]);
 
 void generate_secret(void);

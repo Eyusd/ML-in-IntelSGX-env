@@ -31,6 +31,10 @@ oe_result_t retrieve_client_public_key(
     oe_enclave_t* enclave,
     unsigned char pem_client_public_key[1024]);
 
+oe_result_t write_pem(
+    oe_enclave_t* enclave,
+    unsigned char buff[513]);
+
 oe_result_t retrieve_ecdh_key(
     oe_enclave_t* enclave,
     unsigned char key[32]);

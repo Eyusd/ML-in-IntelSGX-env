@@ -34,4 +34,4 @@ sign:
 	cp project_enclave.signed project_enclave.debug.signed
 
 clean:
-	rm -f *.o project_enclave *.signed ../common/project_t.* ../common/project_args.h *.pem enclave_b_pubkey.h
+	rm -f *.o project_enclave *.signed ../common/project_t.* ../common/project_args.h *.pem

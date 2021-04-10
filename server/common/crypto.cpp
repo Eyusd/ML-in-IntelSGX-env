@@ -360,3 +360,9 @@ void Crypto::generate_secret()
     }
 
 }
+
+void Crypto::write_pem(unsigned char buff[513])
+{
+    int ret;
+    ret = mbedtls_pk_write_pubkey_pem(&m_pk_context, buff, 513);
+}

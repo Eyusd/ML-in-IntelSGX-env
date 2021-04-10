@@ -1,5 +1,4 @@
-#ifndef DEF_REGRESSION
-#define DEF_REGRESSION
+#pragma once
 #include <openenclave/enclave.h>
 #include <stdio.h>
 
@@ -16,5 +15,3 @@ class ecall_regression
         void new_to_old();
         void old_to_new();
 };
-
-#endif

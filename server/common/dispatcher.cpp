@@ -204,19 +204,3 @@ int ecall_dispatcher::process_encrypted_message(
 exit:
     return ret;
 }
-
-void ecall_dispatcher::reg_initialize() {m_regression.initialize();}
-
-double ecall_dispatcher::reg_infer(double values[9]) {m_regression.infer(values);}
-
-double ecall_dispatcher::reg_train(double values[9], double expected) {m_regression.train(values, expected);}
-
-void ecall_dispatcher::reg_new_to_old() {m_regression.new_to_old();}
-
-void ecall_dispatcher::reg_old_to_new() {m_regression.old_to_new();}
-
-void ecall_dispatcher::retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);}
-
-void ecall_dispatcher::generate_secret() {m_crypto->generate_secret();}
-
-void ecall_dispatcher::retrieve_client_public_key(unsigned char pem_client_public_key[1024]) {m_crypto->retrieve_client_public_key(pem_client_public_key);}

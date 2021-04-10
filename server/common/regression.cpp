@@ -11,24 +11,25 @@ void ecall_regression::initialize()
     uint8_t samples[10];
     for (i=0;i<10;i++)
     {
-        coeffs[i] = ((double) rand()) / ((double) RAND_MAX/100.000);
+        coeffs[i] = ((double) rand()) / (0.001* (double) RAND_MAX);
     }
 }
 
 double ecall_regression::infer(double values[9])
 {
-    double r = coeffs[0];
+    double r = 0.0;
+    r += coeffs[0];
     int i;
     for (i=1;i<10;i++)
     {
-        r = r +  coeffs[i]*values[i-1];
+        r += coeffs[i]*values[i-1];
     }
     return r;
 }
 
 double ecall_regression::train(double values[9], double expected)
 {
-    double y;
+    double y = 0.0;
     double learning_rate = 0.00002;
     double dist;
 

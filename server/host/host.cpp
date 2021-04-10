@@ -68,6 +68,7 @@ int main(int argc, const char* argv[])
     uint8_t* remote_report = NULL;
     size_t remote_report_size = 0;
     oe_report_t parsed_report = {0};
+    unsigned char buff[513];
 
     //Program loop
     char choice;
@@ -146,6 +147,10 @@ int main(int argc, const char* argv[])
         }
     }
 
+    write_pem(enclave, buff);
+    fprintf(stderr, "Buffer: \n%s ", buff);
+    enclave_init(enclave);
+
     // Main Loop
     while (run)
     {
@@ -159,22 +164,24 @@ int main(int argc, const char* argv[])
         {
             case 't':
                 enclave_new_to_old(enclave);
-                csv_file = fopen("trainingset2.csv", "r");
+                csv_file = fopen("../client/dataset/trainingset2.csv", "r");
                 compt = 0;
+                if (csv_file == NULL) {fprintf(stderr, "Impossible d'ouvrir le fichier \n"); goto exit;}
+                else {fprintf(stderr, "Training... \n");}
                 while (fscanf(csv_file, "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf\n", &values_t[0],&values_t[1],&values_t[2],&values_t[3],&values_t[4],&values_t[5],&values_t[6],&values_t[7],&values_t[8],&expected) == 10)
-                {
+                {   
                     enclave_train(enclave, values_t, expected, &loss);
                     compt+=1;
                     if (loss > 100000000) {
                         allgood = false;
                     }
                     else {
-                        mean_loss += loss;
+                        if (compt > 9) {mean_loss += loss;}
                     }
                 }
                 if (allgood)
                 {
-                    mean_loss = mean_loss / ((double) compt);
+                    mean_loss = mean_loss / ((double) compt - 10.0);
                     fprintf(stderr, "Training set registered successfully \nMean Loss : %lf\nSets : %i\n", mean_loss, compt);
                     enclave_new_to_old(enclave);
                 }
@@ -187,9 +194,10 @@ int main(int argc, const char* argv[])
             
             case 'i':
                 scanf("%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf", &values[0], &values[1], &values[2], &values[3], &values[4], &values[5], &values[6], &values[7], &values[8]);
+                fprintf(stderr, "Understood : %lf - %lf - %lf - %lf - %lf - %lf - %lf - %lf - %lf\n\n", values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
 
                 enclave_infer(enclave, values, &output);
-                fprintf(stderr, "%lf \n", output);
+                fprintf(stderr, "Result : %lf \n", output);
 
                 break;
             

@@ -33,16 +33,17 @@ class ecall_dispatcher
         uint8_t* encrypted_data,
         size_t encrypted_data_size);
 
-    void retrieve_client_public_key(unsigned char pem_client_public_key[1024]);
+    void retrieve_client_public_key(unsigned char pem_client_public_key[1024]) {m_crypto->retrieve_client_public_key(pem_client_public_key);};
+    void write_pem(unsigned char buff[513]) {m_crypto->write_pem(buff);};
     
-    void retrieve_ecdh_key(unsigned char key[32]);
-    void generate_secret();
+    void retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);};
+    void generate_secret() {m_crypto->generate_secret();};
 
-    void reg_initialize();
-    double reg_infer(double values[9]);
-    double reg_train(double values[9], double expected);
-    void reg_new_to_old();
-    void reg_old_to_new();
+    void reg_initialize() {m_regression.initialize();};
+    double reg_infer(double values[9]) {return m_regression.infer(values);};
+    double reg_train(double values[9], double expected) {return m_regression.train(values, expected);};
+    void reg_new_to_old() {m_regression.new_to_old();};
+    void reg_old_to_new() {m_regression.old_to_new();};
 
   private:
     bool initialize(const char* name);
