@@ -37,9 +37,9 @@ class Crypto
     Crypto();
     ~Crypto();
 
-    void retrieve_public_key(uint8_t pem_public_key[512]);
-    void retrieve_client_public_key(unsigned char pem_client_public_key[513]);
-    void write_pem(unsigned char buff[513]);
+    void retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE]);
+    void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1]);
+    void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]);
 
     void retrieve_ecdh_key(unsigned char key[32]);
     void generate_secret();

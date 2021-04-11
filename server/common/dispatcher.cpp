@@ -54,7 +54,7 @@ int ecall_dispatcher::get_remote_report_with_pubkey(
     uint8_t** remote_report,
     size_t* remote_report_size)
 {
-    uint8_t pem_public_key[512];
+    uint8_t pem_public_key[PUBLIC_KEY_SIZE];
     uint8_t* report = NULL;
     size_t report_size = 0;
     uint8_t* key_buf = NULL;
@@ -85,7 +85,7 @@ int ecall_dispatcher::get_remote_report_with_pubkey(
         *remote_report_size = report_size;
         oe_free_report(report);
 
-        key_buf = (uint8_t*)oe_host_malloc(512);
+        key_buf = (uint8_t*)oe_host_malloc(PUBLIC_KEY_SIZE);
         if (key_buf == NULL)
         {
             ret = OE_OUT_OF_MEMORY;

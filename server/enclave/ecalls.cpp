@@ -61,12 +61,12 @@ void generate_secret()
     dispatcher.generate_secret();
 }
 
-void retrieve_client_public_key(unsigned char pem_client_public_key[513])
+void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1])
 {
-    dispatcher.retrieve_client_public_key(pem_client_public_key);
+    dispatcher.store_client_public_key(pem_client_public_key);
 }
 
-void write_pem(unsigned char buff[513])
+void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1])
 {
-    dispatcher.write_pem(buff);
+    dispatcher.write_rsa_pem(buff);
 }

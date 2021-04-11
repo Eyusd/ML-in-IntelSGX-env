@@ -165,7 +165,7 @@ int main(int argc, const char* argv[])
     }
 
     memcpy(&buff,file_into_buffer("../client/client_rsa_pubkey.pem"),513);
-    retrieve_client_public_key(enclave, buff);
+    store_client_public_key(enclave, buff);
     enclave_init(enclave);
 
     // Main Loop

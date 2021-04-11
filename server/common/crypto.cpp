@@ -109,12 +109,12 @@ void Crypto::cleanup_mbedtls(void)
     TRACE_ENCLAVE("mbedtls cleaned up.");
 }
 
-void Crypto::retrieve_public_key(uint8_t pem_public_key[512])
+void Crypto::retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE])
 {
     memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
 }
 
-void Crypto::retrieve_client_public_key(unsigned char pem_client_public_key[513])
+void Crypto::store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1])
 {   
     int keyLen = strlen((const char*) pem_client_public_key);
     int ret;
@@ -381,7 +381,7 @@ void Crypto::generate_secret()
 
 }
 
-void Crypto::write_pem(unsigned char buff[513])
+void Crypto::write_rsa_pem(unsigned char buff[513])
 {
     int ret;
     ret = mbedtls_pk_write_pubkey_pem(&m_pk_context, buff, 513);
