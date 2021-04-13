@@ -15,7 +15,9 @@ enclave {
 
         public void write_rsa_pem([out] unsigned char buff[513]);
         
-        public void retrieve_ecdh_key([in] unsigned char key[32]);
+        public void store_ecdh_key([in] char key[256]);
+
+        public void write_ecdh_pem([out] char buff[512]);
 
         public void generate_secret();
         

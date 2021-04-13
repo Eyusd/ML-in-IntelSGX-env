@@ -36,7 +36,8 @@ class ecall_dispatcher
     void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1]) {m_crypto->store_client_public_key(pem_client_public_key);};
     void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]) {m_crypto->write_rsa_pem(buff);};
     
-    void retrieve_ecdh_key(unsigned char key[32]) {m_crypto->retrieve_ecdh_key(key);};
+    void store_ecdh_key(char key[256]) {m_crypto->store_ecdh_key(key);};
+    void write_ecdh_pem(char buff[512], size_t olen) {m_crypto->write_ecdh_pem(buff, olen);};
     void generate_secret() {m_crypto->generate_secret();};
 
     void reg_initialize() {m_regression.initialize();};

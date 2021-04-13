@@ -41,7 +41,8 @@ class Crypto
     void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1]);
     void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]);
 
-    void retrieve_ecdh_key(unsigned char key[32]);
+    void store_ecdh_key(char key[256]);
+    void write_ecdh_pem(char buff[512], size_t olen);
     void generate_secret();
 
     bool Encrypt(

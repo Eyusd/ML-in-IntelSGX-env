@@ -349,12 +349,10 @@ exit_preinit:
     return ret;
 }
 
-void Crypto::retrieve_ecdh_key(unsigned char key[32])
+void Crypto::store_ecdh_key(char key[256])
 {   
     int ret;
-
-    memcpy(&cli_to_srv, key, 32);
-    ret = mbedtls_mpi_read_binary( &m_ecdh_context.Qp.X, cli_to_srv, 32 );
+    ret = mbedtls_mpi_read_string( &m_ecdh_context.Qp.X, 2, key);
     if( ret != 0 )
     {
         TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_read_binary returned %d\n", ret );
@@ -385,4 +383,14 @@ void Crypto::write_rsa_pem(unsigned char buff[513])
 {
     int ret;
     ret = mbedtls_pk_write_pubkey_pem(&m_pk_context, buff, 513);
+}
+
+void Crypto::write_ecdh_pem(char buff[512], size_t olen)
+{
+    int ret;
+    ret = mbedtls_mpi_write_string(&m_ecdh_context.Q.X, 2, buff, 512, &olen);
+    if( ret != 0 )
+    {
+        TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_write_string returned %d\n", ret );
+    }
 }

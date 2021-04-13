@@ -21,7 +21,21 @@ void myprintf(const char *format, ...)
     va_end(ap);
 }
 
-unsigned char* file_into_buffer(const char name[])
+void write_file_rsa_pem(const char* name, unsigned char buff_rsa[513])
+{
+    FILE *fp = fopen(name, "w");
+    fprintf(fp, (char*) buff_rsa);
+    fclose(fp);
+}
+
+void write_file_ecdh_pem(const char* name, char buff_ecdh[256])
+{
+    FILE *fp = fopen(name, "w");
+    fprintf(fp, buff_ecdh);
+    fclose(fp);
+}
+
+unsigned char* u_file_into_buffer(const char name[])
 {
     FILE *f = fopen(name, "rb");
     if (f == NULL) {fprintf(stderr, "Failed to open file");};
@@ -35,6 +49,21 @@ unsigned char* file_into_buffer(const char name[])
 
     string[fsize] = 0;
     return (unsigned char*) string;
+}
+char* c_file_into_buffer(const char name[])
+{
+    FILE *f = fopen(name, "rb");
+    if (f == NULL) {fprintf(stderr, "Failed to open file");};
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
+
+    char *string = new char[fsize + 1];
+    fread(string, 1, fsize, f);
+    fclose(f);
+
+    string[fsize] = 0;
+    return string;
 }
 
 oe_enclave_t* create_enclave(const char* enclave_path)
@@ -85,7 +114,9 @@ int main(int argc, const char* argv[])
     uint8_t* remote_report = NULL;
     size_t remote_report_size = 0;
     oe_report_t parsed_report = {0};
-    unsigned char buff[513];
+    unsigned char buff_rsa[513];
+    char buff_ecdh[512];
+    size_t olen;
 
     //Program loop
     char choice;
@@ -139,8 +170,6 @@ int main(int argc, const char* argv[])
         goto exit;
     }
 
-    myprintf("Host: The enclave's public key: \n%s\n", pem_key);
-
     myprintf("Host: Parsing the generated report and writing to a local file\n");
     result = oe_parse_report(remote_report, remote_report_size, &parsed_report);
     if (result != OE_OK)
@@ -163,16 +192,25 @@ int main(int argc, const char* argv[])
             myQuoteFile.WriteToJsonFile(stdout);
         }
     }
+    write_ecdh_pem(enclave, buff_ecdh);
 
-    memcpy(&buff,file_into_buffer("../client/client_rsa_pubkey.pem"),513);
-    store_client_public_key(enclave, buff);
+    memcpy(&buff_rsa, u_file_into_buffer("../client/client_rsa_pubkey.pem"),513);
+    store_client_public_key(enclave, buff_rsa);
+
+    write_rsa_pem(enclave, buff_rsa);
+    write_file_rsa_pem("rsa_key.pem", buff_rsa);
+
+    write_ecdh_pem(enclave, buff_ecdh);
+    fprintf(stderr, "buff_ecdh : %s\n", buff_ecdh); 
+    write_file_ecdh_pem("ecdh_key.pem", buff_ecdh);
+
     enclave_init(enclave);
 
     // Main Loop
     while (run)
     {
         if (print) {
-            fprintf(stderr, "\n");    
+            fprintf(stderr, "\n");   
             fprintf(stderr, "Train, Infer, or Exit ? [t/i/e] ");
         }
         print = false;
