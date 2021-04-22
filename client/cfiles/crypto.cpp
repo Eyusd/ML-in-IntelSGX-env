@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 #include "crypto.h"
-#include <mbedtls/pk.h>
-#include <mbedtls/rsa.h>
+#include "mbedtls/pk.h"
+#include "mbedtls/rsa.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -115,7 +115,7 @@ void Crypto::retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE])
 
 void Crypto::store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1])
 {   
-    int keyLen = strlen((const char*) pem_server_public_key);
+    int keyLen = PUBLIC_KEY_SIZE + 1;
     int ret;
     mbedtls_pk_context g_RSAKeyContex;
 
@@ -131,7 +131,7 @@ void Crypto::store_server_public_key(unsigned char pem_server_public_key[PUBLIC_
     ret = mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_server_public_key, (size_t)keyLen);
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_pk_parse_key returned %d\n", ret );
+        fprintf(stderr, " failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
         goto exit;
     }
     ret = mbedtls_pk_write_pubkey_pem(&g_RSAKeyContex, m_server_pubkey, sizeof(m_server_pubkey));
@@ -359,7 +359,6 @@ void Crypto::store_ecdh_key(char key[256])
         mbedtls_ctr_drbg_free( &m_ctr_drbg_contex );
         mbedtls_entropy_free( &m_entropy_context );
     }
-
 }
 
 void Crypto::generate_secret()

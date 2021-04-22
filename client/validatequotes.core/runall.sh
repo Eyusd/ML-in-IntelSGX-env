@@ -2,5 +2,5 @@
 # 
 # Script to verify all example remote attestation quotes
 #
-dotnet run ../../server/quotes/enclave.info.debug.json              sharedcus.cus.attest.azure.net    false
+dotnet run ../../exchange/enclave.info.debug.json              sharedcus.cus.attest.azure.net    false
 

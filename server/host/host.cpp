@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include "project_u.h"
 #include "quotefile.h"
+#include <fstream> 
 
 static bool EnableVerbosePrintf = false;
 
@@ -23,9 +24,9 @@ void myprintf(const char *format, ...)
 
 void write_file_rsa_pem(const char* name, unsigned char buff_rsa[513])
 {
-    FILE *fp = fopen(name, "w");
-    fprintf(fp, (char*) buff_rsa);
-    fclose(fp);
+    std::ofstream out(name);
+    out.write((char *) &buff_rsa, sizeof(buff_rsa));
+    out.close(); 
 }
 
 void write_file_ecdh_pem(const char* name, char buff_ecdh[256])
@@ -37,18 +38,11 @@ void write_file_ecdh_pem(const char* name, char buff_ecdh[256])
 
 unsigned char* u_file_into_buffer(const char name[])
 {
-    FILE *f = fopen(name, "rb");
-    if (f == NULL) {fprintf(stderr, "Failed to open file");};
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
-
-    char *string = new char[fsize + 1];
-    fread(string, 1, fsize, f);
-    fclose(f);
-
-    string[fsize] = 0;
-    return (unsigned char*) string;
+    unsigned char* out_buff;
+    std::ifstream in(name);
+    in.read((char *) &out_buff, sizeof(out_buff));
+    in.close();
+    return out_buff ;
 }
 char* c_file_into_buffer(const char name[])
 {
@@ -186,23 +180,29 @@ int main(int argc, const char* argv[])
         QuoteFile  myQuoteFile (parsed_report, remote_report, remote_report_size, pem_key, pem_key_size);
 
         printf("    JSON file created: %s\n", argv[2]);
-        myQuoteFile.WriteToJsonFile("./quotes", argv[2]);
+        myQuoteFile.WriteToJsonFile("../exchange", argv[2]);
         if (EnableVerbosePrintf) 
         {
             myQuoteFile.WriteToJsonFile(stdout);
         }
     }
-    write_ecdh_pem(enclave, buff_ecdh);
-
-    memcpy(&buff_rsa, u_file_into_buffer("../client/client_rsa_pubkey.pem"),513);
-    store_client_public_key(enclave, buff_rsa);
 
     write_rsa_pem(enclave, buff_rsa);
-    write_file_rsa_pem("rsa_key.pem", buff_rsa);
+    fprintf(stderr, "buffer :\n%s", buff_rsa);
+    write_file_rsa_pem("../exchange/server_rsa_pubkey.pem", buff_rsa);
+    fprintf(stderr, "RSA Pubkey sent");
+    
+    //write_ecdh_pem(enclave, buff_ecdh);
 
-    write_ecdh_pem(enclave, buff_ecdh);
-    fprintf(stderr, "buff_ecdh : %s\n", buff_ecdh); 
-    write_file_ecdh_pem("ecdh_key.pem", buff_ecdh);
+    //memcpy(&buff_rsa, u_file_into_buffer("../client/client_rsa_pubkey.pem"),513);
+    //store_client_public_key(enclave, buff_rsa);
+
+    //write_rsa_pem(enclave, buff_rsa);
+    //write_file_rsa_pem("rsa_key.pem", buff_rsa);
+
+    //write_ecdh_pem(enclave, buff_ecdh);
+    //fprintf(stderr, "buff_ecdh : %s\n", buff_ecdh); 
+    //write_file_ecdh_pem("ecdh_key.pem", buff_ecdh);
 
     enclave_init(enclave);
 

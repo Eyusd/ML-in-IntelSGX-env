@@ -89,7 +89,7 @@ bool Crypto::init_mbedtls(void)
     ret = mbedtls_mpi_lset( &m_ecdh_context.Qp.Z, 1 );
     if( ret != 0 )
     {
-        TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_lset returned %d\n", ret );
+        TRACE_ENCLAVE(" failed\n  ! mbedtls_mpi_lset returned %d\n", ret );
         goto exit;
     }
 

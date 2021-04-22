@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bvXeeZl20YHh18v8UY0YcTWWv6O/ze8e1PZdFgX3wqfv17v9eSUxJr3vRhEXf5PO2visAgcnCUB2phlNRbIgrg==",
+  "dgSpecHash": "vSH2mCObWjzXMSO3CMoA+NiiHNRgzYpKV0XrLiOOsCPdrZbYT5EEAdYuHQK/xcTOOXdhOhZbxM3QV6okPjZDPQ==",
   "success": true,
-  "projectFilePath": "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/validatequotes.core.csproj",
+  "projectFilePath": "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj",
   "expectedPackageFiles": [
     "/home/eyusd/.nuget/packages/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg.sha512",
     "/home/eyusd/.nuget/packages/microsoft.identitymodel.clients.activedirectory/5.2.7/microsoft.identitymodel.clients.activedirectory.5.2.7.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/validatequotes.core.csproj": {}
+    "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj": {}
   },
   "projects": {
-    "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/validatequotes.core.csproj": {
+    "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/validatequotes.core.csproj",
+        "projectUniqueName": "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj",
         "projectName": "validatequotes.core",
-        "projectPath": "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/validatequotes.core.csproj",
+        "projectPath": "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj",
         "packagesPath": "/home/eyusd/.nuget/packages/",
-        "outputPath": "/home/eyusd/reg/sgx.attest.sample/client/validatequotes.core/obj/",
+        "outputPath": "/home/eyusd/reg/client/validatequotes.core/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/eyusd/.nuget/NuGet/NuGet.Config"

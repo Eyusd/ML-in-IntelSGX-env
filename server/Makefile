@@ -20,6 +20,8 @@ build:
 clean:
 	$(MAKE) -C enclave clean
 	$(MAKE) -C host clean
+	rm -f *.pem
+
 
 run:
 	host/project_host ./enclave/project_enclave.debug.signed              enclave.info.debug.json
