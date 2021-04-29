@@ -1,0 +1,74 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj": {}
+  },
+  "projects": {
+    "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj",
+        "projectName": "validatequotes.core",
+        "projectPath": "/home/eyusd/reg/client/validatequotes.core/validatequotes.core.csproj",
+        "packagesPath": "/home/eyusd/.nuget/packages/",
+        "outputPath": "/home/eyusd/reg/client/validatequotes.core/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/eyusd/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp5"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "netcoreapp5",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "netcoreapp5",
+          "dependencies": {
+            "Microsoft.IdentityModel.Clients.ActiveDirectory": {
+              "target": "Package",
+              "version": "[5.2.7, )"
+            },
+            "Microsoft.IdentityModel.JsonWebTokens": {
+              "target": "Package",
+              "version": "[6.5.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/snap/dotnet-sdk/120/sdk/5.0.202/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
