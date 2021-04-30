@@ -43,6 +43,11 @@ void client_generate_secret()
 {
     cdispatcher.generate_secret();
 }
+
+void client_generate_encrypted_message(uint8_t* to_encrypt, uint8_t** encrypted_data, size_t* size_encrypted)
+{
+    cdispatcher.generate_encrypted_message(to_encrypt, encrypted_data, size_encrypted);
+}
 //End Client
 
 static bool EnableVerbosePrintf = false;
@@ -57,43 +62,7 @@ void myprintf(const char *format, ...)
     va_end(ap);
 }
 
-void write_file_rsa_pem(const char* name, unsigned char buff_rsa[513])
-{
-    std::ofstream out(name);
-    out.write((char *) &buff_rsa, sizeof(buff_rsa));
-    out.close(); 
-}
 
-void write_file_ecdh_pem(const char* name, char buff_ecdh[256])
-{
-    FILE *fp = fopen(name, "w");
-    fprintf(fp, buff_ecdh);
-    fclose(fp);
-}
-
-unsigned char* u_file_into_buffer(const char name[])
-{
-    unsigned char* out_buff;
-    std::ifstream in(name);
-    in.read((char *) &out_buff, sizeof(out_buff));
-    in.close();
-    return out_buff ;
-}
-char* c_file_into_buffer(const char name[])
-{
-    FILE *f = fopen(name, "rb");
-    if (f == NULL) {fprintf(stderr, "Failed to open file");};
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
-
-    char *string = new char[fsize + 1];
-    fread(string, 1, fsize, f);
-    fclose(f);
-
-    string[fsize] = 0;
-    return string;
-}
 
 oe_enclave_t* create_enclave(const char* enclave_path)
 {
@@ -143,9 +112,14 @@ int main(int argc, const char* argv[])
     uint8_t* remote_report = NULL;
     size_t remote_report_size = 0;
     oe_report_t parsed_report = {0};
+
+    // Connexion
     unsigned char buff_rsa[513];
     char buff_ecdh[512];
     size_t olen;
+    uint8_t* encrypted_message = NULL;
+    size_t encrypted_message_size = 0;
+    uint8_t data = 8;
 
     //Program loop
     char choice;
@@ -224,21 +198,9 @@ int main(int argc, const char* argv[])
 
     write_rsa_pem(enclave, buff_rsa);
     client_store_server_public_key(buff_rsa);
-    fprintf(stderr, "buffer :\n%s", buff_rsa);
-    write_file_rsa_pem("../exchange/server_rsa_pubkey.pem", buff_rsa);
-    fprintf(stderr, "RSA Pubkey sent");
-    
-    //write_ecdh_pem(enclave, buff_ecdh);
+    fprintf(stderr, "RSA Pubkey sent by Server");
 
-    //memcpy(&buff_rsa, u_file_into_buffer("../client/client_rsa_pubkey.pem"),513);
-    //store_client_public_key(enclave, buff_rsa);
-
-    //write_rsa_pem(enclave, buff_rsa);
-    //write_file_rsa_pem("rsa_key.pem", buff_rsa);
-
-    //write_ecdh_pem(enclave, buff_ecdh);
-    //fprintf(stderr, "buff_ecdh : %s\n", buff_ecdh); 
-    //write_file_ecdh_pem("ecdh_key.pem", buff_ecdh);
+    client_generate_encrypted_message(&data, &encrypted_message, &encrypted_message_size);
 
     enclave_init(enclave);
 

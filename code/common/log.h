@@ -8,6 +8,6 @@
 
 #define TRACE_ENCLAVE(fmt, ...) \
                                 \
-    //printf("Enclave: ***%s(%d): " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+    printf("Enclave: ***%s(%d): " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
 #endif // OE_SAMPLES_ATTESTATION_ENC_LOG_H

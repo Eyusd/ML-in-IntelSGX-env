@@ -31,7 +31,7 @@ bool Crypto_client::init_mbedtls(void)
         &m_ctr_drbg_contex, mbedtls_entropy_func, &m_entropy_context, NULL, 0);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_ctr_drbg_seed failed.");
+        fprintf(stderr,"mbedtls_ctr_drbg_seed failed.");
         goto exit;
     }
 
@@ -39,7 +39,7 @@ bool Crypto_client::init_mbedtls(void)
         &m_pk_context, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_pk_setup failed (%d).", res);
+        fprintf(stderr,"mbedtls_pk_setup failed (%d).", res);
         goto exit;
     }
 
@@ -51,7 +51,7 @@ bool Crypto_client::init_mbedtls(void)
         65537);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_rsa_gen_key failed (%d)\n", res);
+        fprintf(stderr,"mbedtls_rsa_gen_key failed (%d)\n", res);
         goto exit;
     }
 
@@ -59,14 +59,14 @@ bool Crypto_client::init_mbedtls(void)
         &m_pk_context, m_public_key, sizeof(m_public_key));
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_pk_write_pubkey_pem failed (%d)\n", res);
+        fprintf(stderr,"mbedtls_pk_write_pubkey_pem failed (%d)\n", res);
         goto exit;
     }
 
     ret = mbedtls_ecp_group_load( &m_ecdh_context.grp, MBEDTLS_ECP_DP_CURVE25519 );
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_ecp_group_load returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_ecp_group_load returned %d\n", ret );
         goto exit;
     }
 
@@ -74,26 +74,26 @@ bool Crypto_client::init_mbedtls(void)
                                    mbedtls_ctr_drbg_random, &m_ctr_drbg_contex );
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_ecdh_gen_public returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_ecdh_gen_public returned %d\n", ret );
         goto exit;
     }
 
     ret = mbedtls_mpi_write_binary( &m_ecdh_context.Q.X, cli_to_srv, 32 );
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret );
         goto exit;
     }
 
     ret = mbedtls_mpi_lset( &m_ecdh_context.Qp.Z, 1 );
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_mpi_lset returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_mpi_lset returned %d\n", ret );
         goto exit;
     }
 
     ret = true;
-    fprintf(stderr, "mbedtls initialized.");
+    fprintf(stderr,"mbedtls initialized.");
 exit:
     return ret;
 }
@@ -105,7 +105,7 @@ void Crypto_client::cleanup_mbedtls(void)
     mbedtls_ctr_drbg_free(&m_ctr_drbg_contex);
     mbedtls_ecdh_free(&m_ecdh_context);
 
-    fprintf(stderr, "mbedtls cleaned up.");
+    fprintf(stderr,"mbedtls cleaned up.");
 }
 
 void Crypto_client::retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE])
@@ -121,25 +121,13 @@ void Crypto_client::store_server_public_key(unsigned char pem_server_public_key[
 
     mbedtls_pk_init(&g_RSAKeyContex);
     
-    ret = mbedtls_pk_setup(&g_RSAKeyContex, mbedtls_pk_info_from_type((mbedtls_pk_type_t)MBEDTLS_PK_RSA));
-    if( ret != 0 )
-    {
-        fprintf(stderr, " failed\n  ! mbedtls_pk_setup returned %d\n", ret );
-        goto exit;
-    }
-    
     ret = mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_server_public_key, (size_t)keyLen);
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
         goto exit;
     }
-    ret = mbedtls_pk_write_pubkey_pem(&g_RSAKeyContex, m_server_pubkey, sizeof(m_server_pubkey));
-    if( ret != 0 )
-    {
-        fprintf(stderr, " failed\n  ! mbedtls_pk_write_pubkey_pem returned %d\n", ret );
-        goto exit;
-    }
+    memcpy(&m_server_pubkey, pem_server_public_key, PUBLIC_KEY_SIZE+1);
 exit:
     mbedtls_pk_free(&g_RSAKeyContex);
 }
@@ -169,7 +157,7 @@ exit:
 }
 
 bool Crypto_client::Encrypt(
-    const uint8_t* pem_public_key,
+    unsigned char* pem_public_key,
     const uint8_t* data,
     size_t data_size,
     uint8_t* encrypted_data,
@@ -201,12 +189,12 @@ bool Crypto_client::Encrypt(
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V21)
     {
-        fprintf(stderr, "Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
+        fprintf(stderr,"Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
     }
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V15)
     {
-        fprintf(stderr, "New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
+        fprintf(stderr,"New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
     }
 
     // Encrypt the data.
@@ -220,7 +208,7 @@ bool Crypto_client::Encrypt(
         encrypted_data);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_rsa_pkcs1_encrypt failed with %d\n", res);
+        fprintf(stderr,"mbedtls_rsa_pkcs1_encrypt failed with %d\n", res);
         goto exit;
     }
 
@@ -262,7 +250,7 @@ bool Crypto_client::decrypt(
         output_size);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_rsa_pkcs1_decrypt failed with %d\n", res);
+        fprintf(stderr,"mbedtls_rsa_pkcs1_decrypt failed with %d\n", res);
         goto exit;
     }
     *data_size = output_size;
@@ -294,14 +282,14 @@ bool Crypto_client::get_rsa_modulus_from_pem(
         &ctx, (const unsigned char*)pem_data, pem_size);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_pk_parse_public_key failed with %d\n", res);
+        fprintf(stderr,"mbedtls_pk_parse_public_key failed with %d\n", res);
         goto exit;
     }
 
     pk_type = mbedtls_pk_get_type(&ctx);
     if (pk_type != MBEDTLS_PK_RSA)
     {
-        fprintf(stderr, "mbedtls_pk_get_type had incorrect type: %d\n", res);
+        fprintf(stderr,"mbedtls_pk_get_type had incorrect type: %d\n", res);
         goto exit;
     }
 
@@ -310,7 +298,7 @@ bool Crypto_client::get_rsa_modulus_from_pem(
     modulus_local = (uint8_t*)malloc(modulus_local_size);
     if (modulus_local == NULL)
     {
-        fprintf(stderr, 
+        fprintf(stderr,
             "malloc for modulus failed with size %zu:\n", modulus_local_size);
         goto exit;
     }
@@ -329,7 +317,7 @@ bool Crypto_client::get_rsa_modulus_from_pem(
         0);
     if (res != 0)
     {
-        fprintf(stderr, "mbedtls_rsa_export failed with %d\n", res);
+        fprintf(stderr,"mbedtls_rsa_export failed with %d\n", res);
         goto exit;
     }
 
@@ -354,7 +342,7 @@ void Crypto_client::store_ecdh_key(char key[256])
     ret = mbedtls_mpi_read_string( &m_ecdh_context.Qp.X, 2, key);
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_mpi_read_binary returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_mpi_read_binary returned %d\n", ret );
         mbedtls_ecdh_free( &m_ecdh_context );
         mbedtls_ctr_drbg_free( &m_ctr_drbg_contex );
         mbedtls_entropy_free( &m_entropy_context );
@@ -369,7 +357,7 @@ void Crypto_client::generate_secret()
                                        mbedtls_ctr_drbg_random, &m_ctr_drbg_contex );
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_ecdh_compute_shared returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_ecdh_compute_shared returned %d\n", ret );
         mbedtls_ecdh_free( &m_ecdh_context );
         mbedtls_ctr_drbg_free( &m_ctr_drbg_contex );
         mbedtls_entropy_free( &m_entropy_context );
@@ -389,6 +377,6 @@ void Crypto_client::write_ecdh_pem(char buff[512], size_t olen)
     ret = mbedtls_mpi_write_string(&m_ecdh_context.Q.X, 2, buff, 512, &olen);
     if( ret != 0 )
     {
-        fprintf(stderr, " failed\n  ! mbedtls_mpi_write_string returned %d\n", ret );
+        fprintf(stderr," failed\n  ! mbedtls_mpi_write_string returned %d\n", ret );
     }
 }

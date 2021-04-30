@@ -23,7 +23,7 @@ class Crypto_client
     unsigned char srv_to_cli[32];
     unsigned char cli_to_srv[32];
 
-    uint8_t m_server_pubkey[PUBLIC_KEY_SIZE];
+    unsigned char m_server_pubkey[PUBLIC_KEY_SIZE];
 
   public:
     Crypto_client();
@@ -38,7 +38,7 @@ class Crypto_client
     void generate_secret();
 
     bool Encrypt(
-        const uint8_t* pem_public_key,
+        unsigned char* pem_public_key,
         const uint8_t* data,
         size_t size,
         uint8_t* encrypted_data,
@@ -58,7 +58,7 @@ class Crypto_client
 
     int Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32]);
 
-    uint8_t* get_server_public_key() {return m_server_pubkey;};
+    unsigned char* get_server_public_key() {return m_server_pubkey;};
 
   private:
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include "dispatcher.h"
+#include <string.h>
 
 client_dispatcher::client_dispatcher(
     const char* name)
@@ -62,6 +63,20 @@ int client_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** da
         fprintf(stderr, "generate_encrypted_message failed");
         goto exit;
     }
+        // TODO: the following code is not TEE-agnostic, as it assumes the
+    // enclave can directly write into host memory
+    host_buffer = (uint8_t*) malloc(encrypted_data_size);
+    if (host_buffer == nullptr)
+    {
+        fprintf(stderr, "copying host_buffer failed, out of memory");
+        goto exit;
+    }
+    memcpy(host_buffer, encrypted_data_buffer, encrypted_data_size);
+    fprintf(stderr,
+        "generate_encrypted_message: encrypted_data_size = %ld",
+        encrypted_data_size);
+    *data = host_buffer;
+    *size = encrypted_data_size;
 
     //Export encrypted message
     ret = 0;
