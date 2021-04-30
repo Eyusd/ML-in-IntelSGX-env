@@ -198,7 +198,7 @@ int main(int argc, const char* argv[])
 
     write_rsa_pem(enclave, buff_rsa);
     client_store_server_public_key(buff_rsa);
-    fprintf(stderr, "RSA Pubkey sent by Server");
+    fprintf(stderr, "RSA Pubkey sent by Server\n");
 
     client_generate_encrypted_message(&data, &encrypted_message, &encrypted_message_size);
 

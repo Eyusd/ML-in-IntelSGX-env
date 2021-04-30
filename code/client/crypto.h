@@ -23,13 +23,13 @@ class Crypto_client
     unsigned char srv_to_cli[32];
     unsigned char cli_to_srv[32];
 
-    unsigned char m_server_pubkey[PUBLIC_KEY_SIZE];
+    mbedtls_pk_context m_server_pk_context;
+    mbedtls_ecdh_context m_server_ecdh_context;
 
   public:
     Crypto_client();
     ~Crypto_client();
 
-    void retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE]);
     void store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1]);
     void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]);
 
@@ -38,7 +38,6 @@ class Crypto_client
     void generate_secret();
 
     bool Encrypt(
-        unsigned char* pem_public_key,
         const uint8_t* data,
         size_t size,
         uint8_t* encrypted_data,
@@ -57,8 +56,6 @@ class Crypto_client
         size_t* modulus_size);
 
     int Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32]);
-
-    unsigned char* get_server_public_key() {return m_server_pubkey;};
 
   private:
 

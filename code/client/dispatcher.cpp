@@ -54,7 +54,6 @@ int client_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** da
 
     encrypted_data_size = sizeof(encrypted_data_buffer);
     if (m_crypto->Encrypt(
-            m_crypto->get_server_public_key(),
             message,
             PUBLIC_KEY_SIZE,
             encrypted_data_buffer,

@@ -25,6 +25,7 @@ bool Crypto_client::init_mbedtls(void)
     mbedtls_ctr_drbg_init(&m_ctr_drbg_contex);
     mbedtls_entropy_init(&m_entropy_context);
     mbedtls_pk_init(&m_pk_context);
+    mbedtls_pk_init(&m_server_pk_context);
     mbedtls_ecdh_init(&m_ecdh_context);
 
     res = mbedtls_ctr_drbg_seed(
@@ -108,28 +109,21 @@ void Crypto_client::cleanup_mbedtls(void)
     fprintf(stderr,"mbedtls cleaned up.");
 }
 
-void Crypto_client::retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE])
-{
-    memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
-}
-
 void Crypto_client::store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1])
 {   
     int keyLen = PUBLIC_KEY_SIZE + 1;
     int ret;
-    mbedtls_pk_context g_RSAKeyContex;
 
-    mbedtls_pk_init(&g_RSAKeyContex);
+    mbedtls_pk_init(&m_server_pk_context);
     
-    ret = mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_server_public_key, (size_t)keyLen);
+    ret = mbedtls_pk_parse_public_key(&m_server_pk_context, (unsigned char*)pem_server_public_key, (size_t)keyLen);
     if( ret != 0 )
     {
         fprintf(stderr," failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
         goto exit;
     }
-    memcpy(&m_server_pubkey, pem_server_public_key, PUBLIC_KEY_SIZE+1);
 exit:
-    mbedtls_pk_free(&g_RSAKeyContex);
+    mbedtls_pk_free(&m_server_pk_context);
 }
 
 int Crypto_client::Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32])
@@ -156,53 +150,23 @@ exit:
     return ret;
 }
 
-bool Crypto_client::Encrypt(
-    unsigned char* pem_public_key,
-    const uint8_t* data,
-    size_t data_size,
-    uint8_t* encrypted_data,
-    size_t* encrypted_data_size)
+bool Crypto_client::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encrypted_data, size_t* encrypted_data_size)
 {
     bool result = false;
-    mbedtls_pk_context key;
-    size_t key_size = 0;
     int res = -1;
     mbedtls_rsa_context* rsa_context;
 
-    mbedtls_pk_init(&key);
-
     if (!m_initialized)
         goto exit;
-
-    // Read the given public key.
-    key_size = strlen((const char*)pem_public_key) + 1; // Include ending '\0'.
-    res = mbedtls_pk_parse_public_key(&key, pem_public_key, key_size);
-    if (res != 0)
-    {
-        fprintf(stderr,"mbedtls_pk_parse_public_key failed.");
-        goto exit;
-    }
-
-    rsa_context = mbedtls_pk_rsa(key);
-    rsa_context->padding = MBEDTLS_RSA_PKCS_V21;
-    rsa_context->hash_id = MBEDTLS_MD_SHA256;
-
-    if (rsa_context->padding == MBEDTLS_RSA_PKCS_V21)
-    {
-        fprintf(stderr,"Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
-    }
-
-    if (rsa_context->padding == MBEDTLS_RSA_PKCS_V15)
-    {
-        fprintf(stderr,"New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
-    }
-
+    mbedtls_rsa_init(rsa_context, MBEDTLS_RSA_PKCS_V15, MBEDTLS_MD_SHA256);
+    fprintf(stderr, "ok\n");
+    rsa_context = mbedtls_pk_rsa(m_server_pk_context);
     // Encrypt the data.
     res = mbedtls_rsa_pkcs1_encrypt(
         rsa_context,
         mbedtls_ctr_drbg_random,
         &m_ctr_drbg_contex,
-        MBEDTLS_RSA_PUBLIC,
+        0,
         data_size,
         data,
         encrypted_data);
@@ -212,18 +176,14 @@ bool Crypto_client::Encrypt(
         goto exit;
     }
 
-    *encrypted_data_size = mbedtls_pk_rsa(key)->len;
+    *encrypted_data_size = mbedtls_pk_rsa(m_server_pk_context)->len;
     result = true;
 exit:
-    mbedtls_pk_free(&key);
+    mbedtls_pk_free(&m_server_pk_context);
     return result;
 }
 
-bool Crypto_client::decrypt(
-    const uint8_t* encrypted_data,
-    size_t encrypted_data_size,
-    uint8_t* data,
-    size_t* data_size)
+bool Crypto_client::decrypt(const uint8_t* encrypted_data, size_t encrypted_data_size, uint8_t* data, size_t* data_size)
 {
     bool ret = false;
     size_t output_size = 0;
@@ -260,11 +220,7 @@ exit:
     return ret;
 }
 
-bool Crypto_client::get_rsa_modulus_from_pem(
-    const char* pem_data,
-    size_t pem_size,
-    uint8_t** modulus,
-    size_t* modulus_size)
+bool Crypto_client::get_rsa_modulus_from_pem(const char* pem_data, size_t pem_size, uint8_t** modulus, size_t* modulus_size)
 {
     mbedtls_pk_context ctx;
     mbedtls_pk_type_t pk_type;
