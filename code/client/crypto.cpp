@@ -37,6 +37,14 @@ bool Crypto_client::init_mbedtls(void)
     }
 
     res = mbedtls_pk_setup(
+        &m_server_pk_context, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
+    if (res != 0)
+    {
+        fprintf(stderr,"mbedtls_pk_setup failed (%d).", res);
+        goto exit;
+    }
+
+    res = mbedtls_pk_setup(
         &m_pk_context, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
     if (res != 0)
     {
@@ -93,6 +101,7 @@ bool Crypto_client::init_mbedtls(void)
         goto exit;
     }
 
+
     ret = true;
     fprintf(stderr,"mbedtls initialized.");
 exit:
@@ -109,9 +118,9 @@ void Crypto_client::cleanup_mbedtls(void)
     fprintf(stderr,"mbedtls cleaned up.");
 }
 
-void Crypto_client::store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1])
+void Crypto_client::store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE])
 {   
-    int keyLen = PUBLIC_KEY_SIZE + 1;
+    int keyLen = PUBLIC_KEY_SIZE;
     int ret;
 
     mbedtls_pk_init(&m_server_pk_context);
@@ -122,6 +131,7 @@ void Crypto_client::store_server_public_key(unsigned char pem_server_public_key[
         fprintf(stderr," failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
         goto exit;
     }
+    fprintf(stderr, "RSA stored\n");
 exit:
     mbedtls_pk_free(&m_server_pk_context);
 }
@@ -153,20 +163,48 @@ exit:
 bool Crypto_client::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encrypted_data, size_t* encrypted_data_size)
 {
     bool result = false;
+    mbedtls_pk_context key;
+    size_t key_size = 0;
     int res = -1;
     mbedtls_rsa_context* rsa_context;
+    uint8_t* pem_public_key;
+
+    pem_public_key = m_public_key;
+
+    mbedtls_pk_init(&key);
 
     if (!m_initialized)
         goto exit;
-    mbedtls_rsa_init(rsa_context, MBEDTLS_RSA_PKCS_V15, MBEDTLS_MD_SHA256);
-    fprintf(stderr, "ok\n");
-    rsa_context = mbedtls_pk_rsa(m_server_pk_context);
+
+    // Read the given public key.
+    key_size = strlen((const char*)pem_public_key) + 1; // Include ending '\0'.
+    res = mbedtls_pk_parse_public_key(&key, pem_public_key, key_size);
+    if (res != 0)
+    {
+        fprintf(stderr,"mbedtls_pk_parse_public_key failed.");
+        goto exit;
+    }
+
+    rsa_context = mbedtls_pk_rsa(key);
+    rsa_context->padding = MBEDTLS_RSA_PKCS_V21;
+    rsa_context->hash_id = MBEDTLS_MD_SHA256;
+
+    if (rsa_context->padding == MBEDTLS_RSA_PKCS_V21)
+    {
+        fprintf(stderr,"Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
+    }
+
+    if (rsa_context->padding == MBEDTLS_RSA_PKCS_V15)
+    {
+        fprintf(stderr,"New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
+    }
+
     // Encrypt the data.
     res = mbedtls_rsa_pkcs1_encrypt(
         rsa_context,
         mbedtls_ctr_drbg_random,
         &m_ctr_drbg_contex,
-        0,
+        MBEDTLS_RSA_PUBLIC,
         data_size,
         data,
         encrypted_data);
@@ -176,10 +214,10 @@ bool Crypto_client::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encr
         goto exit;
     }
 
-    *encrypted_data_size = mbedtls_pk_rsa(m_server_pk_context)->len;
+    *encrypted_data_size = rsa_context->len;
     result = true;
 exit:
-    mbedtls_pk_free(&m_server_pk_context);
+    mbedtls_pk_free(&key);
     return result;
 }
 
@@ -321,10 +359,9 @@ void Crypto_client::generate_secret()
 
 }
 
-void Crypto_client::write_rsa_pem(unsigned char buff[513])
+void Crypto_client::write_rsa_pem(uint8_t pem_public_key[512])
 {
-    int ret;
-    ret = mbedtls_pk_write_pubkey_pem(&m_pk_context, buff, 513);
+    memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
 }
 
 void Crypto_client::write_ecdh_pem(char buff[512], size_t olen)

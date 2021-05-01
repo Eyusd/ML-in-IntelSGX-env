@@ -3684,7 +3684,7 @@
  *   #MBEDTLS_MD_SHA512 or #MBEDTLS_MD_SHA256 based on availability and
  *   on unspecified heuristics.
  */
-//#define MBEDTLS_PSA_HMAC_DRBG_MD_TYPE MBEDTLS_MD_SHA256
+#define MBEDTLS_PSA_HMAC_DRBG_MD_TYPE MBEDTLS_MD_SHA256
 
 /** \def MBEDTLS_PSA_KEY_SLOT_COUNT
  * Restrict the PSA library to supporting a maximum amount of simultaneously

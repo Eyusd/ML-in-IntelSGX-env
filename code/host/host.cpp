@@ -18,12 +18,12 @@
 
 static client_dispatcher cdispatcher("Client1");
 
-void client_store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1])
+void client_store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE])
 {
     cdispatcher.store_server_public_key(pem_server_public_key);
 }
 
-void client_write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1])
+void client_write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE])
 {
     cdispatcher.write_rsa_pem(buff);
 }
@@ -114,12 +114,12 @@ int main(int argc, const char* argv[])
     oe_report_t parsed_report = {0};
 
     // Connexion
-    unsigned char buff_rsa[513];
+    uint8_t buff_rsa[512];
     char buff_ecdh[512];
     size_t olen;
     uint8_t* encrypted_message = NULL;
     size_t encrypted_message_size = 0;
-    uint8_t data = 8;
+    uint8_t data[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 
     //Program loop
     char choice;
@@ -200,7 +200,7 @@ int main(int argc, const char* argv[])
     client_store_server_public_key(buff_rsa);
     fprintf(stderr, "RSA Pubkey sent by Server\n");
 
-    client_generate_encrypted_message(&data, &encrypted_message, &encrypted_message_size);
+    client_generate_encrypted_message(data, &encrypted_message, &encrypted_message_size);
 
     enclave_init(enclave);
 

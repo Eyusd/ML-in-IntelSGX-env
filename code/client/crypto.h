@@ -30,8 +30,8 @@ class Crypto_client
     Crypto_client();
     ~Crypto_client();
 
-    void store_server_public_key(unsigned char pem_server_public_key[PUBLIC_KEY_SIZE + 1]);
-    void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]);
+    void store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE]);
+    void write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE]);
 
     void store_ecdh_key(char key[256]);
     void write_ecdh_pem(char buff[512], size_t olen);
