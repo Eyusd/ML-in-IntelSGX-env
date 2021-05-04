@@ -17,15 +17,25 @@ int get_remote_report_with_pubkey(
     uint8_t** remote_report,
     size_t* remote_report_size);
 
-void store_client_public_key(unsigned char pem_client_public_key[513]);
+void server_store_client_public_key(uint8_t pem_client_public_key[512]);
 
-void write_rsa_pem(unsigned char buff[513]);
+void server_write_rsa_pem(uint8_t buff[512]);
 
-void store_ecdh_key(char key[256]);
+void server_generate_encrypted_message(
+    uint8_t to_encrypt[17],
+    int message_size,
+    uint8_t** encrypted_data,
+    size_t* size_encrypted);
 
-void write_ecdh_pem(char buff[512]);
+void server_decrypt_message(
+    uint8_t encrypted_data[256],
+    size_t encrypted_data_size);
 
-void generate_secret(void);
+void server_store_ecdh_key(char key[256]);
+
+void server_write_ecdh_pem(char buff[512]);
+
+void server_generate_secret(void);
 
 void enclave_init(void);
 
@@ -64,6 +74,10 @@ oe_result_t oe_sgx_init_context_switchless_ecall(
     uint64_t num_host_workers);
 
 void oe_sgx_switchless_enclave_worker_thread_ecall(oe_enclave_worker_context_t* context);
+
+oe_result_t oe_verify_report_ecall(
+    const void* report,
+    size_t report_size);
 
 /**** OCALL prototypes. ****/
 oe_result_t oe_get_supported_attester_format_ids_ocall(
@@ -168,6 +182,414 @@ oe_result_t oe_sgx_thread_wake_wait_ocall(
 oe_result_t oe_sgx_wake_switchless_worker_ocall(oe_host_worker_context_t* context);
 
 oe_result_t oe_sgx_sleep_switchless_worker_ocall(oe_enclave_worker_context_t* context);
+
+oe_result_t oe_syscall_epoll_create1_ocall(
+    oe_host_fd_t* _retval,
+    int flags);
+
+oe_result_t oe_syscall_epoll_wait_ocall(
+    int* _retval,
+    int64_t epfd,
+    struct oe_epoll_event* events,
+    unsigned int maxevents,
+    int timeout);
+
+oe_result_t oe_syscall_epoll_wake_ocall(int* _retval);
+
+oe_result_t oe_syscall_epoll_ctl_ocall(
+    int* _retval,
+    int64_t epfd,
+    int op,
+    int64_t fd,
+    struct oe_epoll_event* event);
+
+oe_result_t oe_syscall_epoll_close_ocall(
+    int* _retval,
+    oe_host_fd_t epfd);
+
+oe_result_t oe_syscall_open_ocall(
+    oe_host_fd_t* _retval,
+    const char* pathname,
+    int flags,
+    oe_mode_t mode);
+
+oe_result_t oe_syscall_read_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    void* buf,
+    size_t count);
+
+oe_result_t oe_syscall_write_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    const void* buf,
+    size_t count);
+
+oe_result_t oe_syscall_readv_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    void* iov_buf,
+    int iovcnt,
+    size_t iov_buf_size);
+
+oe_result_t oe_syscall_writev_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    const void* iov_buf,
+    int iovcnt,
+    size_t iov_buf_size);
+
+oe_result_t oe_syscall_lseek_ocall(
+    oe_off_t* _retval,
+    oe_host_fd_t fd,
+    oe_off_t offset,
+    int whence);
+
+oe_result_t oe_syscall_pread_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    void* buf,
+    size_t count,
+    oe_off_t offset);
+
+oe_result_t oe_syscall_pwrite_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    const void* buf,
+    size_t count,
+    oe_off_t offset);
+
+oe_result_t oe_syscall_close_ocall(
+    int* _retval,
+    oe_host_fd_t fd);
+
+oe_result_t oe_syscall_flock_ocall(
+    int* _retval,
+    oe_host_fd_t fd,
+    int operation);
+
+oe_result_t oe_syscall_fsync_ocall(
+    int* _retval,
+    oe_host_fd_t fd);
+
+oe_result_t oe_syscall_fdatasync_ocall(
+    int* _retval,
+    oe_host_fd_t fd);
+
+oe_result_t oe_syscall_dup_ocall(
+    oe_host_fd_t* _retval,
+    oe_host_fd_t oldfd);
+
+oe_result_t oe_syscall_opendir_ocall(
+    uint64_t* _retval,
+    const char* name);
+
+oe_result_t oe_syscall_readdir_ocall(
+    int* _retval,
+    uint64_t dirp,
+    struct oe_dirent* entry);
+
+oe_result_t oe_syscall_rewinddir_ocall(uint64_t dirp);
+
+oe_result_t oe_syscall_closedir_ocall(
+    int* _retval,
+    uint64_t dirp);
+
+oe_result_t oe_syscall_stat_ocall(
+    int* _retval,
+    const char* pathname,
+    struct oe_stat_t* buf);
+
+oe_result_t oe_syscall_fstat_ocall(
+    int* _retval,
+    oe_host_fd_t fd,
+    struct oe_stat_t* buf);
+
+oe_result_t oe_syscall_access_ocall(
+    int* _retval,
+    const char* pathname,
+    int mode);
+
+oe_result_t oe_syscall_link_ocall(
+    int* _retval,
+    const char* oldpath,
+    const char* newpath);
+
+oe_result_t oe_syscall_unlink_ocall(
+    int* _retval,
+    const char* pathname);
+
+oe_result_t oe_syscall_rename_ocall(
+    int* _retval,
+    const char* oldpath,
+    const char* newpath);
+
+oe_result_t oe_syscall_truncate_ocall(
+    int* _retval,
+    const char* path,
+    oe_off_t length);
+
+oe_result_t oe_syscall_ftruncate_ocall(
+    int* _retval,
+    oe_host_fd_t fd,
+    oe_off_t length);
+
+oe_result_t oe_syscall_mkdir_ocall(
+    int* _retval,
+    const char* pathname,
+    oe_mode_t mode);
+
+oe_result_t oe_syscall_rmdir_ocall(
+    int* _retval,
+    const char* pathname);
+
+oe_result_t oe_syscall_fcntl_ocall(
+    int* _retval,
+    oe_host_fd_t fd,
+    int cmd,
+    uint64_t arg,
+    uint64_t argsize,
+    void* argout);
+
+oe_result_t oe_syscall_ioctl_ocall(
+    int* _retval,
+    oe_host_fd_t fd,
+    uint64_t request,
+    uint64_t arg,
+    uint64_t argsize,
+    void* argout);
+
+oe_result_t oe_syscall_poll_ocall(
+    int* _retval,
+    struct oe_host_pollfd* host_fds,
+    oe_nfds_t nfds,
+    int timeout);
+
+oe_result_t oe_syscall_kill_ocall(
+    int* _retval,
+    int pid,
+    int signum);
+
+oe_result_t oe_syscall_close_socket_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd);
+
+oe_result_t oe_syscall_socket_ocall(
+    oe_host_fd_t* _retval,
+    int domain,
+    int type,
+    int protocol);
+
+oe_result_t oe_syscall_shutdown_sockets_device_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd);
+
+oe_result_t oe_syscall_socketpair_ocall(
+    int* _retval,
+    int domain,
+    int type,
+    int protocol,
+    oe_host_fd_t sv[2]);
+
+oe_result_t oe_syscall_connect_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    const struct oe_sockaddr* addr,
+    oe_socklen_t addrlen);
+
+oe_result_t oe_syscall_accept_ocall(
+    oe_host_fd_t* _retval,
+    oe_host_fd_t sockfd,
+    struct oe_sockaddr* addr,
+    oe_socklen_t addrlen_in,
+    oe_socklen_t* addrlen_out);
+
+oe_result_t oe_syscall_bind_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    const struct oe_sockaddr* addr,
+    oe_socklen_t addrlen);
+
+oe_result_t oe_syscall_listen_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    int backlog);
+
+oe_result_t oe_syscall_recvmsg_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    void* msg_name,
+    oe_socklen_t msg_namelen,
+    oe_socklen_t* msg_namelen_out,
+    void* msg_iov_buf,
+    size_t msg_iovlen,
+    size_t msg_iov_buf_size,
+    void* msg_control,
+    size_t msg_controllen,
+    size_t* msg_controllen_out,
+    int flags);
+
+oe_result_t oe_syscall_sendmsg_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    const void* msg_name,
+    oe_socklen_t msg_namelen,
+    void* msg_iov_buf,
+    size_t msg_iovlen,
+    size_t msg_iov_buf_size,
+    const void* msg_control,
+    size_t msg_controllen,
+    int flags);
+
+oe_result_t oe_syscall_recv_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    void* buf,
+    size_t len,
+    int flags);
+
+oe_result_t oe_syscall_recvfrom_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    void* buf,
+    size_t len,
+    int flags,
+    struct oe_sockaddr* src_addr,
+    oe_socklen_t addrlen_in,
+    oe_socklen_t* addrlen_out);
+
+oe_result_t oe_syscall_send_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    const void* buf,
+    size_t len,
+    int flags);
+
+oe_result_t oe_syscall_sendto_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t sockfd,
+    const void* buf,
+    size_t len,
+    int flags,
+    const struct oe_sockaddr* dest_addr,
+    oe_socklen_t addrlen);
+
+oe_result_t oe_syscall_recvv_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    void* iov_buf,
+    int iovcnt,
+    size_t iov_buf_size);
+
+oe_result_t oe_syscall_sendv_ocall(
+    ssize_t* _retval,
+    oe_host_fd_t fd,
+    const void* iov_buf,
+    int iovcnt,
+    size_t iov_buf_size);
+
+oe_result_t oe_syscall_shutdown_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    int how);
+
+oe_result_t oe_syscall_setsockopt_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    int level,
+    int optname,
+    const void* optval,
+    oe_socklen_t optlen);
+
+oe_result_t oe_syscall_getsockopt_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    int level,
+    int optname,
+    void* optval,
+    oe_socklen_t optlen_in,
+    oe_socklen_t* optlen_out);
+
+oe_result_t oe_syscall_getsockname_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    struct oe_sockaddr* addr,
+    oe_socklen_t addrlen_in,
+    oe_socklen_t* addrlen_out);
+
+oe_result_t oe_syscall_getpeername_ocall(
+    int* _retval,
+    oe_host_fd_t sockfd,
+    struct oe_sockaddr* addr,
+    oe_socklen_t addrlen_in,
+    oe_socklen_t* addrlen_out);
+
+oe_result_t oe_syscall_getaddrinfo_open_ocall(
+    int* _retval,
+    const char* node,
+    const char* service,
+    const struct oe_addrinfo* hints,
+    uint64_t* handle);
+
+oe_result_t oe_syscall_getaddrinfo_read_ocall(
+    int* _retval,
+    uint64_t handle,
+    int* ai_flags,
+    int* ai_family,
+    int* ai_socktype,
+    int* ai_protocol,
+    oe_socklen_t ai_addrlen_in,
+    oe_socklen_t* ai_addrlen,
+    struct oe_sockaddr* ai_addr,
+    size_t ai_canonnamelen_in,
+    size_t* ai_canonnamelen,
+    char* ai_canonname);
+
+oe_result_t oe_syscall_getaddrinfo_close_ocall(
+    int* _retval,
+    uint64_t handle);
+
+oe_result_t oe_syscall_getnameinfo_ocall(
+    int* _retval,
+    const struct oe_sockaddr* sa,
+    oe_socklen_t salen,
+    char* host,
+    oe_socklen_t hostlen,
+    char* serv,
+    oe_socklen_t servlen,
+    int flags);
+
+oe_result_t oe_syscall_nanosleep_ocall(
+    int* _retval,
+    struct oe_timespec* req,
+    struct oe_timespec* rem);
+
+oe_result_t oe_syscall_getpid_ocall(int* _retval);
+
+oe_result_t oe_syscall_getppid_ocall(int* _retval);
+
+oe_result_t oe_syscall_getpgrp_ocall(int* _retval);
+
+oe_result_t oe_syscall_getuid_ocall(unsigned int* _retval);
+
+oe_result_t oe_syscall_geteuid_ocall(unsigned int* _retval);
+
+oe_result_t oe_syscall_getgid_ocall(unsigned int* _retval);
+
+oe_result_t oe_syscall_getegid_ocall(unsigned int* _retval);
+
+oe_result_t oe_syscall_getpgid_ocall(
+    int* _retval,
+    int pid);
+
+oe_result_t oe_syscall_getgroups_ocall(
+    int* _retval,
+    size_t size,
+    unsigned int* list);
+
+oe_result_t oe_syscall_uname_ocall(
+    int* _retval,
+    struct oe_utsname* buf);
 
 OE_EXTERNC_END
 

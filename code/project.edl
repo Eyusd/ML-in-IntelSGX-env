@@ -4,6 +4,8 @@
 enclave {
     // Include system EDL files here
     from "platform.edl" import *;
+    from "openenclave/edl/attestation.edl" import *;
+    from "openenclave/edl/syscall.edl" import *;
 
     trusted {
         public int get_remote_report_with_pubkey([out] uint8_t **pem_key, 
@@ -11,15 +13,19 @@ enclave {
                                                  [out] uint8_t **remote_report,
                                                  [out] size_t  *remote_report_size);
         
-        public void store_client_public_key([in] unsigned char pem_client_public_key[513]);
+        public void server_store_client_public_key([in] uint8_t pem_client_public_key[512]);
 
-        public void write_rsa_pem([out] unsigned char buff[513]);
+        public void server_write_rsa_pem([out] uint8_t buff[512]);
+
+        public void server_generate_encrypted_message([in] uint8_t to_encrypt[17], int message_size, [out] uint8_t** encrypted_data, size_t* size_encrypted);
         
-        public void store_ecdh_key([in] char key[256]);
+        public void server_decrypt_message([in] uint8_t encrypted_data[256], size_t encrypted_data_size);
 
-        public void write_ecdh_pem([out] char buff[512]);
+        public void server_store_ecdh_key([in] char key[256]);
 
-        public void generate_secret();
+        public void server_write_ecdh_pem([out] char buff[512]);
+
+        public void server_generate_secret();
         
         public void enclave_init();
 

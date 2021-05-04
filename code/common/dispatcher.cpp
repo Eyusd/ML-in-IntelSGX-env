@@ -117,7 +117,7 @@ exit:
     return ret;
 }
 
-int ecall_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** data, size_t* size)
+int ecall_dispatcher::generate_encrypted_message(uint8_t* message, int message_size, uint8_t** data, size_t* size)
 {
     uint8_t encrypted_data_buffer[1024];
     size_t encrypted_data_size;
@@ -132,9 +132,8 @@ int ecall_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** dat
 
     encrypted_data_size = sizeof(encrypted_data_buffer);
     if (m_crypto->Encrypt(
-            m_crypto->get_client_public_key(),
             message,
-            PUBLIC_KEY_SIZE,
+            message_size,
             encrypted_data_buffer,
             &encrypted_data_size) == false)
     {
@@ -153,7 +152,7 @@ int ecall_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** dat
     }
     memcpy(host_buffer, encrypted_data_buffer, encrypted_data_size);
     TRACE_ENCLAVE(
-        "enclave: generate_encrypted_message: encrypted_data_size = %ld",
+        "enclave: generate_encrypted_message: encrypted_data_size = %ld\n",
         encrypted_data_size);
     *data = host_buffer;
     *size = encrypted_data_size;
@@ -195,11 +194,9 @@ int ecall_dispatcher::process_encrypted_message(
     }
     else
     {
-        TRACE_ENCLAVE("Encalve:ecall_dispatcher::process_encrypted_msg failed");
+        TRACE_ENCLAVE("Enclave:ecall_dispatcher::process_encrypted_msg failed");
         goto exit;
     }
-    TRACE_ENCLAVE("Decrypted data matches with the enclave internal secret "
-                  "data: descryption validation succeeded");
     ret = 0;
 exit:
     return ret;

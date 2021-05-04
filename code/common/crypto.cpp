@@ -7,6 +7,7 @@
 #include <openenclave/enclave.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 Crypto::Crypto()
 {
@@ -109,33 +110,9 @@ void Crypto::cleanup_mbedtls(void)
     TRACE_ENCLAVE("mbedtls cleaned up.");
 }
 
-void Crypto::retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE])
-{
-    memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
-}
-
-void Crypto::store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1])
+void Crypto::store_client_public_key(uint8_t pem_client_public_key[PUBLIC_KEY_SIZE])
 {   
-    int keyLen = strlen((const char*) pem_client_public_key);
-    int ret;
-    mbedtls_pk_context g_RSAKeyContex;
-
-    mbedtls_pk_init(&g_RSAKeyContex);
-
-    ret = mbedtls_pk_parse_public_key(&g_RSAKeyContex, (unsigned char*)pem_client_public_key, (size_t)keyLen);
-    if( ret != 0 )
-    {
-        TRACE_ENCLAVE( " failed\n  ! mbedtls_pk_parse_key returned %d\n", ret );
-        goto exit;
-    }
-    ret = mbedtls_pk_write_pubkey_pem(&g_RSAKeyContex, m_client_pubkey, sizeof(m_client_pubkey));
-    if( ret != 0 )
-    {
-        TRACE_ENCLAVE( " failed\n  ! mbedtls_pk_write_pubkey_pem returned %d\n", ret );
-        goto exit;
-    }
-exit:
-    mbedtls_pk_free(&g_RSAKeyContex);
+    memcpy(&m_client_public_key, pem_client_public_key, PUBLIC_KEY_SIZE);
 }
 
 int Crypto::Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32])
@@ -162,18 +139,16 @@ exit:
     return ret;
 }
 
-bool Crypto::Encrypt(
-    const uint8_t* pem_public_key,
-    const uint8_t* data,
-    size_t data_size,
-    uint8_t* encrypted_data,
-    size_t* encrypted_data_size)
+bool Crypto::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encrypted_data, size_t* encrypted_data_size)
 {
     bool result = false;
     mbedtls_pk_context key;
     size_t key_size = 0;
     int res = -1;
+    uint8_t* pem_public_key;
     mbedtls_rsa_context* rsa_context;
+
+    pem_public_key = m_public_key;
 
     mbedtls_pk_init(&key);
 
@@ -195,12 +170,12 @@ bool Crypto::Encrypt(
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V21)
     {
-        TRACE_ENCLAVE("Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
+        TRACE_ENCLAVE("Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS\n");
     }
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V15)
     {
-        TRACE_ENCLAVE("New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
+        TRACE_ENCLAVE("New MBEDTLS_RSA_PKCS_V15  for 1.5 padding\n");
     }
 
     // Encrypt the data.
@@ -238,7 +213,7 @@ bool Crypto::decrypt(
 
     if (!m_initialized)
         goto exit;
-
+    
     mbedtls_pk_rsa(m_pk_context)->len = encrypted_data_size;
     rsa_context = mbedtls_pk_rsa(m_pk_context);
     rsa_context->padding = MBEDTLS_RSA_PKCS_V21;
@@ -386,4 +361,9 @@ void Crypto::write_ecdh_pem(char buff[512], size_t olen)
     {
         TRACE_ENCLAVE( " failed\n  ! mbedtls_mpi_write_string returned %d\n", ret );
     }
+}
+
+void Crypto::retrieve_public_key(uint8_t pem_public_key[512])
+{
+    memcpy(pem_public_key, m_public_key, sizeof(m_public_key));
 }

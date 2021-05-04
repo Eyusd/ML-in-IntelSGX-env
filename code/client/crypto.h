@@ -23,8 +23,7 @@ class Crypto_client
     unsigned char srv_to_cli[32];
     unsigned char cli_to_srv[32];
 
-    mbedtls_pk_context m_server_pk_context;
-    mbedtls_ecdh_context m_server_ecdh_context;
+    uint8_t m_server_public_key[PUBLIC_KEY_SIZE];
 
   public:
     Crypto_client();

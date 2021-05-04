@@ -31,22 +31,20 @@ class Crypto
     unsigned char srv_to_cli[32];
     unsigned char cli_to_srv[32];
 
-    uint8_t m_client_pubkey[PUBLIC_KEY_SIZE];
+    uint8_t m_client_public_key[PUBLIC_KEY_SIZE];
 
   public:
     Crypto();
     ~Crypto();
 
-    void retrieve_public_key(uint8_t pem_public_key[PUBLIC_KEY_SIZE]);
-    void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1]);
-    void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1]);
+    void store_client_public_key(uint8_t pem_client_public_key[PUBLIC_KEY_SIZE]);
+    void write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE]);
 
     void store_ecdh_key(char key[256]);
     void write_ecdh_pem(char buff[512], size_t olen);
     void generate_secret();
 
     bool Encrypt(
-        const uint8_t* pem_public_key,
         const uint8_t* data,
         size_t size,
         uint8_t* encrypted_data,
@@ -66,7 +64,7 @@ class Crypto
 
     int Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32]);
 
-    uint8_t* get_client_public_key() {return m_client_pubkey;};
+    void retrieve_public_key(uint8_t pem_public_key[512]);
 
   private:
 

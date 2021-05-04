@@ -11,21 +11,24 @@ OE_EXTERNC_BEGIN
 enum
 {
     project_fcn_id_get_remote_report_with_pubkey = 0,
-    project_fcn_id_store_client_public_key = 1,
-    project_fcn_id_write_rsa_pem = 2,
-    project_fcn_id_store_ecdh_key = 3,
-    project_fcn_id_write_ecdh_pem = 4,
-    project_fcn_id_generate_secret = 5,
-    project_fcn_id_enclave_init = 6,
-    project_fcn_id_enclave_old_to_new = 7,
-    project_fcn_id_enclave_new_to_old = 8,
-    project_fcn_id_enclave_train = 9,
-    project_fcn_id_enclave_infer = 10,
-    project_fcn_id_oe_get_sgx_report_ecall = 11,
-    project_fcn_id_oe_get_report_v2_ecall = 12,
-    project_fcn_id_oe_verify_local_report_ecall = 13,
-    project_fcn_id_oe_sgx_init_context_switchless_ecall = 14,
-    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 15,
+    project_fcn_id_server_store_client_public_key = 1,
+    project_fcn_id_server_write_rsa_pem = 2,
+    project_fcn_id_server_generate_encrypted_message = 3,
+    project_fcn_id_server_decrypt_message = 4,
+    project_fcn_id_server_store_ecdh_key = 5,
+    project_fcn_id_server_write_ecdh_pem = 6,
+    project_fcn_id_server_generate_secret = 7,
+    project_fcn_id_enclave_init = 8,
+    project_fcn_id_enclave_old_to_new = 9,
+    project_fcn_id_enclave_new_to_old = 10,
+    project_fcn_id_enclave_train = 11,
+    project_fcn_id_enclave_infer = 12,
+    project_fcn_id_oe_get_sgx_report_ecall = 13,
+    project_fcn_id_oe_get_report_v2_ecall = 14,
+    project_fcn_id_oe_verify_local_report_ecall = 15,
+    project_fcn_id_oe_sgx_init_context_switchless_ecall = 16,
+    project_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 17,
+    project_fcn_id_oe_verify_report_ecall = 18,
     project_fcn_id_trusted_call_id_max = OE_ENUM_MAX
 };
 
@@ -33,11 +36,13 @@ enum
 static const oe_ecall_info_t _project_ecall_info_table[] = 
 {
     { "get_remote_report_with_pubkey" },
-    { "store_client_public_key" },
-    { "write_rsa_pem" },
-    { "store_ecdh_key" },
-    { "write_ecdh_pem" },
-    { "generate_secret" },
+    { "server_store_client_public_key" },
+    { "server_write_rsa_pem" },
+    { "server_generate_encrypted_message" },
+    { "server_decrypt_message" },
+    { "server_store_ecdh_key" },
+    { "server_write_ecdh_pem" },
+    { "server_generate_secret" },
     { "enclave_init" },
     { "enclave_old_to_new" },
     { "enclave_new_to_old" },
@@ -48,6 +53,7 @@ static const oe_ecall_info_t _project_ecall_info_table[] =
     { "oe_verify_local_report_ecall" },
     { "oe_sgx_init_context_switchless_ecall" },
     { "oe_sgx_switchless_enclave_worker_thread_ecall" },
+    { "oe_verify_report_ecall" },
 };
 
 /**** ECALL marshalling structs. ****/
@@ -63,44 +69,64 @@ typedef struct _get_remote_report_with_pubkey_args_t
     size_t* remote_report_size;
 } get_remote_report_with_pubkey_args_t;
 
-typedef struct _store_client_public_key_args_t
+typedef struct _server_store_client_public_key_args_t
 {
     oe_result_t result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned char* pem_client_public_key;
-} store_client_public_key_args_t;
+    uint8_t* pem_client_public_key;
+} server_store_client_public_key_args_t;
 
-typedef struct _write_rsa_pem_args_t
+typedef struct _server_write_rsa_pem_args_t
 {
     oe_result_t result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned char* buff;
-} write_rsa_pem_args_t;
+    uint8_t* buff;
+} server_write_rsa_pem_args_t;
 
-typedef struct _store_ecdh_key_args_t
+typedef struct _server_generate_encrypted_message_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    uint8_t* to_encrypt;
+    int message_size;
+    uint8_t** encrypted_data;
+    size_t* size_encrypted;
+} server_generate_encrypted_message_args_t;
+
+typedef struct _server_decrypt_message_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    uint8_t* encrypted_data;
+    size_t encrypted_data_size;
+} server_decrypt_message_args_t;
+
+typedef struct _server_store_ecdh_key_args_t
 {
     oe_result_t result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     char* key;
-} store_ecdh_key_args_t;
+} server_store_ecdh_key_args_t;
 
-typedef struct _write_ecdh_pem_args_t
+typedef struct _server_write_ecdh_pem_args_t
 {
     oe_result_t result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     char* buff;
-} write_ecdh_pem_args_t;
+} server_write_ecdh_pem_args_t;
 
-typedef struct _generate_secret_args_t
+typedef struct _server_generate_secret_args_t
 {
     oe_result_t result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-} generate_secret_args_t;
+} server_generate_secret_args_t;
 
 typedef struct _enclave_init_args_t
 {
@@ -194,6 +220,16 @@ typedef struct _oe_sgx_switchless_enclave_worker_thread_ecall_args_t
     size_t deepcopy_out_buffer_size;
     oe_enclave_worker_context_t* context;
 } oe_sgx_switchless_enclave_worker_thread_ecall_args_t;
+
+typedef struct _oe_verify_report_ecall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_result_t retval;
+    void* report;
+    size_t report_size;
+} oe_verify_report_ecall_args_t;
 
 /**** ECALL function wrappers. ****/
 
@@ -310,16 +346,16 @@ done:
 
 OE_WEAK_ALIAS(project_get_remote_report_with_pubkey, get_remote_report_with_pubkey);
 
-oe_result_t project_store_client_public_key(
+oe_result_t project_server_store_client_public_key(
     oe_enclave_t* enclave,
-    unsigned char pem_client_public_key[513])
+    uint8_t pem_client_public_key[512])
 {
     oe_result_t _result = OE_FAILURE;
 
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    store_client_public_key_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    server_store_client_public_key_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -333,15 +369,15 @@ oe_result_t project_store_client_public_key(
 
     /* Fill marshalling struct. */
     memset(&_args, 0, sizeof(_args));
-    _args.pem_client_public_key = (unsigned char*)pem_client_public_key;
+    _args.pem_client_public_key = (uint8_t*)pem_client_public_key;
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(store_client_public_key_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_store_client_public_key_args_t));
     if (pem_client_public_key)
-        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(unsigned char[513]));
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(uint8_t[512]));
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(store_client_public_key_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_store_client_public_key_args_t));
     /* There were no corresponding parameters. */
     
     /* Allocate marshalling buffer. */
@@ -357,10 +393,10 @@ oe_result_t project_store_client_public_key(
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (store_client_public_key_args_t*)_input_buffer;
+    _pargs_in = (server_store_client_public_key_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     if (pem_client_public_key)
-        OE_WRITE_IN_PARAM(pem_client_public_key, 1, sizeof(unsigned char[513]), unsigned char*);
+        OE_WRITE_IN_PARAM(pem_client_public_key, 1, sizeof(uint8_t[512]), uint8_t*);
     
     /* Copy args structure (now filled) to input buffer. */
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
@@ -369,7 +405,7 @@ oe_result_t project_store_client_public_key(
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
-             _project_ecall_info_table[project_fcn_id_store_client_public_key].name,
+             _project_ecall_info_table[project_fcn_id_server_store_client_public_key].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -378,7 +414,7 @@ oe_result_t project_store_client_public_key(
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (store_client_public_key_args_t*)_output_buffer;
+    _pargs_out = (server_store_client_public_key_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -406,18 +442,18 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(project_store_client_public_key, store_client_public_key);
+OE_WEAK_ALIAS(project_server_store_client_public_key, server_store_client_public_key);
 
-oe_result_t project_write_rsa_pem(
+oe_result_t project_server_write_rsa_pem(
     oe_enclave_t* enclave,
-    unsigned char buff[513])
+    uint8_t buff[512])
 {
     oe_result_t _result = OE_FAILURE;
 
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    write_rsa_pem_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    server_write_rsa_pem_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -431,16 +467,16 @@ oe_result_t project_write_rsa_pem(
 
     /* Fill marshalling struct. */
     memset(&_args, 0, sizeof(_args));
-    _args.buff = (unsigned char*)buff;
+    _args.buff = (uint8_t*)buff;
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(write_rsa_pem_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_write_rsa_pem_args_t));
     /* There were no corresponding parameters. */
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(write_rsa_pem_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_write_rsa_pem_args_t));
     if (buff)
-        OE_ADD_ARG_SIZE(_output_buffer_size, 1, sizeof(unsigned char[513]));
+        OE_ADD_ARG_SIZE(_output_buffer_size, 1, sizeof(uint8_t[512]));
     
     /* Allocate marshalling buffer. */
     _total_buffer_size = _input_buffer_size;
@@ -455,7 +491,7 @@ oe_result_t project_write_rsa_pem(
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (write_rsa_pem_args_t*)_input_buffer;
+    _pargs_in = (server_write_rsa_pem_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     /* There were no in nor in-out parameters. */
     
@@ -466,7 +502,7 @@ oe_result_t project_write_rsa_pem(
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
-             _project_ecall_info_table[project_fcn_id_write_rsa_pem].name,
+             _project_ecall_info_table[project_fcn_id_server_write_rsa_pem].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -475,7 +511,7 @@ oe_result_t project_write_rsa_pem(
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (write_rsa_pem_args_t*)_output_buffer;
+    _pargs_out = (server_write_rsa_pem_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -492,7 +528,7 @@ oe_result_t project_write_rsa_pem(
     /* Unmarshal return value and out, in-out parameters. */
     /* No return value. */
 
-    OE_READ_OUT_PARAM(buff, 1, sizeof(unsigned char[513]));
+    OE_READ_OUT_PARAM(buff, 1, sizeof(uint8_t[512]));
 
     _result = OE_OK;
 
@@ -503,9 +539,214 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(project_write_rsa_pem, write_rsa_pem);
+OE_WEAK_ALIAS(project_server_write_rsa_pem, server_write_rsa_pem);
 
-oe_result_t project_store_ecdh_key(
+oe_result_t project_server_generate_encrypted_message(
+    oe_enclave_t* enclave,
+    uint8_t to_encrypt[17],
+    int message_size,
+    uint8_t** encrypted_data,
+    size_t* size_encrypted)
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+    server_generate_encrypted_message_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+    _args.to_encrypt = (uint8_t*)to_encrypt;
+    _args.message_size = message_size;
+    _args.encrypted_data = (uint8_t**)encrypted_data;
+    _args.size_encrypted = size_encrypted;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_generate_encrypted_message_args_t));
+    if (to_encrypt)
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(uint8_t[17]));
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_generate_encrypted_message_args_t));
+    if (encrypted_data)
+        OE_ADD_ARG_SIZE(_output_buffer_size, 1, sizeof(uint8_t*));
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+    _pargs_in = (server_generate_encrypted_message_args_t*)_input_buffer;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    if (to_encrypt)
+        OE_WRITE_IN_PARAM(to_encrypt, 1, sizeof(uint8_t[17]), uint8_t*);
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_call_enclave_function(
+             enclave,
+             &global_id,
+             _project_ecall_info_table[project_fcn_id_server_generate_encrypted_message].name,
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+    _pargs_out = (server_generate_encrypted_message_args_t*)_output_buffer;
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    /* No return value. */
+
+    OE_READ_OUT_PARAM(encrypted_data, 1, sizeof(uint8_t*));
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+OE_WEAK_ALIAS(project_server_generate_encrypted_message, server_generate_encrypted_message);
+
+oe_result_t project_server_decrypt_message(
+    oe_enclave_t* enclave,
+    uint8_t encrypted_data[256],
+    size_t encrypted_data_size)
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+    server_decrypt_message_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+    _args.encrypted_data = (uint8_t*)encrypted_data;
+    _args.encrypted_data_size = encrypted_data_size;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_decrypt_message_args_t));
+    if (encrypted_data)
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(uint8_t[256]));
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_decrypt_message_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+    _pargs_in = (server_decrypt_message_args_t*)_input_buffer;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    if (encrypted_data)
+        OE_WRITE_IN_PARAM(encrypted_data, 1, sizeof(uint8_t[256]), uint8_t*);
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_call_enclave_function(
+             enclave,
+             &global_id,
+             _project_ecall_info_table[project_fcn_id_server_decrypt_message].name,
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+    _pargs_out = (server_decrypt_message_args_t*)_output_buffer;
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    /* No return value. */
+
+    /* There were no out nor in-out parameters. */
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+OE_WEAK_ALIAS(project_server_decrypt_message, server_decrypt_message);
+
+oe_result_t project_server_store_ecdh_key(
     oe_enclave_t* enclave,
     char key[256])
 {
@@ -514,7 +755,7 @@ oe_result_t project_store_ecdh_key(
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    store_ecdh_key_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    server_store_ecdh_key_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -531,12 +772,12 @@ oe_result_t project_store_ecdh_key(
     _args.key = (char*)key;
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(store_ecdh_key_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_store_ecdh_key_args_t));
     if (key)
         OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(char[256]));
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(store_ecdh_key_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_store_ecdh_key_args_t));
     /* There were no corresponding parameters. */
     
     /* Allocate marshalling buffer. */
@@ -552,7 +793,7 @@ oe_result_t project_store_ecdh_key(
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (store_ecdh_key_args_t*)_input_buffer;
+    _pargs_in = (server_store_ecdh_key_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     if (key)
         OE_WRITE_IN_PARAM(key, 1, sizeof(char[256]), char*);
@@ -564,7 +805,7 @@ oe_result_t project_store_ecdh_key(
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
-             _project_ecall_info_table[project_fcn_id_store_ecdh_key].name,
+             _project_ecall_info_table[project_fcn_id_server_store_ecdh_key].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -573,7 +814,7 @@ oe_result_t project_store_ecdh_key(
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (store_ecdh_key_args_t*)_output_buffer;
+    _pargs_out = (server_store_ecdh_key_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -601,9 +842,9 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(project_store_ecdh_key, store_ecdh_key);
+OE_WEAK_ALIAS(project_server_store_ecdh_key, server_store_ecdh_key);
 
-oe_result_t project_write_ecdh_pem(
+oe_result_t project_server_write_ecdh_pem(
     oe_enclave_t* enclave,
     char buff[512])
 {
@@ -612,7 +853,7 @@ oe_result_t project_write_ecdh_pem(
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    write_ecdh_pem_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    server_write_ecdh_pem_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -629,11 +870,11 @@ oe_result_t project_write_ecdh_pem(
     _args.buff = (char*)buff;
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(write_ecdh_pem_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_write_ecdh_pem_args_t));
     /* There were no corresponding parameters. */
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(write_ecdh_pem_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_write_ecdh_pem_args_t));
     if (buff)
         OE_ADD_ARG_SIZE(_output_buffer_size, 1, sizeof(char[512]));
     
@@ -650,7 +891,7 @@ oe_result_t project_write_ecdh_pem(
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (write_ecdh_pem_args_t*)_input_buffer;
+    _pargs_in = (server_write_ecdh_pem_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     /* There were no in nor in-out parameters. */
     
@@ -661,7 +902,7 @@ oe_result_t project_write_ecdh_pem(
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
-             _project_ecall_info_table[project_fcn_id_write_ecdh_pem].name,
+             _project_ecall_info_table[project_fcn_id_server_write_ecdh_pem].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -670,7 +911,7 @@ oe_result_t project_write_ecdh_pem(
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (write_ecdh_pem_args_t*)_output_buffer;
+    _pargs_out = (server_write_ecdh_pem_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -698,16 +939,16 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(project_write_ecdh_pem, write_ecdh_pem);
+OE_WEAK_ALIAS(project_server_write_ecdh_pem, server_write_ecdh_pem);
 
-oe_result_t project_generate_secret(oe_enclave_t* enclave)
+oe_result_t project_server_generate_secret(oe_enclave_t* enclave)
 {
     oe_result_t _result = OE_FAILURE;
 
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    generate_secret_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    server_generate_secret_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -723,11 +964,11 @@ oe_result_t project_generate_secret(oe_enclave_t* enclave)
     memset(&_args, 0, sizeof(_args));
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(generate_secret_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(server_generate_secret_args_t));
     /* There were no corresponding parameters. */
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(generate_secret_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(server_generate_secret_args_t));
     /* There were no corresponding parameters. */
     
     /* Allocate marshalling buffer. */
@@ -743,7 +984,7 @@ oe_result_t project_generate_secret(oe_enclave_t* enclave)
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (generate_secret_args_t*)_input_buffer;
+    _pargs_in = (server_generate_secret_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     /* There were no in nor in-out parameters. */
     
@@ -754,7 +995,7 @@ oe_result_t project_generate_secret(oe_enclave_t* enclave)
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
-             _project_ecall_info_table[project_fcn_id_generate_secret].name,
+             _project_ecall_info_table[project_fcn_id_server_generate_secret].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -763,7 +1004,7 @@ oe_result_t project_generate_secret(oe_enclave_t* enclave)
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (generate_secret_args_t*)_output_buffer;
+    _pargs_out = (server_generate_secret_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -791,7 +1032,7 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(project_generate_secret, generate_secret);
+OE_WEAK_ALIAS(project_server_generate_secret, server_generate_secret);
 
 oe_result_t project_enclave_init(oe_enclave_t* enclave)
 {
@@ -1790,6 +2031,107 @@ done:
 
 OE_WEAK_ALIAS(project_oe_sgx_switchless_enclave_worker_thread_ecall, oe_sgx_switchless_enclave_worker_thread_ecall);
 
+oe_result_t project_oe_verify_report_ecall(
+    oe_enclave_t* enclave,
+    oe_result_t* _retval,
+    const void* report,
+    size_t report_size)
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+    oe_verify_report_ecall_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+    _args.report = (void*)report;
+    _args.report_size = report_size;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(oe_verify_report_ecall_args_t));
+    if (report)
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, _args.report_size);
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(oe_verify_report_ecall_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+    _pargs_in = (oe_verify_report_ecall_args_t*)_input_buffer;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    if (report)
+        OE_WRITE_IN_PARAM(report, 1, _args.report_size, void*);
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_call_enclave_function(
+             enclave,
+             &global_id,
+             _project_ecall_info_table[project_fcn_id_oe_verify_report_ecall].name,
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+    _pargs_out = (oe_verify_report_ecall_args_t*)_output_buffer;
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    *_retval = _pargs_out->retval;
+
+    /* There were no out nor in-out parameters. */
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+OE_WEAK_ALIAS(project_oe_verify_report_ecall, oe_verify_report_ecall);
+
 /**** Untrusted function IDs. ****/
 enum
 {
@@ -1803,6 +2145,78 @@ enum
     project_fcn_id_oe_sgx_thread_wake_wait_ocall = 7,
     project_fcn_id_oe_sgx_wake_switchless_worker_ocall = 8,
     project_fcn_id_oe_sgx_sleep_switchless_worker_ocall = 9,
+    project_fcn_id_oe_syscall_epoll_create1_ocall = 10,
+    project_fcn_id_oe_syscall_epoll_wait_ocall = 11,
+    project_fcn_id_oe_syscall_epoll_wake_ocall = 12,
+    project_fcn_id_oe_syscall_epoll_ctl_ocall = 13,
+    project_fcn_id_oe_syscall_epoll_close_ocall = 14,
+    project_fcn_id_oe_syscall_open_ocall = 15,
+    project_fcn_id_oe_syscall_read_ocall = 16,
+    project_fcn_id_oe_syscall_write_ocall = 17,
+    project_fcn_id_oe_syscall_readv_ocall = 18,
+    project_fcn_id_oe_syscall_writev_ocall = 19,
+    project_fcn_id_oe_syscall_lseek_ocall = 20,
+    project_fcn_id_oe_syscall_pread_ocall = 21,
+    project_fcn_id_oe_syscall_pwrite_ocall = 22,
+    project_fcn_id_oe_syscall_close_ocall = 23,
+    project_fcn_id_oe_syscall_flock_ocall = 24,
+    project_fcn_id_oe_syscall_fsync_ocall = 25,
+    project_fcn_id_oe_syscall_fdatasync_ocall = 26,
+    project_fcn_id_oe_syscall_dup_ocall = 27,
+    project_fcn_id_oe_syscall_opendir_ocall = 28,
+    project_fcn_id_oe_syscall_readdir_ocall = 29,
+    project_fcn_id_oe_syscall_rewinddir_ocall = 30,
+    project_fcn_id_oe_syscall_closedir_ocall = 31,
+    project_fcn_id_oe_syscall_stat_ocall = 32,
+    project_fcn_id_oe_syscall_fstat_ocall = 33,
+    project_fcn_id_oe_syscall_access_ocall = 34,
+    project_fcn_id_oe_syscall_link_ocall = 35,
+    project_fcn_id_oe_syscall_unlink_ocall = 36,
+    project_fcn_id_oe_syscall_rename_ocall = 37,
+    project_fcn_id_oe_syscall_truncate_ocall = 38,
+    project_fcn_id_oe_syscall_ftruncate_ocall = 39,
+    project_fcn_id_oe_syscall_mkdir_ocall = 40,
+    project_fcn_id_oe_syscall_rmdir_ocall = 41,
+    project_fcn_id_oe_syscall_fcntl_ocall = 42,
+    project_fcn_id_oe_syscall_ioctl_ocall = 43,
+    project_fcn_id_oe_syscall_poll_ocall = 44,
+    project_fcn_id_oe_syscall_kill_ocall = 45,
+    project_fcn_id_oe_syscall_close_socket_ocall = 46,
+    project_fcn_id_oe_syscall_socket_ocall = 47,
+    project_fcn_id_oe_syscall_shutdown_sockets_device_ocall = 48,
+    project_fcn_id_oe_syscall_socketpair_ocall = 49,
+    project_fcn_id_oe_syscall_connect_ocall = 50,
+    project_fcn_id_oe_syscall_accept_ocall = 51,
+    project_fcn_id_oe_syscall_bind_ocall = 52,
+    project_fcn_id_oe_syscall_listen_ocall = 53,
+    project_fcn_id_oe_syscall_recvmsg_ocall = 54,
+    project_fcn_id_oe_syscall_sendmsg_ocall = 55,
+    project_fcn_id_oe_syscall_recv_ocall = 56,
+    project_fcn_id_oe_syscall_recvfrom_ocall = 57,
+    project_fcn_id_oe_syscall_send_ocall = 58,
+    project_fcn_id_oe_syscall_sendto_ocall = 59,
+    project_fcn_id_oe_syscall_recvv_ocall = 60,
+    project_fcn_id_oe_syscall_sendv_ocall = 61,
+    project_fcn_id_oe_syscall_shutdown_ocall = 62,
+    project_fcn_id_oe_syscall_setsockopt_ocall = 63,
+    project_fcn_id_oe_syscall_getsockopt_ocall = 64,
+    project_fcn_id_oe_syscall_getsockname_ocall = 65,
+    project_fcn_id_oe_syscall_getpeername_ocall = 66,
+    project_fcn_id_oe_syscall_getaddrinfo_open_ocall = 67,
+    project_fcn_id_oe_syscall_getaddrinfo_read_ocall = 68,
+    project_fcn_id_oe_syscall_getaddrinfo_close_ocall = 69,
+    project_fcn_id_oe_syscall_getnameinfo_ocall = 70,
+    project_fcn_id_oe_syscall_nanosleep_ocall = 71,
+    project_fcn_id_oe_syscall_getpid_ocall = 72,
+    project_fcn_id_oe_syscall_getppid_ocall = 73,
+    project_fcn_id_oe_syscall_getpgrp_ocall = 74,
+    project_fcn_id_oe_syscall_getuid_ocall = 75,
+    project_fcn_id_oe_syscall_geteuid_ocall = 76,
+    project_fcn_id_oe_syscall_getgid_ocall = 77,
+    project_fcn_id_oe_syscall_getegid_ocall = 78,
+    project_fcn_id_oe_syscall_getpgid_ocall = 79,
+    project_fcn_id_oe_syscall_getgroups_ocall = 80,
+    project_fcn_id_oe_syscall_uname_ocall = 81,
     project_fcn_id_untrusted_call_max = OE_ENUM_MAX
 };
 
@@ -1961,6 +2375,861 @@ typedef struct _oe_sgx_sleep_switchless_worker_ocall_args_t
     size_t deepcopy_out_buffer_size;
     oe_enclave_worker_context_t* context;
 } oe_sgx_sleep_switchless_worker_ocall_args_t;
+
+typedef struct _oe_syscall_epoll_create1_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_host_fd_t retval;
+    int flags;
+    int ocall_errno;
+} oe_syscall_epoll_create1_ocall_args_t;
+
+typedef struct _oe_syscall_epoll_wait_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int64_t epfd;
+    struct oe_epoll_event* events;
+    unsigned int maxevents;
+    int timeout;
+    int ocall_errno;
+} oe_syscall_epoll_wait_ocall_args_t;
+
+typedef struct _oe_syscall_epoll_wake_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int ocall_errno;
+} oe_syscall_epoll_wake_ocall_args_t;
+
+typedef struct _oe_syscall_epoll_ctl_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int64_t epfd;
+    int op;
+    int64_t fd;
+    struct oe_epoll_event* event;
+    int ocall_errno;
+} oe_syscall_epoll_ctl_ocall_args_t;
+
+typedef struct _oe_syscall_epoll_close_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t epfd;
+    int ocall_errno;
+} oe_syscall_epoll_close_ocall_args_t;
+
+typedef struct _oe_syscall_open_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_host_fd_t retval;
+    char* pathname;
+    size_t pathname_len;
+    int flags;
+    oe_mode_t mode;
+    int ocall_errno;
+} oe_syscall_open_ocall_args_t;
+
+typedef struct _oe_syscall_read_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* buf;
+    size_t count;
+    int ocall_errno;
+} oe_syscall_read_ocall_args_t;
+
+typedef struct _oe_syscall_write_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* buf;
+    size_t count;
+    int ocall_errno;
+} oe_syscall_write_ocall_args_t;
+
+typedef struct _oe_syscall_readv_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* iov_buf;
+    int iovcnt;
+    size_t iov_buf_size;
+    int ocall_errno;
+} oe_syscall_readv_ocall_args_t;
+
+typedef struct _oe_syscall_writev_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* iov_buf;
+    int iovcnt;
+    size_t iov_buf_size;
+    int ocall_errno;
+} oe_syscall_writev_ocall_args_t;
+
+typedef struct _oe_syscall_lseek_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_off_t retval;
+    oe_host_fd_t fd;
+    oe_off_t offset;
+    int whence;
+    int ocall_errno;
+} oe_syscall_lseek_ocall_args_t;
+
+typedef struct _oe_syscall_pread_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* buf;
+    size_t count;
+    oe_off_t offset;
+    int ocall_errno;
+} oe_syscall_pread_ocall_args_t;
+
+typedef struct _oe_syscall_pwrite_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* buf;
+    size_t count;
+    oe_off_t offset;
+    int ocall_errno;
+} oe_syscall_pwrite_ocall_args_t;
+
+typedef struct _oe_syscall_close_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    int ocall_errno;
+} oe_syscall_close_ocall_args_t;
+
+typedef struct _oe_syscall_flock_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    int operation;
+    int ocall_errno;
+} oe_syscall_flock_ocall_args_t;
+
+typedef struct _oe_syscall_fsync_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    int ocall_errno;
+} oe_syscall_fsync_ocall_args_t;
+
+typedef struct _oe_syscall_fdatasync_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    int ocall_errno;
+} oe_syscall_fdatasync_ocall_args_t;
+
+typedef struct _oe_syscall_dup_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_host_fd_t retval;
+    oe_host_fd_t oldfd;
+    int ocall_errno;
+} oe_syscall_dup_ocall_args_t;
+
+typedef struct _oe_syscall_opendir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    uint64_t retval;
+    char* name;
+    size_t name_len;
+    int ocall_errno;
+} oe_syscall_opendir_ocall_args_t;
+
+typedef struct _oe_syscall_readdir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    uint64_t dirp;
+    struct oe_dirent* entry;
+    int ocall_errno;
+} oe_syscall_readdir_ocall_args_t;
+
+typedef struct _oe_syscall_rewinddir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    uint64_t dirp;
+} oe_syscall_rewinddir_ocall_args_t;
+
+typedef struct _oe_syscall_closedir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    uint64_t dirp;
+    int ocall_errno;
+} oe_syscall_closedir_ocall_args_t;
+
+typedef struct _oe_syscall_stat_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* pathname;
+    size_t pathname_len;
+    struct oe_stat_t* buf;
+    int ocall_errno;
+} oe_syscall_stat_ocall_args_t;
+
+typedef struct _oe_syscall_fstat_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    struct oe_stat_t* buf;
+    int ocall_errno;
+} oe_syscall_fstat_ocall_args_t;
+
+typedef struct _oe_syscall_access_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* pathname;
+    size_t pathname_len;
+    int mode;
+    int ocall_errno;
+} oe_syscall_access_ocall_args_t;
+
+typedef struct _oe_syscall_link_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* oldpath;
+    size_t oldpath_len;
+    char* newpath;
+    size_t newpath_len;
+    int ocall_errno;
+} oe_syscall_link_ocall_args_t;
+
+typedef struct _oe_syscall_unlink_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* pathname;
+    size_t pathname_len;
+    int ocall_errno;
+} oe_syscall_unlink_ocall_args_t;
+
+typedef struct _oe_syscall_rename_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* oldpath;
+    size_t oldpath_len;
+    char* newpath;
+    size_t newpath_len;
+    int ocall_errno;
+} oe_syscall_rename_ocall_args_t;
+
+typedef struct _oe_syscall_truncate_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* path;
+    size_t path_len;
+    oe_off_t length;
+    int ocall_errno;
+} oe_syscall_truncate_ocall_args_t;
+
+typedef struct _oe_syscall_ftruncate_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    oe_off_t length;
+    int ocall_errno;
+} oe_syscall_ftruncate_ocall_args_t;
+
+typedef struct _oe_syscall_mkdir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* pathname;
+    size_t pathname_len;
+    oe_mode_t mode;
+    int ocall_errno;
+} oe_syscall_mkdir_ocall_args_t;
+
+typedef struct _oe_syscall_rmdir_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* pathname;
+    size_t pathname_len;
+    int ocall_errno;
+} oe_syscall_rmdir_ocall_args_t;
+
+typedef struct _oe_syscall_fcntl_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    int cmd;
+    uint64_t arg;
+    uint64_t argsize;
+    void* argout;
+    int ocall_errno;
+} oe_syscall_fcntl_ocall_args_t;
+
+typedef struct _oe_syscall_ioctl_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t fd;
+    uint64_t request;
+    uint64_t arg;
+    uint64_t argsize;
+    void* argout;
+    int ocall_errno;
+} oe_syscall_ioctl_ocall_args_t;
+
+typedef struct _oe_syscall_poll_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    struct oe_host_pollfd* host_fds;
+    oe_nfds_t nfds;
+    int timeout;
+    int ocall_errno;
+} oe_syscall_poll_ocall_args_t;
+
+typedef struct _oe_syscall_kill_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int pid;
+    int signum;
+    int ocall_errno;
+} oe_syscall_kill_ocall_args_t;
+
+typedef struct _oe_syscall_close_socket_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int ocall_errno;
+} oe_syscall_close_socket_ocall_args_t;
+
+typedef struct _oe_syscall_socket_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_host_fd_t retval;
+    int domain;
+    int type;
+    int protocol;
+    int ocall_errno;
+} oe_syscall_socket_ocall_args_t;
+
+typedef struct _oe_syscall_shutdown_sockets_device_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int ocall_errno;
+} oe_syscall_shutdown_sockets_device_ocall_args_t;
+
+typedef struct _oe_syscall_socketpair_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int domain;
+    int type;
+    int protocol;
+    oe_host_fd_t* sv;
+    int ocall_errno;
+} oe_syscall_socketpair_ocall_args_t;
+
+typedef struct _oe_syscall_connect_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    struct oe_sockaddr* addr;
+    oe_socklen_t addrlen;
+    int ocall_errno;
+} oe_syscall_connect_ocall_args_t;
+
+typedef struct _oe_syscall_accept_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    oe_host_fd_t retval;
+    oe_host_fd_t sockfd;
+    struct oe_sockaddr* addr;
+    oe_socklen_t addrlen_in;
+    oe_socklen_t* addrlen_out;
+    int ocall_errno;
+} oe_syscall_accept_ocall_args_t;
+
+typedef struct _oe_syscall_bind_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    struct oe_sockaddr* addr;
+    oe_socklen_t addrlen;
+    int ocall_errno;
+} oe_syscall_bind_ocall_args_t;
+
+typedef struct _oe_syscall_listen_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int backlog;
+    int ocall_errno;
+} oe_syscall_listen_ocall_args_t;
+
+typedef struct _oe_syscall_recvmsg_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* msg_name;
+    oe_socklen_t msg_namelen;
+    oe_socklen_t* msg_namelen_out;
+    void* msg_iov_buf;
+    size_t msg_iovlen;
+    size_t msg_iov_buf_size;
+    void* msg_control;
+    size_t msg_controllen;
+    size_t* msg_controllen_out;
+    int flags;
+    int ocall_errno;
+} oe_syscall_recvmsg_ocall_args_t;
+
+typedef struct _oe_syscall_sendmsg_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* msg_name;
+    oe_socklen_t msg_namelen;
+    void* msg_iov_buf;
+    size_t msg_iovlen;
+    size_t msg_iov_buf_size;
+    void* msg_control;
+    size_t msg_controllen;
+    int flags;
+    int ocall_errno;
+} oe_syscall_sendmsg_ocall_args_t;
+
+typedef struct _oe_syscall_recv_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* buf;
+    size_t len;
+    int flags;
+    int ocall_errno;
+} oe_syscall_recv_ocall_args_t;
+
+typedef struct _oe_syscall_recvfrom_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* buf;
+    size_t len;
+    int flags;
+    struct oe_sockaddr* src_addr;
+    oe_socklen_t addrlen_in;
+    oe_socklen_t* addrlen_out;
+    int ocall_errno;
+} oe_syscall_recvfrom_ocall_args_t;
+
+typedef struct _oe_syscall_send_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* buf;
+    size_t len;
+    int flags;
+    int ocall_errno;
+} oe_syscall_send_ocall_args_t;
+
+typedef struct _oe_syscall_sendto_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t sockfd;
+    void* buf;
+    size_t len;
+    int flags;
+    struct oe_sockaddr* dest_addr;
+    oe_socklen_t addrlen;
+    int ocall_errno;
+} oe_syscall_sendto_ocall_args_t;
+
+typedef struct _oe_syscall_recvv_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* iov_buf;
+    int iovcnt;
+    size_t iov_buf_size;
+    int ocall_errno;
+} oe_syscall_recvv_ocall_args_t;
+
+typedef struct _oe_syscall_sendv_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    ssize_t retval;
+    oe_host_fd_t fd;
+    void* iov_buf;
+    int iovcnt;
+    size_t iov_buf_size;
+    int ocall_errno;
+} oe_syscall_sendv_ocall_args_t;
+
+typedef struct _oe_syscall_shutdown_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int how;
+    int ocall_errno;
+} oe_syscall_shutdown_ocall_args_t;
+
+typedef struct _oe_syscall_setsockopt_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int level;
+    int optname;
+    void* optval;
+    oe_socklen_t optlen;
+    int ocall_errno;
+} oe_syscall_setsockopt_ocall_args_t;
+
+typedef struct _oe_syscall_getsockopt_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    int level;
+    int optname;
+    void* optval;
+    oe_socklen_t optlen_in;
+    oe_socklen_t* optlen_out;
+    int ocall_errno;
+} oe_syscall_getsockopt_ocall_args_t;
+
+typedef struct _oe_syscall_getsockname_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    struct oe_sockaddr* addr;
+    oe_socklen_t addrlen_in;
+    oe_socklen_t* addrlen_out;
+    int ocall_errno;
+} oe_syscall_getsockname_ocall_args_t;
+
+typedef struct _oe_syscall_getpeername_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    oe_host_fd_t sockfd;
+    struct oe_sockaddr* addr;
+    oe_socklen_t addrlen_in;
+    oe_socklen_t* addrlen_out;
+    int ocall_errno;
+} oe_syscall_getpeername_ocall_args_t;
+
+typedef struct _oe_syscall_getaddrinfo_open_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    char* node;
+    size_t node_len;
+    char* service;
+    size_t service_len;
+    struct oe_addrinfo* hints;
+    uint64_t* handle;
+    int ocall_errno;
+} oe_syscall_getaddrinfo_open_ocall_args_t;
+
+typedef struct _oe_syscall_getaddrinfo_read_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    uint64_t handle;
+    int* ai_flags;
+    int* ai_family;
+    int* ai_socktype;
+    int* ai_protocol;
+    oe_socklen_t ai_addrlen_in;
+    oe_socklen_t* ai_addrlen;
+    struct oe_sockaddr* ai_addr;
+    size_t ai_canonnamelen_in;
+    size_t* ai_canonnamelen;
+    char* ai_canonname;
+    int ocall_errno;
+} oe_syscall_getaddrinfo_read_ocall_args_t;
+
+typedef struct _oe_syscall_getaddrinfo_close_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    uint64_t handle;
+    int ocall_errno;
+} oe_syscall_getaddrinfo_close_ocall_args_t;
+
+typedef struct _oe_syscall_getnameinfo_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    struct oe_sockaddr* sa;
+    oe_socklen_t salen;
+    char* host;
+    oe_socklen_t hostlen;
+    char* serv;
+    oe_socklen_t servlen;
+    int flags;
+    int ocall_errno;
+} oe_syscall_getnameinfo_ocall_args_t;
+
+typedef struct _oe_syscall_nanosleep_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    struct oe_timespec* req;
+    struct oe_timespec* rem;
+    int ocall_errno;
+} oe_syscall_nanosleep_ocall_args_t;
+
+typedef struct _oe_syscall_getpid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+} oe_syscall_getpid_ocall_args_t;
+
+typedef struct _oe_syscall_getppid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+} oe_syscall_getppid_ocall_args_t;
+
+typedef struct _oe_syscall_getpgrp_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+} oe_syscall_getpgrp_ocall_args_t;
+
+typedef struct _oe_syscall_getuid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned int retval;
+} oe_syscall_getuid_ocall_args_t;
+
+typedef struct _oe_syscall_geteuid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned int retval;
+} oe_syscall_geteuid_ocall_args_t;
+
+typedef struct _oe_syscall_getgid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned int retval;
+} oe_syscall_getgid_ocall_args_t;
+
+typedef struct _oe_syscall_getegid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    unsigned int retval;
+} oe_syscall_getegid_ocall_args_t;
+
+typedef struct _oe_syscall_getpgid_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    int pid;
+    int ocall_errno;
+} oe_syscall_getpgid_ocall_args_t;
+
+typedef struct _oe_syscall_getgroups_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    size_t size;
+    unsigned int* list;
+    int ocall_errno;
+} oe_syscall_getgroups_ocall_args_t;
+
+typedef struct _oe_syscall_uname_ocall_args_t
+{
+    oe_result_t result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int retval;
+    struct oe_utsname* buf;
+    int ocall_errno;
+} oe_syscall_uname_ocall_args_t;
 
 /**** OCALL functions. ****/
 
@@ -2660,6 +3929,4213 @@ done:
         _pargs_out->result = _result;
 }
 
+static void ocall_oe_syscall_epoll_create1_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_epoll_create1_ocall_args_t* _pargs_in = (oe_syscall_epoll_create1_ocall_args_t*)input_buffer;
+    oe_syscall_epoll_create1_ocall_args_t* _pargs_out = (oe_syscall_epoll_create1_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_epoll_create1_ocall(
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_epoll_wait_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_epoll_wait_ocall_args_t* _pargs_in = (oe_syscall_epoll_wait_ocall_args_t*)input_buffer;
+    oe_syscall_epoll_wait_ocall_args_t* _pargs_out = (oe_syscall_epoll_wait_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->events)
+        OE_SET_OUT_POINTER(events, _pargs_in->maxevents, sizeof(struct oe_epoll_event), struct oe_epoll_event*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_epoll_wait_ocall(
+        _pargs_in->epfd,
+        _pargs_in->events,
+        _pargs_in->maxevents,
+        _pargs_in->timeout);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_epoll_wake_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_epoll_wake_ocall_args_t* _pargs_in = (oe_syscall_epoll_wake_ocall_args_t*)input_buffer;
+    oe_syscall_epoll_wake_ocall_args_t* _pargs_out = (oe_syscall_epoll_wake_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_epoll_wake_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_epoll_ctl_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_epoll_ctl_ocall_args_t* _pargs_in = (oe_syscall_epoll_ctl_ocall_args_t*)input_buffer;
+    oe_syscall_epoll_ctl_ocall_args_t* _pargs_out = (oe_syscall_epoll_ctl_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->event)
+        OE_SET_IN_POINTER(event, 1, sizeof(struct oe_epoll_event), struct oe_epoll_event*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_epoll_ctl_ocall(
+        _pargs_in->epfd,
+        _pargs_in->op,
+        _pargs_in->fd,
+        _pargs_in->event);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_epoll_close_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_epoll_close_ocall_args_t* _pargs_in = (oe_syscall_epoll_close_ocall_args_t*)input_buffer;
+    oe_syscall_epoll_close_ocall_args_t* _pargs_out = (oe_syscall_epoll_close_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_epoll_close_ocall(
+        _pargs_in->epfd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_open_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_open_ocall_args_t* _pargs_in = (oe_syscall_open_ocall_args_t*)input_buffer;
+    oe_syscall_open_ocall_args_t* _pargs_out = (oe_syscall_open_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_open_ocall(
+        (const char*)_pargs_in->pathname,
+        _pargs_in->flags,
+        _pargs_in->mode);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_read_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_read_ocall_args_t* _pargs_in = (oe_syscall_read_ocall_args_t*)input_buffer;
+    oe_syscall_read_ocall_args_t* _pargs_out = (oe_syscall_read_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, _pargs_in->count, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_read_ocall(
+        _pargs_in->fd,
+        _pargs_in->buf,
+        _pargs_in->count);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_write_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_write_ocall_args_t* _pargs_in = (oe_syscall_write_ocall_args_t*)input_buffer;
+    oe_syscall_write_ocall_args_t* _pargs_out = (oe_syscall_write_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->buf)
+        OE_SET_IN_POINTER(buf, 1, _pargs_in->count, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_write_ocall(
+        _pargs_in->fd,
+        (const void*)_pargs_in->buf,
+        _pargs_in->count);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_readv_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_readv_ocall_args_t* _pargs_in = (oe_syscall_readv_ocall_args_t*)input_buffer;
+    oe_syscall_readv_ocall_args_t* _pargs_out = (oe_syscall_readv_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->iov_buf)
+        OE_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->iov_buf)
+        OE_COPY_AND_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_readv_ocall(
+        _pargs_in->fd,
+        _pargs_in->iov_buf,
+        _pargs_in->iovcnt,
+        _pargs_in->iov_buf_size);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_writev_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_writev_ocall_args_t* _pargs_in = (oe_syscall_writev_ocall_args_t*)input_buffer;
+    oe_syscall_writev_ocall_args_t* _pargs_out = (oe_syscall_writev_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->iov_buf)
+        OE_SET_IN_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_writev_ocall(
+        _pargs_in->fd,
+        (const void*)_pargs_in->iov_buf,
+        _pargs_in->iovcnt,
+        _pargs_in->iov_buf_size);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_lseek_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_lseek_ocall_args_t* _pargs_in = (oe_syscall_lseek_ocall_args_t*)input_buffer;
+    oe_syscall_lseek_ocall_args_t* _pargs_out = (oe_syscall_lseek_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_lseek_ocall(
+        _pargs_in->fd,
+        _pargs_in->offset,
+        _pargs_in->whence);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_pread_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_pread_ocall_args_t* _pargs_in = (oe_syscall_pread_ocall_args_t*)input_buffer;
+    oe_syscall_pread_ocall_args_t* _pargs_out = (oe_syscall_pread_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, _pargs_in->count, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_pread_ocall(
+        _pargs_in->fd,
+        _pargs_in->buf,
+        _pargs_in->count,
+        _pargs_in->offset);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_pwrite_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_pwrite_ocall_args_t* _pargs_in = (oe_syscall_pwrite_ocall_args_t*)input_buffer;
+    oe_syscall_pwrite_ocall_args_t* _pargs_out = (oe_syscall_pwrite_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->buf)
+        OE_SET_IN_POINTER(buf, 1, _pargs_in->count, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_pwrite_ocall(
+        _pargs_in->fd,
+        (const void*)_pargs_in->buf,
+        _pargs_in->count,
+        _pargs_in->offset);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_close_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_close_ocall_args_t* _pargs_in = (oe_syscall_close_ocall_args_t*)input_buffer;
+    oe_syscall_close_ocall_args_t* _pargs_out = (oe_syscall_close_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_close_ocall(
+        _pargs_in->fd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_flock_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_flock_ocall_args_t* _pargs_in = (oe_syscall_flock_ocall_args_t*)input_buffer;
+    oe_syscall_flock_ocall_args_t* _pargs_out = (oe_syscall_flock_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_flock_ocall(
+        _pargs_in->fd,
+        _pargs_in->operation);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_fsync_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_fsync_ocall_args_t* _pargs_in = (oe_syscall_fsync_ocall_args_t*)input_buffer;
+    oe_syscall_fsync_ocall_args_t* _pargs_out = (oe_syscall_fsync_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_fsync_ocall(
+        _pargs_in->fd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_fdatasync_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_fdatasync_ocall_args_t* _pargs_in = (oe_syscall_fdatasync_ocall_args_t*)input_buffer;
+    oe_syscall_fdatasync_ocall_args_t* _pargs_out = (oe_syscall_fdatasync_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_fdatasync_ocall(
+        _pargs_in->fd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_dup_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_dup_ocall_args_t* _pargs_in = (oe_syscall_dup_ocall_args_t*)input_buffer;
+    oe_syscall_dup_ocall_args_t* _pargs_out = (oe_syscall_dup_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_dup_ocall(
+        _pargs_in->oldfd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_opendir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_opendir_ocall_args_t* _pargs_in = (oe_syscall_opendir_ocall_args_t*)input_buffer;
+    oe_syscall_opendir_ocall_args_t* _pargs_out = (oe_syscall_opendir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->name)
+        OE_SET_IN_POINTER(name, _pargs_in->name_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_opendir_ocall(
+        (const char*)_pargs_in->name);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_readdir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_readdir_ocall_args_t* _pargs_in = (oe_syscall_readdir_ocall_args_t*)input_buffer;
+    oe_syscall_readdir_ocall_args_t* _pargs_out = (oe_syscall_readdir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->entry)
+        OE_SET_OUT_POINTER(entry, 1, sizeof(struct oe_dirent), struct oe_dirent*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_readdir_ocall(
+        _pargs_in->dirp,
+        _pargs_in->entry);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_rewinddir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_rewinddir_ocall_args_t* _pargs_in = (oe_syscall_rewinddir_ocall_args_t*)input_buffer;
+    oe_syscall_rewinddir_ocall_args_t* _pargs_out = (oe_syscall_rewinddir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    oe_syscall_rewinddir_ocall(
+        _pargs_in->dirp);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_closedir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_closedir_ocall_args_t* _pargs_in = (oe_syscall_closedir_ocall_args_t*)input_buffer;
+    oe_syscall_closedir_ocall_args_t* _pargs_out = (oe_syscall_closedir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_closedir_ocall(
+        _pargs_in->dirp);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_stat_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_stat_ocall_args_t* _pargs_in = (oe_syscall_stat_ocall_args_t*)input_buffer;
+    oe_syscall_stat_ocall_args_t* _pargs_out = (oe_syscall_stat_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_stat_t), struct oe_stat_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_stat_ocall(
+        (const char*)_pargs_in->pathname,
+        _pargs_in->buf);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_fstat_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_fstat_ocall_args_t* _pargs_in = (oe_syscall_fstat_ocall_args_t*)input_buffer;
+    oe_syscall_fstat_ocall_args_t* _pargs_out = (oe_syscall_fstat_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_stat_t), struct oe_stat_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_fstat_ocall(
+        _pargs_in->fd,
+        _pargs_in->buf);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_access_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_access_ocall_args_t* _pargs_in = (oe_syscall_access_ocall_args_t*)input_buffer;
+    oe_syscall_access_ocall_args_t* _pargs_out = (oe_syscall_access_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_access_ocall(
+        (const char*)_pargs_in->pathname,
+        _pargs_in->mode);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_link_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_link_ocall_args_t* _pargs_in = (oe_syscall_link_ocall_args_t*)input_buffer;
+    oe_syscall_link_ocall_args_t* _pargs_out = (oe_syscall_link_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->oldpath)
+        OE_SET_IN_POINTER(oldpath, _pargs_in->oldpath_len, sizeof(char), char*);
+    if (_pargs_in->newpath)
+        OE_SET_IN_POINTER(newpath, _pargs_in->newpath_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_link_ocall(
+        (const char*)_pargs_in->oldpath,
+        (const char*)_pargs_in->newpath);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_unlink_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_unlink_ocall_args_t* _pargs_in = (oe_syscall_unlink_ocall_args_t*)input_buffer;
+    oe_syscall_unlink_ocall_args_t* _pargs_out = (oe_syscall_unlink_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_unlink_ocall(
+        (const char*)_pargs_in->pathname);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_rename_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_rename_ocall_args_t* _pargs_in = (oe_syscall_rename_ocall_args_t*)input_buffer;
+    oe_syscall_rename_ocall_args_t* _pargs_out = (oe_syscall_rename_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->oldpath)
+        OE_SET_IN_POINTER(oldpath, _pargs_in->oldpath_len, sizeof(char), char*);
+    if (_pargs_in->newpath)
+        OE_SET_IN_POINTER(newpath, _pargs_in->newpath_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_rename_ocall(
+        (const char*)_pargs_in->oldpath,
+        (const char*)_pargs_in->newpath);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_truncate_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_truncate_ocall_args_t* _pargs_in = (oe_syscall_truncate_ocall_args_t*)input_buffer;
+    oe_syscall_truncate_ocall_args_t* _pargs_out = (oe_syscall_truncate_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->path)
+        OE_SET_IN_POINTER(path, _pargs_in->path_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_truncate_ocall(
+        (const char*)_pargs_in->path,
+        _pargs_in->length);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_ftruncate_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_ftruncate_ocall_args_t* _pargs_in = (oe_syscall_ftruncate_ocall_args_t*)input_buffer;
+    oe_syscall_ftruncate_ocall_args_t* _pargs_out = (oe_syscall_ftruncate_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_ftruncate_ocall(
+        _pargs_in->fd,
+        _pargs_in->length);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_mkdir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_mkdir_ocall_args_t* _pargs_in = (oe_syscall_mkdir_ocall_args_t*)input_buffer;
+    oe_syscall_mkdir_ocall_args_t* _pargs_out = (oe_syscall_mkdir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_mkdir_ocall(
+        (const char*)_pargs_in->pathname,
+        _pargs_in->mode);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_rmdir_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_rmdir_ocall_args_t* _pargs_in = (oe_syscall_rmdir_ocall_args_t*)input_buffer;
+    oe_syscall_rmdir_ocall_args_t* _pargs_out = (oe_syscall_rmdir_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->pathname)
+        OE_SET_IN_POINTER(pathname, _pargs_in->pathname_len, sizeof(char), char*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_rmdir_ocall(
+        (const char*)_pargs_in->pathname);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_fcntl_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_fcntl_ocall_args_t* _pargs_in = (oe_syscall_fcntl_ocall_args_t*)input_buffer;
+    oe_syscall_fcntl_ocall_args_t* _pargs_out = (oe_syscall_fcntl_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->argout)
+        OE_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->argout)
+        OE_COPY_AND_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_fcntl_ocall(
+        _pargs_in->fd,
+        _pargs_in->cmd,
+        _pargs_in->arg,
+        _pargs_in->argsize,
+        _pargs_in->argout);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_ioctl_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_ioctl_ocall_args_t* _pargs_in = (oe_syscall_ioctl_ocall_args_t*)input_buffer;
+    oe_syscall_ioctl_ocall_args_t* _pargs_out = (oe_syscall_ioctl_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->argout)
+        OE_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->argout)
+        OE_COPY_AND_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_ioctl_ocall(
+        _pargs_in->fd,
+        _pargs_in->request,
+        _pargs_in->arg,
+        _pargs_in->argsize,
+        _pargs_in->argout);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_poll_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_poll_ocall_args_t* _pargs_in = (oe_syscall_poll_ocall_args_t*)input_buffer;
+    oe_syscall_poll_ocall_args_t* _pargs_out = (oe_syscall_poll_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->host_fds)
+        OE_SET_IN_OUT_POINTER(host_fds, _pargs_in->nfds, sizeof(struct oe_host_pollfd), struct oe_host_pollfd*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->host_fds)
+        OE_COPY_AND_SET_IN_OUT_POINTER(host_fds, _pargs_in->nfds, sizeof(struct oe_host_pollfd), struct oe_host_pollfd*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_poll_ocall(
+        _pargs_in->host_fds,
+        _pargs_in->nfds,
+        _pargs_in->timeout);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_kill_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_kill_ocall_args_t* _pargs_in = (oe_syscall_kill_ocall_args_t*)input_buffer;
+    oe_syscall_kill_ocall_args_t* _pargs_out = (oe_syscall_kill_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_kill_ocall(
+        _pargs_in->pid,
+        _pargs_in->signum);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_close_socket_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_close_socket_ocall_args_t* _pargs_in = (oe_syscall_close_socket_ocall_args_t*)input_buffer;
+    oe_syscall_close_socket_ocall_args_t* _pargs_out = (oe_syscall_close_socket_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_close_socket_ocall(
+        _pargs_in->sockfd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_socket_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_socket_ocall_args_t* _pargs_in = (oe_syscall_socket_ocall_args_t*)input_buffer;
+    oe_syscall_socket_ocall_args_t* _pargs_out = (oe_syscall_socket_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_socket_ocall(
+        _pargs_in->domain,
+        _pargs_in->type,
+        _pargs_in->protocol);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_shutdown_sockets_device_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_shutdown_sockets_device_ocall_args_t* _pargs_in = (oe_syscall_shutdown_sockets_device_ocall_args_t*)input_buffer;
+    oe_syscall_shutdown_sockets_device_ocall_args_t* _pargs_out = (oe_syscall_shutdown_sockets_device_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_shutdown_sockets_device_ocall(
+        _pargs_in->sockfd);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_socketpair_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_socketpair_ocall_args_t* _pargs_in = (oe_syscall_socketpair_ocall_args_t*)input_buffer;
+    oe_syscall_socketpair_ocall_args_t* _pargs_out = (oe_syscall_socketpair_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->sv)
+        OE_SET_OUT_POINTER(sv, 1, sizeof(oe_host_fd_t[2]), oe_host_fd_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_socketpair_ocall(
+        _pargs_in->domain,
+        _pargs_in->type,
+        _pargs_in->protocol,
+        *(oe_host_fd_t(*)[2])_pargs_in->sv);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_connect_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_connect_ocall_args_t* _pargs_in = (oe_syscall_connect_ocall_args_t*)input_buffer;
+    oe_syscall_connect_ocall_args_t* _pargs_out = (oe_syscall_connect_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->addr)
+        OE_SET_IN_POINTER(addr, 1, _pargs_in->addrlen, struct oe_sockaddr*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_connect_ocall(
+        _pargs_in->sockfd,
+        (const struct oe_sockaddr*)_pargs_in->addr,
+        _pargs_in->addrlen);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_accept_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_accept_ocall_args_t* _pargs_in = (oe_syscall_accept_ocall_args_t*)input_buffer;
+    oe_syscall_accept_ocall_args_t* _pargs_out = (oe_syscall_accept_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->addr)
+        OE_SET_OUT_POINTER(addr, 1, _pargs_in->addrlen_in, struct oe_sockaddr*);
+    if (_pargs_in->addrlen_out)
+        OE_SET_OUT_POINTER(addrlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_accept_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->addr,
+        _pargs_in->addrlen_in,
+        _pargs_in->addrlen_out);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_bind_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_bind_ocall_args_t* _pargs_in = (oe_syscall_bind_ocall_args_t*)input_buffer;
+    oe_syscall_bind_ocall_args_t* _pargs_out = (oe_syscall_bind_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->addr)
+        OE_SET_IN_POINTER(addr, 1, _pargs_in->addrlen, struct oe_sockaddr*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_bind_ocall(
+        _pargs_in->sockfd,
+        (const struct oe_sockaddr*)_pargs_in->addr,
+        _pargs_in->addrlen);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_listen_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_listen_ocall_args_t* _pargs_in = (oe_syscall_listen_ocall_args_t*)input_buffer;
+    oe_syscall_listen_ocall_args_t* _pargs_out = (oe_syscall_listen_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_listen_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->backlog);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_recvmsg_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_recvmsg_ocall_args_t* _pargs_in = (oe_syscall_recvmsg_ocall_args_t*)input_buffer;
+    oe_syscall_recvmsg_ocall_args_t* _pargs_out = (oe_syscall_recvmsg_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->msg_iov_buf)
+        OE_SET_IN_OUT_POINTER(msg_iov_buf, 1, _pargs_in->msg_iov_buf_size, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->msg_name)
+        OE_SET_OUT_POINTER(msg_name, 1, _pargs_in->msg_namelen, void*);
+    if (_pargs_in->msg_namelen_out)
+        OE_SET_OUT_POINTER(msg_namelen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
+    if (_pargs_in->msg_iov_buf)
+        OE_COPY_AND_SET_IN_OUT_POINTER(msg_iov_buf, 1, _pargs_in->msg_iov_buf_size, void*);
+    if (_pargs_in->msg_control)
+        OE_SET_OUT_POINTER(msg_control, 1, _pargs_in->msg_controllen, void*);
+    if (_pargs_in->msg_controllen_out)
+        OE_SET_OUT_POINTER(msg_controllen_out, 1, sizeof(size_t), size_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_recvmsg_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->msg_name,
+        _pargs_in->msg_namelen,
+        _pargs_in->msg_namelen_out,
+        _pargs_in->msg_iov_buf,
+        _pargs_in->msg_iovlen,
+        _pargs_in->msg_iov_buf_size,
+        _pargs_in->msg_control,
+        _pargs_in->msg_controllen,
+        _pargs_in->msg_controllen_out,
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_sendmsg_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_sendmsg_ocall_args_t* _pargs_in = (oe_syscall_sendmsg_ocall_args_t*)input_buffer;
+    oe_syscall_sendmsg_ocall_args_t* _pargs_out = (oe_syscall_sendmsg_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->msg_name)
+        OE_SET_IN_POINTER(msg_name, 1, _pargs_in->msg_namelen, void*);
+    if (_pargs_in->msg_iov_buf)
+        OE_SET_IN_POINTER(msg_iov_buf, 1, _pargs_in->msg_iov_buf_size, void*);
+    if (_pargs_in->msg_control)
+        OE_SET_IN_POINTER(msg_control, 1, _pargs_in->msg_controllen, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_sendmsg_ocall(
+        _pargs_in->sockfd,
+        (const void*)_pargs_in->msg_name,
+        _pargs_in->msg_namelen,
+        _pargs_in->msg_iov_buf,
+        _pargs_in->msg_iovlen,
+        _pargs_in->msg_iov_buf_size,
+        (const void*)_pargs_in->msg_control,
+        _pargs_in->msg_controllen,
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_recv_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_recv_ocall_args_t* _pargs_in = (oe_syscall_recv_ocall_args_t*)input_buffer;
+    oe_syscall_recv_ocall_args_t* _pargs_out = (oe_syscall_recv_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, _pargs_in->len, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_recv_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->buf,
+        _pargs_in->len,
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_recvfrom_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_recvfrom_ocall_args_t* _pargs_in = (oe_syscall_recvfrom_ocall_args_t*)input_buffer;
+    oe_syscall_recvfrom_ocall_args_t* _pargs_out = (oe_syscall_recvfrom_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, _pargs_in->len, void*);
+    if (_pargs_in->src_addr)
+        OE_SET_OUT_POINTER(src_addr, 1, _pargs_in->addrlen_in, struct oe_sockaddr*);
+    if (_pargs_in->addrlen_out)
+        OE_SET_OUT_POINTER(addrlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_recvfrom_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->buf,
+        _pargs_in->len,
+        _pargs_in->flags,
+        _pargs_in->src_addr,
+        _pargs_in->addrlen_in,
+        _pargs_in->addrlen_out);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_send_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_send_ocall_args_t* _pargs_in = (oe_syscall_send_ocall_args_t*)input_buffer;
+    oe_syscall_send_ocall_args_t* _pargs_out = (oe_syscall_send_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->buf)
+        OE_SET_IN_POINTER(buf, 1, _pargs_in->len, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_send_ocall(
+        _pargs_in->sockfd,
+        (const void*)_pargs_in->buf,
+        _pargs_in->len,
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_sendto_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_sendto_ocall_args_t* _pargs_in = (oe_syscall_sendto_ocall_args_t*)input_buffer;
+    oe_syscall_sendto_ocall_args_t* _pargs_out = (oe_syscall_sendto_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->buf)
+        OE_SET_IN_POINTER(buf, 1, _pargs_in->len, void*);
+    if (_pargs_in->dest_addr)
+        OE_SET_IN_POINTER(dest_addr, 1, _pargs_in->addrlen, struct oe_sockaddr*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_sendto_ocall(
+        _pargs_in->sockfd,
+        (const void*)_pargs_in->buf,
+        _pargs_in->len,
+        _pargs_in->flags,
+        (const struct oe_sockaddr*)_pargs_in->dest_addr,
+        _pargs_in->addrlen);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_recvv_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_recvv_ocall_args_t* _pargs_in = (oe_syscall_recvv_ocall_args_t*)input_buffer;
+    oe_syscall_recvv_ocall_args_t* _pargs_out = (oe_syscall_recvv_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->iov_buf)
+        OE_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->iov_buf)
+        OE_COPY_AND_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_recvv_ocall(
+        _pargs_in->fd,
+        _pargs_in->iov_buf,
+        _pargs_in->iovcnt,
+        _pargs_in->iov_buf_size);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_sendv_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_sendv_ocall_args_t* _pargs_in = (oe_syscall_sendv_ocall_args_t*)input_buffer;
+    oe_syscall_sendv_ocall_args_t* _pargs_out = (oe_syscall_sendv_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->iov_buf)
+        OE_SET_IN_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_sendv_ocall(
+        _pargs_in->fd,
+        (const void*)_pargs_in->iov_buf,
+        _pargs_in->iovcnt,
+        _pargs_in->iov_buf_size);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_shutdown_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_shutdown_ocall_args_t* _pargs_in = (oe_syscall_shutdown_ocall_args_t*)input_buffer;
+    oe_syscall_shutdown_ocall_args_t* _pargs_out = (oe_syscall_shutdown_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_shutdown_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->how);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_setsockopt_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_setsockopt_ocall_args_t* _pargs_in = (oe_syscall_setsockopt_ocall_args_t*)input_buffer;
+    oe_syscall_setsockopt_ocall_args_t* _pargs_out = (oe_syscall_setsockopt_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->optval)
+        OE_SET_IN_POINTER(optval, 1, _pargs_in->optlen, void*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_setsockopt_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->level,
+        _pargs_in->optname,
+        (const void*)_pargs_in->optval,
+        _pargs_in->optlen);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getsockopt_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getsockopt_ocall_args_t* _pargs_in = (oe_syscall_getsockopt_ocall_args_t*)input_buffer;
+    oe_syscall_getsockopt_ocall_args_t* _pargs_out = (oe_syscall_getsockopt_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->optval)
+        OE_SET_OUT_POINTER(optval, 1, _pargs_in->optlen_in, void*);
+    if (_pargs_in->optlen_out)
+        OE_SET_OUT_POINTER(optlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getsockopt_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->level,
+        _pargs_in->optname,
+        _pargs_in->optval,
+        _pargs_in->optlen_in,
+        _pargs_in->optlen_out);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getsockname_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getsockname_ocall_args_t* _pargs_in = (oe_syscall_getsockname_ocall_args_t*)input_buffer;
+    oe_syscall_getsockname_ocall_args_t* _pargs_out = (oe_syscall_getsockname_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->addr)
+        OE_SET_OUT_POINTER(addr, 1, _pargs_in->addrlen_in, struct oe_sockaddr*);
+    if (_pargs_in->addrlen_out)
+        OE_SET_OUT_POINTER(addrlen_out, 1, 1, oe_socklen_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getsockname_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->addr,
+        _pargs_in->addrlen_in,
+        _pargs_in->addrlen_out);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getpeername_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getpeername_ocall_args_t* _pargs_in = (oe_syscall_getpeername_ocall_args_t*)input_buffer;
+    oe_syscall_getpeername_ocall_args_t* _pargs_out = (oe_syscall_getpeername_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->addr)
+        OE_SET_OUT_POINTER(addr, 1, _pargs_in->addrlen_in, struct oe_sockaddr*);
+    if (_pargs_in->addrlen_out)
+        OE_SET_OUT_POINTER(addrlen_out, 1, 1, oe_socklen_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getpeername_ocall(
+        _pargs_in->sockfd,
+        _pargs_in->addr,
+        _pargs_in->addrlen_in,
+        _pargs_in->addrlen_out);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getaddrinfo_open_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getaddrinfo_open_ocall_args_t* _pargs_in = (oe_syscall_getaddrinfo_open_ocall_args_t*)input_buffer;
+    oe_syscall_getaddrinfo_open_ocall_args_t* _pargs_out = (oe_syscall_getaddrinfo_open_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->node)
+        OE_SET_IN_POINTER(node, _pargs_in->node_len, sizeof(char), char*);
+    if (_pargs_in->service)
+        OE_SET_IN_POINTER(service, _pargs_in->service_len, sizeof(char), char*);
+    if (_pargs_in->hints)
+        OE_SET_IN_POINTER(hints, 1, sizeof(struct oe_addrinfo), struct oe_addrinfo*);
+    if (_pargs_in->hints && _pargs_in->hints->ai_addr)
+        OE_SET_IN_POINTER(hints->ai_addr, 1, _pargs_in->hints->ai_addrlen, struct oe_sockaddr*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->handle)
+        OE_SET_OUT_POINTER(handle, 1, sizeof(uint64_t), uint64_t*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getaddrinfo_open_ocall(
+        (const char*)_pargs_in->node,
+        (const char*)_pargs_in->service,
+        (const struct oe_addrinfo*)_pargs_in->hints,
+        _pargs_in->handle);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getaddrinfo_read_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getaddrinfo_read_ocall_args_t* _pargs_in = (oe_syscall_getaddrinfo_read_ocall_args_t*)input_buffer;
+    oe_syscall_getaddrinfo_read_ocall_args_t* _pargs_out = (oe_syscall_getaddrinfo_read_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->ai_flags)
+        OE_SET_OUT_POINTER(ai_flags, 1, sizeof(int), int*);
+    if (_pargs_in->ai_family)
+        OE_SET_OUT_POINTER(ai_family, 1, sizeof(int), int*);
+    if (_pargs_in->ai_socktype)
+        OE_SET_OUT_POINTER(ai_socktype, 1, sizeof(int), int*);
+    if (_pargs_in->ai_protocol)
+        OE_SET_OUT_POINTER(ai_protocol, 1, sizeof(int), int*);
+    if (_pargs_in->ai_addrlen)
+        OE_SET_OUT_POINTER(ai_addrlen, 1, sizeof(oe_socklen_t), oe_socklen_t*);
+    if (_pargs_in->ai_addr)
+        OE_SET_OUT_POINTER(ai_addr, 1, _pargs_in->ai_addrlen_in, struct oe_sockaddr*);
+    if (_pargs_in->ai_canonnamelen)
+        OE_SET_OUT_POINTER(ai_canonnamelen, 1, sizeof(size_t), size_t*);
+    if (_pargs_in->ai_canonname)
+        OE_SET_OUT_POINTER(ai_canonname, 1, _pargs_in->ai_canonnamelen_in, char*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getaddrinfo_read_ocall(
+        _pargs_in->handle,
+        _pargs_in->ai_flags,
+        _pargs_in->ai_family,
+        _pargs_in->ai_socktype,
+        _pargs_in->ai_protocol,
+        _pargs_in->ai_addrlen_in,
+        _pargs_in->ai_addrlen,
+        _pargs_in->ai_addr,
+        _pargs_in->ai_canonnamelen_in,
+        _pargs_in->ai_canonnamelen,
+        _pargs_in->ai_canonname);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getaddrinfo_close_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getaddrinfo_close_ocall_args_t* _pargs_in = (oe_syscall_getaddrinfo_close_ocall_args_t*)input_buffer;
+    oe_syscall_getaddrinfo_close_ocall_args_t* _pargs_out = (oe_syscall_getaddrinfo_close_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getaddrinfo_close_ocall(
+        _pargs_in->handle);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getnameinfo_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getnameinfo_ocall_args_t* _pargs_in = (oe_syscall_getnameinfo_ocall_args_t*)input_buffer;
+    oe_syscall_getnameinfo_ocall_args_t* _pargs_out = (oe_syscall_getnameinfo_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->sa)
+        OE_SET_IN_POINTER(sa, 1, _pargs_in->salen, struct oe_sockaddr*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->host)
+        OE_SET_OUT_POINTER(host, 1, _pargs_in->hostlen, char*);
+    if (_pargs_in->serv)
+        OE_SET_OUT_POINTER(serv, 1, _pargs_in->servlen, char*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getnameinfo_ocall(
+        (const struct oe_sockaddr*)_pargs_in->sa,
+        _pargs_in->salen,
+        _pargs_in->host,
+        _pargs_in->hostlen,
+        _pargs_in->serv,
+        _pargs_in->servlen,
+        _pargs_in->flags);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_nanosleep_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_nanosleep_ocall_args_t* _pargs_in = (oe_syscall_nanosleep_ocall_args_t*)input_buffer;
+    oe_syscall_nanosleep_ocall_args_t* _pargs_out = (oe_syscall_nanosleep_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->req)
+        OE_SET_IN_POINTER(req, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+    if (_pargs_in->rem)
+        OE_SET_IN_OUT_POINTER(rem, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->rem)
+        OE_COPY_AND_SET_IN_OUT_POINTER(rem, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_nanosleep_ocall(
+        _pargs_in->req,
+        _pargs_in->rem);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getpid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getpid_ocall_args_t* _pargs_in = (oe_syscall_getpid_ocall_args_t*)input_buffer;
+    oe_syscall_getpid_ocall_args_t* _pargs_out = (oe_syscall_getpid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getpid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getppid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getppid_ocall_args_t* _pargs_in = (oe_syscall_getppid_ocall_args_t*)input_buffer;
+    oe_syscall_getppid_ocall_args_t* _pargs_out = (oe_syscall_getppid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getppid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getpgrp_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getpgrp_ocall_args_t* _pargs_in = (oe_syscall_getpgrp_ocall_args_t*)input_buffer;
+    oe_syscall_getpgrp_ocall_args_t* _pargs_out = (oe_syscall_getpgrp_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getpgrp_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getuid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getuid_ocall_args_t* _pargs_in = (oe_syscall_getuid_ocall_args_t*)input_buffer;
+    oe_syscall_getuid_ocall_args_t* _pargs_out = (oe_syscall_getuid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getuid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_geteuid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_geteuid_ocall_args_t* _pargs_in = (oe_syscall_geteuid_ocall_args_t*)input_buffer;
+    oe_syscall_geteuid_ocall_args_t* _pargs_out = (oe_syscall_geteuid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_geteuid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getgid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getgid_ocall_args_t* _pargs_in = (oe_syscall_getgid_ocall_args_t*)input_buffer;
+    oe_syscall_getgid_ocall_args_t* _pargs_out = (oe_syscall_getgid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getgid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getegid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getegid_ocall_args_t* _pargs_in = (oe_syscall_getegid_ocall_args_t*)input_buffer;
+    oe_syscall_getegid_ocall_args_t* _pargs_out = (oe_syscall_getegid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getegid_ocall(
+    );
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    /* Errno propagation not enabled. */
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getpgid_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getpgid_ocall_args_t* _pargs_in = (oe_syscall_getpgid_ocall_args_t*)input_buffer;
+    oe_syscall_getpgid_ocall_args_t* _pargs_out = (oe_syscall_getpgid_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    /* There were no out nor in-out parameters. */
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getpgid_ocall(
+        _pargs_in->pid);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_getgroups_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_getgroups_ocall_args_t* _pargs_in = (oe_syscall_getgroups_ocall_args_t*)input_buffer;
+    oe_syscall_getgroups_ocall_args_t* _pargs_out = (oe_syscall_getgroups_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->list)
+        OE_SET_OUT_POINTER(list, _pargs_in->size, sizeof(unsigned int), unsigned int*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_getgroups_ocall(
+        _pargs_in->size,
+        _pargs_in->list);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
+static void ocall_oe_syscall_uname_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_uname_ocall_args_t* _pargs_in = (oe_syscall_uname_ocall_args_t*)input_buffer;
+    oe_syscall_uname_ocall_args_t* _pargs_out = (oe_syscall_uname_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    /* There were no in nor in-out parameters. */
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->buf)
+        OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_utsname), struct oe_utsname*);
+
+    /* Call user function. */
+    _pargs_out->retval = oe_syscall_uname_ocall(
+        _pargs_in->buf);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->result = _result;
+}
+
 /**** OCALL function table. ****/
 
 static oe_ocall_func_t _project_ocall_function_table[] = {
@@ -2673,6 +8149,78 @@ static oe_ocall_func_t _project_ocall_function_table[] = {
     (oe_ocall_func_t) ocall_oe_sgx_thread_wake_wait_ocall,
     (oe_ocall_func_t) ocall_oe_sgx_wake_switchless_worker_ocall,
     (oe_ocall_func_t) ocall_oe_sgx_sleep_switchless_worker_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_epoll_create1_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_epoll_wait_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_epoll_wake_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_epoll_ctl_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_epoll_close_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_open_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_read_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_write_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_readv_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_writev_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_lseek_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_pread_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_pwrite_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_close_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_flock_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_fsync_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_fdatasync_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_dup_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_opendir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_readdir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_rewinddir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_closedir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_stat_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_fstat_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_access_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_link_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_unlink_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_rename_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_truncate_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_ftruncate_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_mkdir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_rmdir_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_fcntl_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_ioctl_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_poll_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_kill_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_close_socket_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_socket_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_shutdown_sockets_device_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_socketpair_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_connect_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_accept_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_bind_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_listen_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_recvmsg_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_sendmsg_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_recv_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_recvfrom_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_send_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_sendto_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_recvv_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_sendv_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_shutdown_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_setsockopt_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getsockopt_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getsockname_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getpeername_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getaddrinfo_open_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getaddrinfo_read_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getaddrinfo_close_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getnameinfo_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_nanosleep_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getpid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getppid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getpgrp_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getuid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_geteuid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getgid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getegid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getpgid_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_getgroups_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_uname_ocall,
     NULL
 };
 
@@ -2691,9 +8239,9 @@ oe_result_t oe_create_project_enclave(
                settings,
                setting_count,
                _project_ocall_function_table,
-               10,
+               82,
                _project_ecall_info_table,
-                16,
+                19,
                enclave);
 }
 

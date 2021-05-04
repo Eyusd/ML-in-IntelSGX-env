@@ -44,9 +44,14 @@ void client_generate_secret()
     cdispatcher.generate_secret();
 }
 
-void client_generate_encrypted_message(uint8_t* to_encrypt, uint8_t** encrypted_data, size_t* size_encrypted)
+void client_generate_encrypted_message(uint8_t* to_encrypt, int message_size, uint8_t** encrypted_data, size_t* size_encrypted)
 {
-    cdispatcher.generate_encrypted_message(to_encrypt, encrypted_data, size_encrypted);
+    cdispatcher.generate_encrypted_message(to_encrypt, message_size, encrypted_data, size_encrypted);
+}
+
+void client_decrypt_message(uint8_t* encrypted_data, size_t encrypted_data_size)
+{
+    cdispatcher.process_encrypted_message(encrypted_data, encrypted_data_size);
 }
 //End Client
 
@@ -119,7 +124,7 @@ int main(int argc, const char* argv[])
     size_t olen;
     uint8_t* encrypted_message = NULL;
     size_t encrypted_message_size = 0;
-    uint8_t data[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    uint8_t data[17] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
 
     //Program loop
     char choice;
@@ -196,11 +201,12 @@ int main(int argc, const char* argv[])
         }
     }
 
-    write_rsa_pem(enclave, buff_rsa);
-    client_store_server_public_key(buff_rsa);
+    client_write_rsa_pem(buff_rsa);
+    server_store_client_public_key(enclave, buff_rsa);
     fprintf(stderr, "RSA Pubkey sent by Server\n");
 
-    client_generate_encrypted_message(data, &encrypted_message, &encrypted_message_size);
+    server_generate_encrypted_message(enclave, data, sizeof(data), &encrypted_message, &encrypted_message_size);
+    server_decrypt_message(enclave, encrypted_message, encrypted_message_size);
 
     enclave_init(enclave);
 

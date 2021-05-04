@@ -25,7 +25,6 @@ bool Crypto_client::init_mbedtls(void)
     mbedtls_ctr_drbg_init(&m_ctr_drbg_contex);
     mbedtls_entropy_init(&m_entropy_context);
     mbedtls_pk_init(&m_pk_context);
-    mbedtls_pk_init(&m_server_pk_context);
     mbedtls_ecdh_init(&m_ecdh_context);
 
     res = mbedtls_ctr_drbg_seed(
@@ -33,14 +32,6 @@ bool Crypto_client::init_mbedtls(void)
     if (res != 0)
     {
         fprintf(stderr,"mbedtls_ctr_drbg_seed failed.");
-        goto exit;
-    }
-
-    res = mbedtls_pk_setup(
-        &m_server_pk_context, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
-    if (res != 0)
-    {
-        fprintf(stderr,"mbedtls_pk_setup failed (%d).", res);
         goto exit;
     }
 
@@ -103,7 +94,7 @@ bool Crypto_client::init_mbedtls(void)
 
 
     ret = true;
-    fprintf(stderr,"mbedtls initialized.");
+    fprintf(stderr,"mbedtls initialized.\n");
 exit:
     return ret;
 }
@@ -120,20 +111,8 @@ void Crypto_client::cleanup_mbedtls(void)
 
 void Crypto_client::store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE])
 {   
-    int keyLen = PUBLIC_KEY_SIZE;
-    int ret;
-
-    mbedtls_pk_init(&m_server_pk_context);
-    
-    ret = mbedtls_pk_parse_public_key(&m_server_pk_context, (unsigned char*)pem_server_public_key, (size_t)keyLen);
-    if( ret != 0 )
-    {
-        fprintf(stderr," failed\n  ! mbedtls_pk_parse_public_key returned %d\n", ret );
-        goto exit;
-    }
+    memcpy(&m_server_public_key, pem_server_public_key, PUBLIC_KEY_SIZE);
     fprintf(stderr, "RSA stored\n");
-exit:
-    mbedtls_pk_free(&m_server_pk_context);
 }
 
 int Crypto_client::Sha256(const uint8_t* data, size_t data_size, uint8_t sha256[32])
@@ -181,7 +160,7 @@ bool Crypto_client::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encr
     res = mbedtls_pk_parse_public_key(&key, pem_public_key, key_size);
     if (res != 0)
     {
-        fprintf(stderr,"mbedtls_pk_parse_public_key failed.");
+        fprintf(stderr,"mbedtls_pk_parse_public_key failed.\n");
         goto exit;
     }
 
@@ -191,12 +170,12 @@ bool Crypto_client::Encrypt(const uint8_t* data, size_t data_size, uint8_t* encr
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V21)
     {
-        fprintf(stderr,"Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS");
+        fprintf(stderr,"Padding used: MBEDTLS_RSA_PKCS_V21 for OAEP or PSS\n");
     }
 
     if (rsa_context->padding == MBEDTLS_RSA_PKCS_V15)
     {
-        fprintf(stderr,"New MBEDTLS_RSA_PKCS_V15  for 1.5 padding");
+        fprintf(stderr,"New MBEDTLS_RSA_PKCS_V15  for 1.5 padding\n");
     }
 
     // Encrypt the data.

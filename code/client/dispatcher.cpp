@@ -39,7 +39,7 @@ exit:
  * enclave.
  */
 
-int client_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** data, size_t* size)
+int client_dispatcher::generate_encrypted_message(uint8_t* message, int message_size, uint8_t** data, size_t* size)
 {
     uint8_t encrypted_data_buffer[1024];
     size_t encrypted_data_size;
@@ -51,11 +51,10 @@ int client_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** da
         fprintf(stderr, "client_dispatcher initialization failed");
         goto exit;
     }
-
     encrypted_data_size = sizeof(encrypted_data_buffer);
     if (m_crypto->Encrypt(
             message,
-            PUBLIC_KEY_SIZE,
+            message_size,
             encrypted_data_buffer,
             &encrypted_data_size) == false)
     {
@@ -72,7 +71,7 @@ int client_dispatcher::generate_encrypted_message(uint8_t* message, uint8_t** da
     }
     memcpy(host_buffer, encrypted_data_buffer, encrypted_data_size);
     fprintf(stderr,
-        "generate_encrypted_message: encrypted_data_size = %ld",
+        "generate_encrypted_message: encrypted_data_size = %ld\n",
         encrypted_data_size);
     *data = host_buffer;
     *size = encrypted_data_size;
@@ -83,9 +82,7 @@ exit:
     return ret;
 }
 
-int client_dispatcher::process_encrypted_message(
-    uint8_t* encrypted_data,
-    size_t encrypted_data_size)
+int client_dispatcher::process_encrypted_message(uint8_t* encrypted_data, size_t encrypted_data_size)
 {
     uint8_t data[1024];
     size_t data_size = 0;
@@ -109,17 +106,15 @@ int client_dispatcher::process_encrypted_message(
         fprintf(stderr, "Decrypted data: ");
         for (uint32_t i = 0; i < data_size; ++i)
         {
-            printf("%d ", data[i]);
+            fprintf(stderr, "%d ", data[i]);
         }
-        printf("\n");
+        fprintf(stderr, "\n");
     }
     else
     {
         fprintf(stderr, "client_dispatcher::process_encrypted_msg failed");
         goto exit;
     }
-    fprintf(stderr, "Decrypted data matches with the enclave internal secret "
-                  "data: descryption validation succeeded");
     ret = 0;
 exit:
     return ret;

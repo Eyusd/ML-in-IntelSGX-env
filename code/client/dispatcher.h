@@ -18,7 +18,7 @@ class client_dispatcher
     client_dispatcher(const char* name);
     ~client_dispatcher();
     
-    int generate_encrypted_message(uint8_t* message, uint8_t** data, size_t* size);
+    int generate_encrypted_message(uint8_t* message, int message_size, uint8_t** data, size_t* size);
     int process_encrypted_message(
         uint8_t* encrypted_data,
         size_t encrypted_data_size);

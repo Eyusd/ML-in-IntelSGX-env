@@ -51,28 +51,38 @@ void enclave_new_to_old()
     dispatcher.reg_new_to_old();
 }
 
-void store_ecdh_key(char key[256])
+void server_store_ecdh_key(char key[256])
 {
     dispatcher.store_ecdh_key(key);
 }
 
-void generate_secret()
+void server_generate_secret()
 {
     dispatcher.generate_secret();
 }
 
-void store_client_public_key(unsigned char pem_client_public_key[PUBLIC_KEY_SIZE + 1])
+void server_store_client_public_key(uint8_t pem_client_public_key[PUBLIC_KEY_SIZE])
 {
     dispatcher.store_client_public_key(pem_client_public_key);
 }
 
-void write_rsa_pem(unsigned char buff[PUBLIC_KEY_SIZE + 1])
+void server_write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE])
 {
     dispatcher.write_rsa_pem(buff);
 }
 
-void write_ecdh_pem(char buff[512])
+void server_write_ecdh_pem(char buff[512])
 {
     size_t olen;
     dispatcher.write_ecdh_pem(buff, olen);
+}
+
+void server_generate_encrypted_message(uint8_t* to_encrypt, int message_size, uint8_t** encrypted_data, size_t* size_encrypted)
+{
+    dispatcher.generate_encrypted_message(to_encrypt, message_size, encrypted_data, size_encrypted);
+}
+
+void server_decrypt_message(uint8_t* encrypted_data, size_t encrypted_data_size)
+{
+    dispatcher.process_encrypted_message(encrypted_data, encrypted_data_size);
 }
