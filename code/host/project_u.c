@@ -59,10 +59,10 @@ static const oe_ecall_info_t _project_ecall_info_table[] =
 /**** ECALL marshalling structs. ****/
 typedef struct _get_remote_report_with_pubkey_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     uint8_t** pem_key;
     size_t* key_size;
     uint8_t** remote_report;
@@ -71,7 +71,7 @@ typedef struct _get_remote_report_with_pubkey_args_t
 
 typedef struct _server_store_client_public_key_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     uint8_t* pem_client_public_key;
@@ -79,7 +79,7 @@ typedef struct _server_store_client_public_key_args_t
 
 typedef struct _server_write_rsa_pem_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     uint8_t* buff;
@@ -87,7 +87,7 @@ typedef struct _server_write_rsa_pem_args_t
 
 typedef struct _server_generate_encrypted_message_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     uint8_t* to_encrypt;
@@ -98,7 +98,7 @@ typedef struct _server_generate_encrypted_message_args_t
 
 typedef struct _server_decrypt_message_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     uint8_t* encrypted_data;
@@ -107,7 +107,7 @@ typedef struct _server_decrypt_message_args_t
 
 typedef struct _server_store_ecdh_key_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     char* key;
@@ -115,7 +115,7 @@ typedef struct _server_store_ecdh_key_args_t
 
 typedef struct _server_write_ecdh_pem_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     char* buff;
@@ -123,35 +123,35 @@ typedef struct _server_write_ecdh_pem_args_t
 
 typedef struct _server_generate_secret_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
 } server_generate_secret_args_t;
 
 typedef struct _enclave_init_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
 } enclave_init_args_t;
 
 typedef struct _enclave_old_to_new_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
 } enclave_old_to_new_args_t;
 
 typedef struct _enclave_new_to_old_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
 } enclave_new_to_old_args_t;
 
 typedef struct _enclave_train_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     double* values;
@@ -161,7 +161,7 @@ typedef struct _enclave_train_args_t
 
 typedef struct _enclave_infer_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     double* values;
@@ -170,10 +170,10 @@ typedef struct _enclave_infer_args_t
 
 typedef struct _oe_get_sgx_report_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     void* opt_params;
     size_t opt_params_size;
     sgx_report_t* report;
@@ -181,10 +181,10 @@ typedef struct _oe_get_sgx_report_ecall_args_t
 
 typedef struct _oe_get_report_v2_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     uint32_t flags;
     void* opt_params;
     size_t opt_params_size;
@@ -194,10 +194,10 @@ typedef struct _oe_get_report_v2_ecall_args_t
 
 typedef struct _oe_verify_local_report_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     uint8_t* report;
     size_t report_size;
     oe_report_t* parsed_report;
@@ -205,17 +205,17 @@ typedef struct _oe_verify_local_report_ecall_args_t
 
 typedef struct _oe_sgx_init_context_switchless_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     oe_host_worker_context_t* host_worker_contexts;
     uint64_t num_host_workers;
 } oe_sgx_init_context_switchless_ecall_args_t;
 
 typedef struct _oe_sgx_switchless_enclave_worker_thread_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     oe_enclave_worker_context_t* context;
@@ -223,10 +223,10 @@ typedef struct _oe_sgx_switchless_enclave_worker_thread_ecall_args_t
 
 typedef struct _oe_verify_report_ecall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     void* report;
     size_t report_size;
 } oe_verify_report_ecall_args_t;
@@ -317,7 +317,7 @@ oe_result_t project_get_remote_report_with_pubkey(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -328,7 +328,7 @@ oe_result_t project_get_remote_report_with_pubkey(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     OE_READ_OUT_PARAM(pem_key, 1, sizeof(uint8_t*));
     OE_READ_OUT_PARAM(key_size, 1, sizeof(size_t));
@@ -418,7 +418,7 @@ oe_result_t project_server_store_client_public_key(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -515,7 +515,7 @@ oe_result_t project_server_write_rsa_pem(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -543,7 +543,7 @@ OE_WEAK_ALIAS(project_server_write_rsa_pem, server_write_rsa_pem);
 
 oe_result_t project_server_generate_encrypted_message(
     oe_enclave_t* enclave,
-    uint8_t to_encrypt[17],
+    uint8_t* to_encrypt,
     int message_size,
     uint8_t** encrypted_data,
     size_t* size_encrypted)
@@ -575,7 +575,7 @@ oe_result_t project_server_generate_encrypted_message(
     /* Compute input buffer size. Include in and in-out parameters. */
     OE_ADD_SIZE(_input_buffer_size, sizeof(server_generate_encrypted_message_args_t));
     if (to_encrypt)
-        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(uint8_t[17]));
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, _args.message_size);
     
     /* Compute output buffer size. Include out and in-out parameters. */
     OE_ADD_SIZE(_output_buffer_size, sizeof(server_generate_encrypted_message_args_t));
@@ -598,7 +598,7 @@ oe_result_t project_server_generate_encrypted_message(
     _pargs_in = (server_generate_encrypted_message_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     if (to_encrypt)
-        OE_WRITE_IN_PARAM(to_encrypt, 1, sizeof(uint8_t[17]), uint8_t*);
+        OE_WRITE_IN_PARAM(to_encrypt, 1, _args.message_size, uint8_t*);
     
     /* Copy args structure (now filled) to input buffer. */
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
@@ -620,7 +620,7 @@ oe_result_t project_server_generate_encrypted_message(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -648,7 +648,7 @@ OE_WEAK_ALIAS(project_server_generate_encrypted_message, server_generate_encrypt
 
 oe_result_t project_server_decrypt_message(
     oe_enclave_t* enclave,
-    uint8_t encrypted_data[256],
+    uint8_t* encrypted_data,
     size_t encrypted_data_size)
 {
     oe_result_t _result = OE_FAILURE;
@@ -676,7 +676,7 @@ oe_result_t project_server_decrypt_message(
     /* Compute input buffer size. Include in and in-out parameters. */
     OE_ADD_SIZE(_input_buffer_size, sizeof(server_decrypt_message_args_t));
     if (encrypted_data)
-        OE_ADD_ARG_SIZE(_input_buffer_size, 1, sizeof(uint8_t[256]));
+        OE_ADD_ARG_SIZE(_input_buffer_size, 1, _args.encrypted_data_size);
     
     /* Compute output buffer size. Include out and in-out parameters. */
     OE_ADD_SIZE(_output_buffer_size, sizeof(server_decrypt_message_args_t));
@@ -698,7 +698,7 @@ oe_result_t project_server_decrypt_message(
     _pargs_in = (server_decrypt_message_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     if (encrypted_data)
-        OE_WRITE_IN_PARAM(encrypted_data, 1, sizeof(uint8_t[256]), uint8_t*);
+        OE_WRITE_IN_PARAM(encrypted_data, 1, _args.encrypted_data_size, uint8_t*);
     
     /* Copy args structure (now filled) to input buffer. */
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
@@ -720,7 +720,7 @@ oe_result_t project_server_decrypt_message(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -818,7 +818,7 @@ oe_result_t project_server_store_ecdh_key(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -915,7 +915,7 @@ oe_result_t project_server_write_ecdh_pem(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1008,7 +1008,7 @@ oe_result_t project_server_generate_secret(oe_enclave_t* enclave)
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1101,7 +1101,7 @@ oe_result_t project_enclave_init(oe_enclave_t* enclave)
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1194,7 +1194,7 @@ oe_result_t project_enclave_old_to_new(oe_enclave_t* enclave)
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1287,7 +1287,7 @@ oe_result_t project_enclave_new_to_old(oe_enclave_t* enclave)
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1390,7 +1390,7 @@ oe_result_t project_enclave_train(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1491,7 +1491,7 @@ oe_result_t project_enclave_infer(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1595,7 +1595,7 @@ oe_result_t project_oe_get_sgx_report_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1606,7 +1606,7 @@ oe_result_t project_oe_get_sgx_report_ecall(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     OE_READ_OUT_PARAM(report, 1, sizeof(sgx_report_t));
 
@@ -1705,7 +1705,7 @@ oe_result_t project_oe_get_report_v2_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1716,7 +1716,7 @@ oe_result_t project_oe_get_report_v2_ecall(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     OE_READ_OUT_PARAM(report_buffer, 1, sizeof(uint8_t*));
     OE_READ_OUT_PARAM(report_buffer_size, 1, sizeof(size_t));
@@ -1810,7 +1810,7 @@ oe_result_t project_oe_verify_local_report_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1821,7 +1821,7 @@ oe_result_t project_oe_verify_local_report_ecall(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     OE_READ_OUT_PARAM(parsed_report, 1, sizeof(oe_report_t));
 
@@ -1909,7 +1909,7 @@ oe_result_t project_oe_sgx_init_context_switchless_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -1920,7 +1920,7 @@ oe_result_t project_oe_sgx_init_context_switchless_ecall(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     /* There were no out nor in-out parameters. */
 
@@ -2005,7 +2005,7 @@ oe_result_t project_oe_sgx_switchless_enclave_worker_thread_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -2106,7 +2106,7 @@ oe_result_t project_oe_verify_report_ecall(
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
-    if ((_result = _pargs_out->result) != OE_OK)
+    if ((_result = _pargs_out->oe_result) != OE_OK)
         goto done;
 
     /* Currently exactly _output_buffer_size bytes must be written. */
@@ -2117,7 +2117,7 @@ oe_result_t project_oe_verify_report_ecall(
     }
 
     /* Unmarshal return value and out, in-out parameters. */
-    *_retval = _pargs_out->retval;
+    *_retval = _pargs_out->oe_retval;
 
     /* There were no out nor in-out parameters. */
 
@@ -2207,26 +2207,27 @@ enum
     project_fcn_id_oe_syscall_getaddrinfo_close_ocall = 69,
     project_fcn_id_oe_syscall_getnameinfo_ocall = 70,
     project_fcn_id_oe_syscall_nanosleep_ocall = 71,
-    project_fcn_id_oe_syscall_getpid_ocall = 72,
-    project_fcn_id_oe_syscall_getppid_ocall = 73,
-    project_fcn_id_oe_syscall_getpgrp_ocall = 74,
-    project_fcn_id_oe_syscall_getuid_ocall = 75,
-    project_fcn_id_oe_syscall_geteuid_ocall = 76,
-    project_fcn_id_oe_syscall_getgid_ocall = 77,
-    project_fcn_id_oe_syscall_getegid_ocall = 78,
-    project_fcn_id_oe_syscall_getpgid_ocall = 79,
-    project_fcn_id_oe_syscall_getgroups_ocall = 80,
-    project_fcn_id_oe_syscall_uname_ocall = 81,
+    project_fcn_id_oe_syscall_clock_nanosleep_ocall = 72,
+    project_fcn_id_oe_syscall_getpid_ocall = 73,
+    project_fcn_id_oe_syscall_getppid_ocall = 74,
+    project_fcn_id_oe_syscall_getpgrp_ocall = 75,
+    project_fcn_id_oe_syscall_getuid_ocall = 76,
+    project_fcn_id_oe_syscall_geteuid_ocall = 77,
+    project_fcn_id_oe_syscall_getgid_ocall = 78,
+    project_fcn_id_oe_syscall_getegid_ocall = 79,
+    project_fcn_id_oe_syscall_getpgid_ocall = 80,
+    project_fcn_id_oe_syscall_getgroups_ocall = 81,
+    project_fcn_id_oe_syscall_uname_ocall = 82,
     project_fcn_id_untrusted_call_max = OE_ENUM_MAX
 };
 
 /**** OCALL marshalling structs. ****/
 typedef struct _oe_get_supported_attester_format_ids_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     void* format_ids;
     size_t format_ids_size;
     size_t* format_ids_size_out;
@@ -2234,10 +2235,10 @@ typedef struct _oe_get_supported_attester_format_ids_ocall_args_t
 
 typedef struct _oe_get_qetarget_info_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     oe_uuid_t* format_id;
     void* opt_params;
     size_t opt_params_size;
@@ -2246,10 +2247,10 @@ typedef struct _oe_get_qetarget_info_ocall_args_t
 
 typedef struct _oe_get_quote_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     oe_uuid_t* format_id;
     void* opt_params;
     size_t opt_params_size;
@@ -2261,10 +2262,10 @@ typedef struct _oe_get_quote_ocall_args_t
 
 typedef struct _oe_get_quote_verification_collateral_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     uint8_t* fmspc;
     uint8_t collateral_provider;
     void* tcb_info;
@@ -2292,10 +2293,10 @@ typedef struct _oe_get_quote_verification_collateral_ocall_args_t
 
 typedef struct _oe_verify_quote_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     oe_uuid_t* format_id;
     void* opt_params;
     size_t opt_params_size;
@@ -2328,20 +2329,20 @@ typedef struct _oe_verify_quote_ocall_args_t
 
 typedef struct _oe_sgx_get_cpuid_table_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     void* cpuid_table_buffer;
     size_t cpuid_table_buffer_size;
 } oe_sgx_get_cpuid_table_ocall_args_t;
 
 typedef struct _oe_sgx_backtrace_symbols_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_result_t retval;
+    oe_result_t oe_retval;
     oe_enclave_t* oe_enclave;
     uint64_t* buffer;
     size_t size;
@@ -2352,7 +2353,7 @@ typedef struct _oe_sgx_backtrace_symbols_ocall_args_t
 
 typedef struct _oe_sgx_thread_wake_wait_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     oe_enclave_t* oe_enclave;
@@ -2362,7 +2363,7 @@ typedef struct _oe_sgx_thread_wake_wait_ocall_args_t
 
 typedef struct _oe_sgx_wake_switchless_worker_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     oe_host_worker_context_t* context;
@@ -2370,7 +2371,7 @@ typedef struct _oe_sgx_wake_switchless_worker_ocall_args_t
 
 typedef struct _oe_sgx_sleep_switchless_worker_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     oe_enclave_worker_context_t* context;
@@ -2378,20 +2379,20 @@ typedef struct _oe_sgx_sleep_switchless_worker_ocall_args_t
 
 typedef struct _oe_syscall_epoll_create1_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_host_fd_t retval;
+    oe_host_fd_t oe_retval;
     int flags;
     int ocall_errno;
 } oe_syscall_epoll_create1_ocall_args_t;
 
 typedef struct _oe_syscall_epoll_wait_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int64_t epfd;
     struct oe_epoll_event* events;
     unsigned int maxevents;
@@ -2401,19 +2402,19 @@ typedef struct _oe_syscall_epoll_wait_ocall_args_t
 
 typedef struct _oe_syscall_epoll_wake_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int ocall_errno;
 } oe_syscall_epoll_wake_ocall_args_t;
 
 typedef struct _oe_syscall_epoll_ctl_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int64_t epfd;
     int op;
     int64_t fd;
@@ -2423,20 +2424,20 @@ typedef struct _oe_syscall_epoll_ctl_ocall_args_t
 
 typedef struct _oe_syscall_epoll_close_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t epfd;
     int ocall_errno;
 } oe_syscall_epoll_close_ocall_args_t;
 
 typedef struct _oe_syscall_open_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_host_fd_t retval;
+    oe_host_fd_t oe_retval;
     char* pathname;
     size_t pathname_len;
     int flags;
@@ -2446,10 +2447,10 @@ typedef struct _oe_syscall_open_ocall_args_t
 
 typedef struct _oe_syscall_read_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* buf;
     size_t count;
@@ -2458,10 +2459,10 @@ typedef struct _oe_syscall_read_ocall_args_t
 
 typedef struct _oe_syscall_write_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* buf;
     size_t count;
@@ -2470,10 +2471,10 @@ typedef struct _oe_syscall_write_ocall_args_t
 
 typedef struct _oe_syscall_readv_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* iov_buf;
     int iovcnt;
@@ -2483,10 +2484,10 @@ typedef struct _oe_syscall_readv_ocall_args_t
 
 typedef struct _oe_syscall_writev_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* iov_buf;
     int iovcnt;
@@ -2496,10 +2497,10 @@ typedef struct _oe_syscall_writev_ocall_args_t
 
 typedef struct _oe_syscall_lseek_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_off_t retval;
+    oe_off_t oe_retval;
     oe_host_fd_t fd;
     oe_off_t offset;
     int whence;
@@ -2508,10 +2509,10 @@ typedef struct _oe_syscall_lseek_ocall_args_t
 
 typedef struct _oe_syscall_pread_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* buf;
     size_t count;
@@ -2521,10 +2522,10 @@ typedef struct _oe_syscall_pread_ocall_args_t
 
 typedef struct _oe_syscall_pwrite_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* buf;
     size_t count;
@@ -2534,20 +2535,20 @@ typedef struct _oe_syscall_pwrite_ocall_args_t
 
 typedef struct _oe_syscall_close_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     int ocall_errno;
 } oe_syscall_close_ocall_args_t;
 
 typedef struct _oe_syscall_flock_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     int operation;
     int ocall_errno;
@@ -2555,40 +2556,40 @@ typedef struct _oe_syscall_flock_ocall_args_t
 
 typedef struct _oe_syscall_fsync_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     int ocall_errno;
 } oe_syscall_fsync_ocall_args_t;
 
 typedef struct _oe_syscall_fdatasync_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     int ocall_errno;
 } oe_syscall_fdatasync_ocall_args_t;
 
 typedef struct _oe_syscall_dup_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_host_fd_t retval;
+    oe_host_fd_t oe_retval;
     oe_host_fd_t oldfd;
     int ocall_errno;
 } oe_syscall_dup_ocall_args_t;
 
 typedef struct _oe_syscall_opendir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    uint64_t retval;
+    uint64_t oe_retval;
     char* name;
     size_t name_len;
     int ocall_errno;
@@ -2596,10 +2597,10 @@ typedef struct _oe_syscall_opendir_ocall_args_t
 
 typedef struct _oe_syscall_readdir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     uint64_t dirp;
     struct oe_dirent* entry;
     int ocall_errno;
@@ -2607,7 +2608,7 @@ typedef struct _oe_syscall_readdir_ocall_args_t
 
 typedef struct _oe_syscall_rewinddir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
     uint64_t dirp;
@@ -2615,20 +2616,20 @@ typedef struct _oe_syscall_rewinddir_ocall_args_t
 
 typedef struct _oe_syscall_closedir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     uint64_t dirp;
     int ocall_errno;
 } oe_syscall_closedir_ocall_args_t;
 
 typedef struct _oe_syscall_stat_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* pathname;
     size_t pathname_len;
     struct oe_stat_t* buf;
@@ -2637,10 +2638,10 @@ typedef struct _oe_syscall_stat_ocall_args_t
 
 typedef struct _oe_syscall_fstat_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     struct oe_stat_t* buf;
     int ocall_errno;
@@ -2648,10 +2649,10 @@ typedef struct _oe_syscall_fstat_ocall_args_t
 
 typedef struct _oe_syscall_access_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* pathname;
     size_t pathname_len;
     int mode;
@@ -2660,10 +2661,10 @@ typedef struct _oe_syscall_access_ocall_args_t
 
 typedef struct _oe_syscall_link_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* oldpath;
     size_t oldpath_len;
     char* newpath;
@@ -2673,10 +2674,10 @@ typedef struct _oe_syscall_link_ocall_args_t
 
 typedef struct _oe_syscall_unlink_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* pathname;
     size_t pathname_len;
     int ocall_errno;
@@ -2684,10 +2685,10 @@ typedef struct _oe_syscall_unlink_ocall_args_t
 
 typedef struct _oe_syscall_rename_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* oldpath;
     size_t oldpath_len;
     char* newpath;
@@ -2697,10 +2698,10 @@ typedef struct _oe_syscall_rename_ocall_args_t
 
 typedef struct _oe_syscall_truncate_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* path;
     size_t path_len;
     oe_off_t length;
@@ -2709,10 +2710,10 @@ typedef struct _oe_syscall_truncate_ocall_args_t
 
 typedef struct _oe_syscall_ftruncate_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     oe_off_t length;
     int ocall_errno;
@@ -2720,10 +2721,10 @@ typedef struct _oe_syscall_ftruncate_ocall_args_t
 
 typedef struct _oe_syscall_mkdir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* pathname;
     size_t pathname_len;
     oe_mode_t mode;
@@ -2732,10 +2733,10 @@ typedef struct _oe_syscall_mkdir_ocall_args_t
 
 typedef struct _oe_syscall_rmdir_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* pathname;
     size_t pathname_len;
     int ocall_errno;
@@ -2743,10 +2744,10 @@ typedef struct _oe_syscall_rmdir_ocall_args_t
 
 typedef struct _oe_syscall_fcntl_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     int cmd;
     uint64_t arg;
@@ -2757,10 +2758,10 @@ typedef struct _oe_syscall_fcntl_ocall_args_t
 
 typedef struct _oe_syscall_ioctl_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t fd;
     uint64_t request;
     uint64_t arg;
@@ -2771,10 +2772,10 @@ typedef struct _oe_syscall_ioctl_ocall_args_t
 
 typedef struct _oe_syscall_poll_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     struct oe_host_pollfd* host_fds;
     oe_nfds_t nfds;
     int timeout;
@@ -2783,10 +2784,10 @@ typedef struct _oe_syscall_poll_ocall_args_t
 
 typedef struct _oe_syscall_kill_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int pid;
     int signum;
     int ocall_errno;
@@ -2794,20 +2795,20 @@ typedef struct _oe_syscall_kill_ocall_args_t
 
 typedef struct _oe_syscall_close_socket_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int ocall_errno;
 } oe_syscall_close_socket_ocall_args_t;
 
 typedef struct _oe_syscall_socket_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_host_fd_t retval;
+    oe_host_fd_t oe_retval;
     int domain;
     int type;
     int protocol;
@@ -2816,20 +2817,20 @@ typedef struct _oe_syscall_socket_ocall_args_t
 
 typedef struct _oe_syscall_shutdown_sockets_device_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int ocall_errno;
 } oe_syscall_shutdown_sockets_device_ocall_args_t;
 
 typedef struct _oe_syscall_socketpair_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int domain;
     int type;
     int protocol;
@@ -2839,10 +2840,10 @@ typedef struct _oe_syscall_socketpair_ocall_args_t
 
 typedef struct _oe_syscall_connect_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     struct oe_sockaddr* addr;
     oe_socklen_t addrlen;
@@ -2851,10 +2852,10 @@ typedef struct _oe_syscall_connect_ocall_args_t
 
 typedef struct _oe_syscall_accept_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    oe_host_fd_t retval;
+    oe_host_fd_t oe_retval;
     oe_host_fd_t sockfd;
     struct oe_sockaddr* addr;
     oe_socklen_t addrlen_in;
@@ -2864,10 +2865,10 @@ typedef struct _oe_syscall_accept_ocall_args_t
 
 typedef struct _oe_syscall_bind_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     struct oe_sockaddr* addr;
     oe_socklen_t addrlen;
@@ -2876,10 +2877,10 @@ typedef struct _oe_syscall_bind_ocall_args_t
 
 typedef struct _oe_syscall_listen_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int backlog;
     int ocall_errno;
@@ -2887,10 +2888,10 @@ typedef struct _oe_syscall_listen_ocall_args_t
 
 typedef struct _oe_syscall_recvmsg_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* msg_name;
     oe_socklen_t msg_namelen;
@@ -2907,10 +2908,10 @@ typedef struct _oe_syscall_recvmsg_ocall_args_t
 
 typedef struct _oe_syscall_sendmsg_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* msg_name;
     oe_socklen_t msg_namelen;
@@ -2925,10 +2926,10 @@ typedef struct _oe_syscall_sendmsg_ocall_args_t
 
 typedef struct _oe_syscall_recv_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* buf;
     size_t len;
@@ -2938,10 +2939,10 @@ typedef struct _oe_syscall_recv_ocall_args_t
 
 typedef struct _oe_syscall_recvfrom_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* buf;
     size_t len;
@@ -2954,10 +2955,10 @@ typedef struct _oe_syscall_recvfrom_ocall_args_t
 
 typedef struct _oe_syscall_send_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* buf;
     size_t len;
@@ -2967,10 +2968,10 @@ typedef struct _oe_syscall_send_ocall_args_t
 
 typedef struct _oe_syscall_sendto_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t sockfd;
     void* buf;
     size_t len;
@@ -2982,10 +2983,10 @@ typedef struct _oe_syscall_sendto_ocall_args_t
 
 typedef struct _oe_syscall_recvv_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* iov_buf;
     int iovcnt;
@@ -2995,10 +2996,10 @@ typedef struct _oe_syscall_recvv_ocall_args_t
 
 typedef struct _oe_syscall_sendv_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    ssize_t retval;
+    ssize_t oe_retval;
     oe_host_fd_t fd;
     void* iov_buf;
     int iovcnt;
@@ -3008,10 +3009,10 @@ typedef struct _oe_syscall_sendv_ocall_args_t
 
 typedef struct _oe_syscall_shutdown_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int how;
     int ocall_errno;
@@ -3019,10 +3020,10 @@ typedef struct _oe_syscall_shutdown_ocall_args_t
 
 typedef struct _oe_syscall_setsockopt_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int level;
     int optname;
@@ -3033,10 +3034,10 @@ typedef struct _oe_syscall_setsockopt_ocall_args_t
 
 typedef struct _oe_syscall_getsockopt_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     int level;
     int optname;
@@ -3048,10 +3049,10 @@ typedef struct _oe_syscall_getsockopt_ocall_args_t
 
 typedef struct _oe_syscall_getsockname_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     struct oe_sockaddr* addr;
     oe_socklen_t addrlen_in;
@@ -3061,10 +3062,10 @@ typedef struct _oe_syscall_getsockname_ocall_args_t
 
 typedef struct _oe_syscall_getpeername_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     oe_host_fd_t sockfd;
     struct oe_sockaddr* addr;
     oe_socklen_t addrlen_in;
@@ -3074,10 +3075,10 @@ typedef struct _oe_syscall_getpeername_ocall_args_t
 
 typedef struct _oe_syscall_getaddrinfo_open_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     char* node;
     size_t node_len;
     char* service;
@@ -3089,10 +3090,10 @@ typedef struct _oe_syscall_getaddrinfo_open_ocall_args_t
 
 typedef struct _oe_syscall_getaddrinfo_read_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     uint64_t handle;
     int* ai_flags;
     int* ai_family;
@@ -3109,20 +3110,20 @@ typedef struct _oe_syscall_getaddrinfo_read_ocall_args_t
 
 typedef struct _oe_syscall_getaddrinfo_close_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     uint64_t handle;
     int ocall_errno;
 } oe_syscall_getaddrinfo_close_ocall_args_t;
 
 typedef struct _oe_syscall_getnameinfo_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     struct oe_sockaddr* sa;
     oe_socklen_t salen;
     char* host;
@@ -3135,87 +3136,100 @@ typedef struct _oe_syscall_getnameinfo_ocall_args_t
 
 typedef struct _oe_syscall_nanosleep_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     struct oe_timespec* req;
     struct oe_timespec* rem;
     int ocall_errno;
 } oe_syscall_nanosleep_ocall_args_t;
 
-typedef struct _oe_syscall_getpid_ocall_args_t
+typedef struct _oe_syscall_clock_nanosleep_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
+    oe_clockid_t clockid;
+    int flag;
+    struct oe_timespec* req;
+    struct oe_timespec* rem;
+    int ocall_errno;
+} oe_syscall_clock_nanosleep_ocall_args_t;
+
+typedef struct _oe_syscall_getpid_ocall_args_t
+{
+    oe_result_t oe_result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    int oe_retval;
 } oe_syscall_getpid_ocall_args_t;
 
 typedef struct _oe_syscall_getppid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
 } oe_syscall_getppid_ocall_args_t;
 
 typedef struct _oe_syscall_getpgrp_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
 } oe_syscall_getpgrp_ocall_args_t;
 
 typedef struct _oe_syscall_getuid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned int retval;
+    unsigned int oe_retval;
 } oe_syscall_getuid_ocall_args_t;
 
 typedef struct _oe_syscall_geteuid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned int retval;
+    unsigned int oe_retval;
 } oe_syscall_geteuid_ocall_args_t;
 
 typedef struct _oe_syscall_getgid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned int retval;
+    unsigned int oe_retval;
 } oe_syscall_getgid_ocall_args_t;
 
 typedef struct _oe_syscall_getegid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    unsigned int retval;
+    unsigned int oe_retval;
 } oe_syscall_getegid_ocall_args_t;
 
 typedef struct _oe_syscall_getpgid_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     int pid;
     int ocall_errno;
 } oe_syscall_getpgid_ocall_args_t;
 
 typedef struct _oe_syscall_getgroups_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     size_t size;
     unsigned int* list;
     int ocall_errno;
@@ -3223,10 +3237,10 @@ typedef struct _oe_syscall_getgroups_ocall_args_t
 
 typedef struct _oe_syscall_uname_ocall_args_t
 {
-    oe_result_t result;
+    oe_result_t oe_result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
-    int retval;
+    int oe_retval;
     struct oe_utsname* buf;
     int ocall_errno;
 } oe_syscall_uname_ocall_args_t;
@@ -3272,7 +3286,7 @@ static void ocall_oe_get_supported_attester_format_ids_ocall(
         OE_SET_OUT_POINTER(format_ids_size_out, 1, sizeof(size_t), size_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_get_supported_attester_format_ids_ocall(
+    _pargs_out->oe_retval = oe_get_supported_attester_format_ids_ocall(
         _pargs_in->format_ids,
         _pargs_in->format_ids_size,
         _pargs_in->format_ids_size_out);
@@ -3290,7 +3304,7 @@ static void ocall_oe_get_supported_attester_format_ids_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_get_qetarget_info_ocall(
@@ -3333,7 +3347,7 @@ static void ocall_oe_get_qetarget_info_ocall(
         OE_SET_OUT_POINTER(target_info, 1, sizeof(sgx_target_info_t), sgx_target_info_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_get_qetarget_info_ocall(
+    _pargs_out->oe_retval = oe_get_qetarget_info_ocall(
         (const oe_uuid_t*)_pargs_in->format_id,
         (const void*)_pargs_in->opt_params,
         _pargs_in->opt_params_size,
@@ -3352,7 +3366,7 @@ static void ocall_oe_get_qetarget_info_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_get_quote_ocall(
@@ -3399,7 +3413,7 @@ static void ocall_oe_get_quote_ocall(
         OE_SET_OUT_POINTER(quote_size_out, 1, sizeof(size_t), size_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_get_quote_ocall(
+    _pargs_out->oe_retval = oe_get_quote_ocall(
         (const oe_uuid_t*)_pargs_in->format_id,
         (const void*)_pargs_in->opt_params,
         _pargs_in->opt_params_size,
@@ -3421,7 +3435,7 @@ static void ocall_oe_get_quote_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_get_quote_verification_collateral_ocall(
@@ -3488,7 +3502,7 @@ static void ocall_oe_get_quote_verification_collateral_ocall(
         OE_SET_OUT_POINTER(qe_identity_issuer_chain_size_out, 1, sizeof(size_t), size_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_get_quote_verification_collateral_ocall(
+    _pargs_out->oe_retval = oe_get_quote_verification_collateral_ocall(
         *(uint8_t(*)[6])_pargs_in->fmspc,
         _pargs_in->collateral_provider,
         _pargs_in->tcb_info,
@@ -3526,7 +3540,7 @@ static void ocall_oe_get_quote_verification_collateral_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_verify_quote_ocall(
@@ -3595,7 +3609,7 @@ static void ocall_oe_verify_quote_ocall(
         OE_SET_OUT_POINTER(p_supplemental_data_size_out, 1, sizeof(uint32_t), uint32_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_verify_quote_ocall(
+    _pargs_out->oe_retval = oe_verify_quote_ocall(
         (const oe_uuid_t*)_pargs_in->format_id,
         (const void*)_pargs_in->opt_params,
         _pargs_in->opt_params_size,
@@ -3638,7 +3652,7 @@ static void ocall_oe_verify_quote_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_sgx_get_cpuid_table_ocall(
@@ -3678,7 +3692,7 @@ static void ocall_oe_sgx_get_cpuid_table_ocall(
         OE_SET_OUT_POINTER(cpuid_table_buffer, 1, _pargs_in->cpuid_table_buffer_size, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_sgx_get_cpuid_table_ocall(
+    _pargs_out->oe_retval = oe_sgx_get_cpuid_table_ocall(
         _pargs_in->cpuid_table_buffer,
         _pargs_in->cpuid_table_buffer_size);
 
@@ -3695,7 +3709,7 @@ static void ocall_oe_sgx_get_cpuid_table_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_sgx_backtrace_symbols_ocall(
@@ -3738,7 +3752,7 @@ static void ocall_oe_sgx_backtrace_symbols_ocall(
         OE_SET_OUT_POINTER(symbols_buffer_size_out, 1, sizeof(size_t), size_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_sgx_backtrace_symbols_ocall(
+    _pargs_out->oe_retval = oe_sgx_backtrace_symbols_ocall(
         _pargs_in->oe_enclave,
         (const uint64_t*)_pargs_in->buffer,
         _pargs_in->size,
@@ -3759,7 +3773,7 @@ static void ocall_oe_sgx_backtrace_symbols_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_sgx_thread_wake_wait_ocall(
@@ -3816,7 +3830,7 @@ static void ocall_oe_sgx_thread_wake_wait_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_sgx_wake_switchless_worker_ocall(
@@ -3871,7 +3885,7 @@ static void ocall_oe_sgx_wake_switchless_worker_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_sgx_sleep_switchless_worker_ocall(
@@ -3926,7 +3940,7 @@ static void ocall_oe_sgx_sleep_switchless_worker_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_epoll_create1_ocall(
@@ -3965,7 +3979,7 @@ static void ocall_oe_syscall_epoll_create1_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_epoll_create1_ocall(
+    _pargs_out->oe_retval = oe_syscall_epoll_create1_ocall(
         _pargs_in->flags);
 
     /* There is no deep-copyable out parameter. */
@@ -3981,7 +3995,7 @@ static void ocall_oe_syscall_epoll_create1_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_epoll_wait_ocall(
@@ -4021,7 +4035,7 @@ static void ocall_oe_syscall_epoll_wait_ocall(
         OE_SET_OUT_POINTER(events, _pargs_in->maxevents, sizeof(struct oe_epoll_event), struct oe_epoll_event*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_epoll_wait_ocall(
+    _pargs_out->oe_retval = oe_syscall_epoll_wait_ocall(
         _pargs_in->epfd,
         _pargs_in->events,
         _pargs_in->maxevents,
@@ -4040,7 +4054,7 @@ static void ocall_oe_syscall_epoll_wait_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_epoll_wake_ocall(
@@ -4079,7 +4093,7 @@ static void ocall_oe_syscall_epoll_wake_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_epoll_wake_ocall(
+    _pargs_out->oe_retval = oe_syscall_epoll_wake_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -4095,7 +4109,7 @@ static void ocall_oe_syscall_epoll_wake_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_epoll_ctl_ocall(
@@ -4135,7 +4149,7 @@ static void ocall_oe_syscall_epoll_ctl_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_epoll_ctl_ocall(
+    _pargs_out->oe_retval = oe_syscall_epoll_ctl_ocall(
         _pargs_in->epfd,
         _pargs_in->op,
         _pargs_in->fd,
@@ -4154,7 +4168,7 @@ static void ocall_oe_syscall_epoll_ctl_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_epoll_close_ocall(
@@ -4193,7 +4207,7 @@ static void ocall_oe_syscall_epoll_close_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_epoll_close_ocall(
+    _pargs_out->oe_retval = oe_syscall_epoll_close_ocall(
         _pargs_in->epfd);
 
     /* There is no deep-copyable out parameter. */
@@ -4209,7 +4223,7 @@ static void ocall_oe_syscall_epoll_close_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_open_ocall(
@@ -4249,7 +4263,7 @@ static void ocall_oe_syscall_open_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_open_ocall(
+    _pargs_out->oe_retval = oe_syscall_open_ocall(
         (const char*)_pargs_in->pathname,
         _pargs_in->flags,
         _pargs_in->mode);
@@ -4267,7 +4281,7 @@ static void ocall_oe_syscall_open_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_read_ocall(
@@ -4307,7 +4321,7 @@ static void ocall_oe_syscall_read_ocall(
         OE_SET_OUT_POINTER(buf, 1, _pargs_in->count, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_read_ocall(
+    _pargs_out->oe_retval = oe_syscall_read_ocall(
         _pargs_in->fd,
         _pargs_in->buf,
         _pargs_in->count);
@@ -4325,7 +4339,7 @@ static void ocall_oe_syscall_read_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_write_ocall(
@@ -4365,7 +4379,7 @@ static void ocall_oe_syscall_write_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_write_ocall(
+    _pargs_out->oe_retval = oe_syscall_write_ocall(
         _pargs_in->fd,
         (const void*)_pargs_in->buf,
         _pargs_in->count);
@@ -4383,7 +4397,7 @@ static void ocall_oe_syscall_write_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_readv_ocall(
@@ -4424,7 +4438,7 @@ static void ocall_oe_syscall_readv_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_readv_ocall(
+    _pargs_out->oe_retval = oe_syscall_readv_ocall(
         _pargs_in->fd,
         _pargs_in->iov_buf,
         _pargs_in->iovcnt,
@@ -4443,7 +4457,7 @@ static void ocall_oe_syscall_readv_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_writev_ocall(
@@ -4483,7 +4497,7 @@ static void ocall_oe_syscall_writev_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_writev_ocall(
+    _pargs_out->oe_retval = oe_syscall_writev_ocall(
         _pargs_in->fd,
         (const void*)_pargs_in->iov_buf,
         _pargs_in->iovcnt,
@@ -4502,7 +4516,7 @@ static void ocall_oe_syscall_writev_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_lseek_ocall(
@@ -4541,7 +4555,7 @@ static void ocall_oe_syscall_lseek_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_lseek_ocall(
+    _pargs_out->oe_retval = oe_syscall_lseek_ocall(
         _pargs_in->fd,
         _pargs_in->offset,
         _pargs_in->whence);
@@ -4559,7 +4573,7 @@ static void ocall_oe_syscall_lseek_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_pread_ocall(
@@ -4599,7 +4613,7 @@ static void ocall_oe_syscall_pread_ocall(
         OE_SET_OUT_POINTER(buf, 1, _pargs_in->count, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_pread_ocall(
+    _pargs_out->oe_retval = oe_syscall_pread_ocall(
         _pargs_in->fd,
         _pargs_in->buf,
         _pargs_in->count,
@@ -4618,7 +4632,7 @@ static void ocall_oe_syscall_pread_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_pwrite_ocall(
@@ -4658,7 +4672,7 @@ static void ocall_oe_syscall_pwrite_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_pwrite_ocall(
+    _pargs_out->oe_retval = oe_syscall_pwrite_ocall(
         _pargs_in->fd,
         (const void*)_pargs_in->buf,
         _pargs_in->count,
@@ -4677,7 +4691,7 @@ static void ocall_oe_syscall_pwrite_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_close_ocall(
@@ -4716,7 +4730,7 @@ static void ocall_oe_syscall_close_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_close_ocall(
+    _pargs_out->oe_retval = oe_syscall_close_ocall(
         _pargs_in->fd);
 
     /* There is no deep-copyable out parameter. */
@@ -4732,7 +4746,7 @@ static void ocall_oe_syscall_close_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_flock_ocall(
@@ -4771,7 +4785,7 @@ static void ocall_oe_syscall_flock_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_flock_ocall(
+    _pargs_out->oe_retval = oe_syscall_flock_ocall(
         _pargs_in->fd,
         _pargs_in->operation);
 
@@ -4788,7 +4802,7 @@ static void ocall_oe_syscall_flock_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_fsync_ocall(
@@ -4827,7 +4841,7 @@ static void ocall_oe_syscall_fsync_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_fsync_ocall(
+    _pargs_out->oe_retval = oe_syscall_fsync_ocall(
         _pargs_in->fd);
 
     /* There is no deep-copyable out parameter. */
@@ -4843,7 +4857,7 @@ static void ocall_oe_syscall_fsync_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_fdatasync_ocall(
@@ -4882,7 +4896,7 @@ static void ocall_oe_syscall_fdatasync_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_fdatasync_ocall(
+    _pargs_out->oe_retval = oe_syscall_fdatasync_ocall(
         _pargs_in->fd);
 
     /* There is no deep-copyable out parameter. */
@@ -4898,7 +4912,7 @@ static void ocall_oe_syscall_fdatasync_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_dup_ocall(
@@ -4937,7 +4951,7 @@ static void ocall_oe_syscall_dup_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_dup_ocall(
+    _pargs_out->oe_retval = oe_syscall_dup_ocall(
         _pargs_in->oldfd);
 
     /* There is no deep-copyable out parameter. */
@@ -4953,7 +4967,7 @@ static void ocall_oe_syscall_dup_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_opendir_ocall(
@@ -4993,7 +5007,7 @@ static void ocall_oe_syscall_opendir_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_opendir_ocall(
+    _pargs_out->oe_retval = oe_syscall_opendir_ocall(
         (const char*)_pargs_in->name);
 
     /* There is no deep-copyable out parameter. */
@@ -5009,7 +5023,7 @@ static void ocall_oe_syscall_opendir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_readdir_ocall(
@@ -5049,7 +5063,7 @@ static void ocall_oe_syscall_readdir_ocall(
         OE_SET_OUT_POINTER(entry, 1, sizeof(struct oe_dirent), struct oe_dirent*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_readdir_ocall(
+    _pargs_out->oe_retval = oe_syscall_readdir_ocall(
         _pargs_in->dirp,
         _pargs_in->entry);
 
@@ -5066,7 +5080,7 @@ static void ocall_oe_syscall_readdir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_rewinddir_ocall(
@@ -5121,7 +5135,7 @@ static void ocall_oe_syscall_rewinddir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_closedir_ocall(
@@ -5160,7 +5174,7 @@ static void ocall_oe_syscall_closedir_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_closedir_ocall(
+    _pargs_out->oe_retval = oe_syscall_closedir_ocall(
         _pargs_in->dirp);
 
     /* There is no deep-copyable out parameter. */
@@ -5176,7 +5190,7 @@ static void ocall_oe_syscall_closedir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_stat_ocall(
@@ -5217,7 +5231,7 @@ static void ocall_oe_syscall_stat_ocall(
         OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_stat_t), struct oe_stat_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_stat_ocall(
+    _pargs_out->oe_retval = oe_syscall_stat_ocall(
         (const char*)_pargs_in->pathname,
         _pargs_in->buf);
 
@@ -5234,7 +5248,7 @@ static void ocall_oe_syscall_stat_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_fstat_ocall(
@@ -5274,7 +5288,7 @@ static void ocall_oe_syscall_fstat_ocall(
         OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_stat_t), struct oe_stat_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_fstat_ocall(
+    _pargs_out->oe_retval = oe_syscall_fstat_ocall(
         _pargs_in->fd,
         _pargs_in->buf);
 
@@ -5291,7 +5305,7 @@ static void ocall_oe_syscall_fstat_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_access_ocall(
@@ -5331,7 +5345,7 @@ static void ocall_oe_syscall_access_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_access_ocall(
+    _pargs_out->oe_retval = oe_syscall_access_ocall(
         (const char*)_pargs_in->pathname,
         _pargs_in->mode);
 
@@ -5348,7 +5362,7 @@ static void ocall_oe_syscall_access_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_link_ocall(
@@ -5390,7 +5404,7 @@ static void ocall_oe_syscall_link_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_link_ocall(
+    _pargs_out->oe_retval = oe_syscall_link_ocall(
         (const char*)_pargs_in->oldpath,
         (const char*)_pargs_in->newpath);
 
@@ -5407,7 +5421,7 @@ static void ocall_oe_syscall_link_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_unlink_ocall(
@@ -5447,7 +5461,7 @@ static void ocall_oe_syscall_unlink_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_unlink_ocall(
+    _pargs_out->oe_retval = oe_syscall_unlink_ocall(
         (const char*)_pargs_in->pathname);
 
     /* There is no deep-copyable out parameter. */
@@ -5463,7 +5477,7 @@ static void ocall_oe_syscall_unlink_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_rename_ocall(
@@ -5505,7 +5519,7 @@ static void ocall_oe_syscall_rename_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_rename_ocall(
+    _pargs_out->oe_retval = oe_syscall_rename_ocall(
         (const char*)_pargs_in->oldpath,
         (const char*)_pargs_in->newpath);
 
@@ -5522,7 +5536,7 @@ static void ocall_oe_syscall_rename_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_truncate_ocall(
@@ -5562,7 +5576,7 @@ static void ocall_oe_syscall_truncate_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_truncate_ocall(
+    _pargs_out->oe_retval = oe_syscall_truncate_ocall(
         (const char*)_pargs_in->path,
         _pargs_in->length);
 
@@ -5579,7 +5593,7 @@ static void ocall_oe_syscall_truncate_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_ftruncate_ocall(
@@ -5618,7 +5632,7 @@ static void ocall_oe_syscall_ftruncate_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_ftruncate_ocall(
+    _pargs_out->oe_retval = oe_syscall_ftruncate_ocall(
         _pargs_in->fd,
         _pargs_in->length);
 
@@ -5635,7 +5649,7 @@ static void ocall_oe_syscall_ftruncate_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_mkdir_ocall(
@@ -5675,7 +5689,7 @@ static void ocall_oe_syscall_mkdir_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_mkdir_ocall(
+    _pargs_out->oe_retval = oe_syscall_mkdir_ocall(
         (const char*)_pargs_in->pathname,
         _pargs_in->mode);
 
@@ -5692,7 +5706,7 @@ static void ocall_oe_syscall_mkdir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_rmdir_ocall(
@@ -5732,7 +5746,7 @@ static void ocall_oe_syscall_rmdir_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_rmdir_ocall(
+    _pargs_out->oe_retval = oe_syscall_rmdir_ocall(
         (const char*)_pargs_in->pathname);
 
     /* There is no deep-copyable out parameter. */
@@ -5748,7 +5762,7 @@ static void ocall_oe_syscall_rmdir_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_fcntl_ocall(
@@ -5789,7 +5803,7 @@ static void ocall_oe_syscall_fcntl_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_fcntl_ocall(
+    _pargs_out->oe_retval = oe_syscall_fcntl_ocall(
         _pargs_in->fd,
         _pargs_in->cmd,
         _pargs_in->arg,
@@ -5809,7 +5823,7 @@ static void ocall_oe_syscall_fcntl_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_ioctl_ocall(
@@ -5850,7 +5864,7 @@ static void ocall_oe_syscall_ioctl_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(argout, 1, _pargs_in->argsize, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_ioctl_ocall(
+    _pargs_out->oe_retval = oe_syscall_ioctl_ocall(
         _pargs_in->fd,
         _pargs_in->request,
         _pargs_in->arg,
@@ -5870,7 +5884,7 @@ static void ocall_oe_syscall_ioctl_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_poll_ocall(
@@ -5911,7 +5925,7 @@ static void ocall_oe_syscall_poll_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(host_fds, _pargs_in->nfds, sizeof(struct oe_host_pollfd), struct oe_host_pollfd*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_poll_ocall(
+    _pargs_out->oe_retval = oe_syscall_poll_ocall(
         _pargs_in->host_fds,
         _pargs_in->nfds,
         _pargs_in->timeout);
@@ -5929,7 +5943,7 @@ static void ocall_oe_syscall_poll_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_kill_ocall(
@@ -5968,7 +5982,7 @@ static void ocall_oe_syscall_kill_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_kill_ocall(
+    _pargs_out->oe_retval = oe_syscall_kill_ocall(
         _pargs_in->pid,
         _pargs_in->signum);
 
@@ -5985,7 +5999,7 @@ static void ocall_oe_syscall_kill_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_close_socket_ocall(
@@ -6024,7 +6038,7 @@ static void ocall_oe_syscall_close_socket_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_close_socket_ocall(
+    _pargs_out->oe_retval = oe_syscall_close_socket_ocall(
         _pargs_in->sockfd);
 
     /* There is no deep-copyable out parameter. */
@@ -6040,7 +6054,7 @@ static void ocall_oe_syscall_close_socket_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_socket_ocall(
@@ -6079,7 +6093,7 @@ static void ocall_oe_syscall_socket_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_socket_ocall(
+    _pargs_out->oe_retval = oe_syscall_socket_ocall(
         _pargs_in->domain,
         _pargs_in->type,
         _pargs_in->protocol);
@@ -6097,7 +6111,7 @@ static void ocall_oe_syscall_socket_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_shutdown_sockets_device_ocall(
@@ -6136,7 +6150,7 @@ static void ocall_oe_syscall_shutdown_sockets_device_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_shutdown_sockets_device_ocall(
+    _pargs_out->oe_retval = oe_syscall_shutdown_sockets_device_ocall(
         _pargs_in->sockfd);
 
     /* There is no deep-copyable out parameter. */
@@ -6152,7 +6166,7 @@ static void ocall_oe_syscall_shutdown_sockets_device_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_socketpair_ocall(
@@ -6192,7 +6206,7 @@ static void ocall_oe_syscall_socketpair_ocall(
         OE_SET_OUT_POINTER(sv, 1, sizeof(oe_host_fd_t[2]), oe_host_fd_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_socketpair_ocall(
+    _pargs_out->oe_retval = oe_syscall_socketpair_ocall(
         _pargs_in->domain,
         _pargs_in->type,
         _pargs_in->protocol,
@@ -6211,7 +6225,7 @@ static void ocall_oe_syscall_socketpair_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_connect_ocall(
@@ -6251,7 +6265,7 @@ static void ocall_oe_syscall_connect_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_connect_ocall(
+    _pargs_out->oe_retval = oe_syscall_connect_ocall(
         _pargs_in->sockfd,
         (const struct oe_sockaddr*)_pargs_in->addr,
         _pargs_in->addrlen);
@@ -6269,7 +6283,7 @@ static void ocall_oe_syscall_connect_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_accept_ocall(
@@ -6311,7 +6325,7 @@ static void ocall_oe_syscall_accept_ocall(
         OE_SET_OUT_POINTER(addrlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_accept_ocall(
+    _pargs_out->oe_retval = oe_syscall_accept_ocall(
         _pargs_in->sockfd,
         _pargs_in->addr,
         _pargs_in->addrlen_in,
@@ -6330,7 +6344,7 @@ static void ocall_oe_syscall_accept_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_bind_ocall(
@@ -6370,7 +6384,7 @@ static void ocall_oe_syscall_bind_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_bind_ocall(
+    _pargs_out->oe_retval = oe_syscall_bind_ocall(
         _pargs_in->sockfd,
         (const struct oe_sockaddr*)_pargs_in->addr,
         _pargs_in->addrlen);
@@ -6388,7 +6402,7 @@ static void ocall_oe_syscall_bind_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_listen_ocall(
@@ -6427,7 +6441,7 @@ static void ocall_oe_syscall_listen_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_listen_ocall(
+    _pargs_out->oe_retval = oe_syscall_listen_ocall(
         _pargs_in->sockfd,
         _pargs_in->backlog);
 
@@ -6444,7 +6458,7 @@ static void ocall_oe_syscall_listen_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_recvmsg_ocall(
@@ -6493,7 +6507,7 @@ static void ocall_oe_syscall_recvmsg_ocall(
         OE_SET_OUT_POINTER(msg_controllen_out, 1, sizeof(size_t), size_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_recvmsg_ocall(
+    _pargs_out->oe_retval = oe_syscall_recvmsg_ocall(
         _pargs_in->sockfd,
         _pargs_in->msg_name,
         _pargs_in->msg_namelen,
@@ -6519,7 +6533,7 @@ static void ocall_oe_syscall_recvmsg_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_sendmsg_ocall(
@@ -6563,7 +6577,7 @@ static void ocall_oe_syscall_sendmsg_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_sendmsg_ocall(
+    _pargs_out->oe_retval = oe_syscall_sendmsg_ocall(
         _pargs_in->sockfd,
         (const void*)_pargs_in->msg_name,
         _pargs_in->msg_namelen,
@@ -6587,7 +6601,7 @@ static void ocall_oe_syscall_sendmsg_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_recv_ocall(
@@ -6627,7 +6641,7 @@ static void ocall_oe_syscall_recv_ocall(
         OE_SET_OUT_POINTER(buf, 1, _pargs_in->len, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_recv_ocall(
+    _pargs_out->oe_retval = oe_syscall_recv_ocall(
         _pargs_in->sockfd,
         _pargs_in->buf,
         _pargs_in->len,
@@ -6646,7 +6660,7 @@ static void ocall_oe_syscall_recv_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_recvfrom_ocall(
@@ -6690,7 +6704,7 @@ static void ocall_oe_syscall_recvfrom_ocall(
         OE_SET_OUT_POINTER(addrlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_recvfrom_ocall(
+    _pargs_out->oe_retval = oe_syscall_recvfrom_ocall(
         _pargs_in->sockfd,
         _pargs_in->buf,
         _pargs_in->len,
@@ -6712,7 +6726,7 @@ static void ocall_oe_syscall_recvfrom_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_send_ocall(
@@ -6752,7 +6766,7 @@ static void ocall_oe_syscall_send_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_send_ocall(
+    _pargs_out->oe_retval = oe_syscall_send_ocall(
         _pargs_in->sockfd,
         (const void*)_pargs_in->buf,
         _pargs_in->len,
@@ -6771,7 +6785,7 @@ static void ocall_oe_syscall_send_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_sendto_ocall(
@@ -6813,7 +6827,7 @@ static void ocall_oe_syscall_sendto_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_sendto_ocall(
+    _pargs_out->oe_retval = oe_syscall_sendto_ocall(
         _pargs_in->sockfd,
         (const void*)_pargs_in->buf,
         _pargs_in->len,
@@ -6834,7 +6848,7 @@ static void ocall_oe_syscall_sendto_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_recvv_ocall(
@@ -6875,7 +6889,7 @@ static void ocall_oe_syscall_recvv_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(iov_buf, 1, _pargs_in->iov_buf_size, void*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_recvv_ocall(
+    _pargs_out->oe_retval = oe_syscall_recvv_ocall(
         _pargs_in->fd,
         _pargs_in->iov_buf,
         _pargs_in->iovcnt,
@@ -6894,7 +6908,7 @@ static void ocall_oe_syscall_recvv_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_sendv_ocall(
@@ -6934,7 +6948,7 @@ static void ocall_oe_syscall_sendv_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_sendv_ocall(
+    _pargs_out->oe_retval = oe_syscall_sendv_ocall(
         _pargs_in->fd,
         (const void*)_pargs_in->iov_buf,
         _pargs_in->iovcnt,
@@ -6953,7 +6967,7 @@ static void ocall_oe_syscall_sendv_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_shutdown_ocall(
@@ -6992,7 +7006,7 @@ static void ocall_oe_syscall_shutdown_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_shutdown_ocall(
+    _pargs_out->oe_retval = oe_syscall_shutdown_ocall(
         _pargs_in->sockfd,
         _pargs_in->how);
 
@@ -7009,7 +7023,7 @@ static void ocall_oe_syscall_shutdown_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_setsockopt_ocall(
@@ -7049,7 +7063,7 @@ static void ocall_oe_syscall_setsockopt_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_setsockopt_ocall(
+    _pargs_out->oe_retval = oe_syscall_setsockopt_ocall(
         _pargs_in->sockfd,
         _pargs_in->level,
         _pargs_in->optname,
@@ -7069,7 +7083,7 @@ static void ocall_oe_syscall_setsockopt_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getsockopt_ocall(
@@ -7111,7 +7125,7 @@ static void ocall_oe_syscall_getsockopt_ocall(
         OE_SET_OUT_POINTER(optlen_out, 1, sizeof(oe_socklen_t), oe_socklen_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getsockopt_ocall(
+    _pargs_out->oe_retval = oe_syscall_getsockopt_ocall(
         _pargs_in->sockfd,
         _pargs_in->level,
         _pargs_in->optname,
@@ -7132,7 +7146,7 @@ static void ocall_oe_syscall_getsockopt_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getsockname_ocall(
@@ -7174,7 +7188,7 @@ static void ocall_oe_syscall_getsockname_ocall(
         OE_SET_OUT_POINTER(addrlen_out, 1, 1, oe_socklen_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getsockname_ocall(
+    _pargs_out->oe_retval = oe_syscall_getsockname_ocall(
         _pargs_in->sockfd,
         _pargs_in->addr,
         _pargs_in->addrlen_in,
@@ -7193,7 +7207,7 @@ static void ocall_oe_syscall_getsockname_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getpeername_ocall(
@@ -7235,7 +7249,7 @@ static void ocall_oe_syscall_getpeername_ocall(
         OE_SET_OUT_POINTER(addrlen_out, 1, 1, oe_socklen_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getpeername_ocall(
+    _pargs_out->oe_retval = oe_syscall_getpeername_ocall(
         _pargs_in->sockfd,
         _pargs_in->addr,
         _pargs_in->addrlen_in,
@@ -7254,7 +7268,7 @@ static void ocall_oe_syscall_getpeername_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getaddrinfo_open_ocall(
@@ -7301,7 +7315,7 @@ static void ocall_oe_syscall_getaddrinfo_open_ocall(
         OE_SET_OUT_POINTER(handle, 1, sizeof(uint64_t), uint64_t*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getaddrinfo_open_ocall(
+    _pargs_out->oe_retval = oe_syscall_getaddrinfo_open_ocall(
         (const char*)_pargs_in->node,
         (const char*)_pargs_in->service,
         (const struct oe_addrinfo*)_pargs_in->hints,
@@ -7320,7 +7334,7 @@ static void ocall_oe_syscall_getaddrinfo_open_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getaddrinfo_read_ocall(
@@ -7374,7 +7388,7 @@ static void ocall_oe_syscall_getaddrinfo_read_ocall(
         OE_SET_OUT_POINTER(ai_canonname, 1, _pargs_in->ai_canonnamelen_in, char*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getaddrinfo_read_ocall(
+    _pargs_out->oe_retval = oe_syscall_getaddrinfo_read_ocall(
         _pargs_in->handle,
         _pargs_in->ai_flags,
         _pargs_in->ai_family,
@@ -7400,7 +7414,7 @@ static void ocall_oe_syscall_getaddrinfo_read_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getaddrinfo_close_ocall(
@@ -7439,7 +7453,7 @@ static void ocall_oe_syscall_getaddrinfo_close_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getaddrinfo_close_ocall(
+    _pargs_out->oe_retval = oe_syscall_getaddrinfo_close_ocall(
         _pargs_in->handle);
 
     /* There is no deep-copyable out parameter. */
@@ -7455,7 +7469,7 @@ static void ocall_oe_syscall_getaddrinfo_close_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getnameinfo_ocall(
@@ -7498,7 +7512,7 @@ static void ocall_oe_syscall_getnameinfo_ocall(
         OE_SET_OUT_POINTER(serv, 1, _pargs_in->servlen, char*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getnameinfo_ocall(
+    _pargs_out->oe_retval = oe_syscall_getnameinfo_ocall(
         (const struct oe_sockaddr*)_pargs_in->sa,
         _pargs_in->salen,
         _pargs_in->host,
@@ -7520,7 +7534,7 @@ static void ocall_oe_syscall_getnameinfo_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_nanosleep_ocall(
@@ -7563,7 +7577,7 @@ static void ocall_oe_syscall_nanosleep_ocall(
         OE_COPY_AND_SET_IN_OUT_POINTER(rem, 1, sizeof(struct oe_timespec), struct oe_timespec*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_nanosleep_ocall(
+    _pargs_out->oe_retval = oe_syscall_nanosleep_ocall(
         _pargs_in->req,
         _pargs_in->rem);
 
@@ -7580,7 +7594,69 @@ static void ocall_oe_syscall_nanosleep_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
+}
+
+static void ocall_oe_syscall_clock_nanosleep_ocall(
+    uint8_t* input_buffer,
+    size_t input_buffer_size,
+    uint8_t* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    oe_result_t _result = OE_FAILURE;
+    OE_UNUSED(input_buffer_size);
+
+    /* Prepare parameters. */
+    oe_syscall_clock_nanosleep_ocall_args_t* _pargs_in = (oe_syscall_clock_nanosleep_ocall_args_t*)input_buffer;
+    oe_syscall_clock_nanosleep_ocall_args_t* _pargs_out = (oe_syscall_clock_nanosleep_ocall_args_t*)output_buffer;
+
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+
+    if (input_buffer_size < sizeof(*_pargs_in) || output_buffer_size < sizeof(*_pargs_in))
+        goto done;
+
+    /* Make sure input and output buffers are valid. */
+    if (!input_buffer || !output_buffer) {
+        _result = OE_INVALID_PARAMETER;
+        goto done;
+    }
+
+    /* Set in and in-out pointers. */
+    if (_pargs_in->req)
+        OE_SET_IN_POINTER(req, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+    if (_pargs_in->rem)
+        OE_SET_IN_OUT_POINTER(rem, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+
+    /* Set out and in-out pointers. */
+    /* In-out parameters are copied to output buffer. */
+    if (_pargs_in->rem)
+        OE_COPY_AND_SET_IN_OUT_POINTER(rem, 1, sizeof(struct oe_timespec), struct oe_timespec*);
+
+    /* Call user function. */
+    _pargs_out->oe_retval = oe_syscall_clock_nanosleep_ocall(
+        _pargs_in->clockid,
+        _pargs_in->flag,
+        _pargs_in->req,
+        _pargs_in->rem);
+
+    /* There is no deep-copyable out parameter. */
+    _pargs_out->deepcopy_out_buffer = NULL;
+    _pargs_out->deepcopy_out_buffer_size = 0;
+
+    /* Propagate errno back to enclave. */
+    _pargs_out->ocall_errno = errno;
+
+    /* Success. */
+    _result = OE_OK;
+    *output_bytes_written = _output_buffer_offset;
+
+done:
+    if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getpid_ocall(
@@ -7619,7 +7695,7 @@ static void ocall_oe_syscall_getpid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getpid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getpid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7635,7 +7711,7 @@ static void ocall_oe_syscall_getpid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getppid_ocall(
@@ -7674,7 +7750,7 @@ static void ocall_oe_syscall_getppid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getppid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getppid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7690,7 +7766,7 @@ static void ocall_oe_syscall_getppid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getpgrp_ocall(
@@ -7729,7 +7805,7 @@ static void ocall_oe_syscall_getpgrp_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getpgrp_ocall(
+    _pargs_out->oe_retval = oe_syscall_getpgrp_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7745,7 +7821,7 @@ static void ocall_oe_syscall_getpgrp_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getuid_ocall(
@@ -7784,7 +7860,7 @@ static void ocall_oe_syscall_getuid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getuid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getuid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7800,7 +7876,7 @@ static void ocall_oe_syscall_getuid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_geteuid_ocall(
@@ -7839,7 +7915,7 @@ static void ocall_oe_syscall_geteuid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_geteuid_ocall(
+    _pargs_out->oe_retval = oe_syscall_geteuid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7855,7 +7931,7 @@ static void ocall_oe_syscall_geteuid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getgid_ocall(
@@ -7894,7 +7970,7 @@ static void ocall_oe_syscall_getgid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getgid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getgid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7910,7 +7986,7 @@ static void ocall_oe_syscall_getgid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getegid_ocall(
@@ -7949,7 +8025,7 @@ static void ocall_oe_syscall_getegid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getegid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getegid_ocall(
     );
 
     /* There is no deep-copyable out parameter. */
@@ -7965,7 +8041,7 @@ static void ocall_oe_syscall_getegid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getpgid_ocall(
@@ -8004,7 +8080,7 @@ static void ocall_oe_syscall_getpgid_ocall(
     /* There were no out nor in-out parameters. */
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getpgid_ocall(
+    _pargs_out->oe_retval = oe_syscall_getpgid_ocall(
         _pargs_in->pid);
 
     /* There is no deep-copyable out parameter. */
@@ -8020,7 +8096,7 @@ static void ocall_oe_syscall_getpgid_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_getgroups_ocall(
@@ -8060,7 +8136,7 @@ static void ocall_oe_syscall_getgroups_ocall(
         OE_SET_OUT_POINTER(list, _pargs_in->size, sizeof(unsigned int), unsigned int*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_getgroups_ocall(
+    _pargs_out->oe_retval = oe_syscall_getgroups_ocall(
         _pargs_in->size,
         _pargs_in->list);
 
@@ -8077,7 +8153,7 @@ static void ocall_oe_syscall_getgroups_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 static void ocall_oe_syscall_uname_ocall(
@@ -8117,7 +8193,7 @@ static void ocall_oe_syscall_uname_ocall(
         OE_SET_OUT_POINTER(buf, 1, sizeof(struct oe_utsname), struct oe_utsname*);
 
     /* Call user function. */
-    _pargs_out->retval = oe_syscall_uname_ocall(
+    _pargs_out->oe_retval = oe_syscall_uname_ocall(
         _pargs_in->buf);
 
     /* There is no deep-copyable out parameter. */
@@ -8133,7 +8209,7 @@ static void ocall_oe_syscall_uname_ocall(
 
 done:
     if (_pargs_out && output_buffer_size >= sizeof(*_pargs_out))
-        _pargs_out->result = _result;
+        _pargs_out->oe_result = _result;
 }
 
 /**** OCALL function table. ****/
@@ -8211,6 +8287,7 @@ static oe_ocall_func_t _project_ocall_function_table[] = {
     (oe_ocall_func_t) ocall_oe_syscall_getaddrinfo_close_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_getnameinfo_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_nanosleep_ocall,
+    (oe_ocall_func_t) ocall_oe_syscall_clock_nanosleep_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_getpid_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_getppid_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_getpgrp_ocall,
@@ -8239,7 +8316,7 @@ oe_result_t oe_create_project_enclave(
                settings,
                setting_count,
                _project_ocall_function_table,
-               82,
+               83,
                _project_ecall_info_table,
                 19,
                enclave);

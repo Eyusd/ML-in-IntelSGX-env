@@ -17,9 +17,9 @@ enclave {
 
         public void server_write_rsa_pem([out] uint8_t buff[512]);
 
-        public void server_generate_encrypted_message([in] uint8_t to_encrypt[17], int message_size, [out] uint8_t** encrypted_data, size_t* size_encrypted);
+        public void server_generate_encrypted_message([in, size = message_size] uint8_t* to_encrypt, int message_size, [out] uint8_t** encrypted_data, size_t* size_encrypted);
         
-        public void server_decrypt_message([in] uint8_t encrypted_data[256], size_t encrypted_data_size);
+        public void server_decrypt_message([in, size = encrypted_data_size] uint8_t* encrypted_data, size_t encrypted_data_size);
 
         public void server_store_ecdh_key([in] char key[256]);
 

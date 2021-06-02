@@ -14,12 +14,10 @@ export AZDCAP_DEBUG_LOG_LEVEL
 all: build
 
 build:
-	$(MAKE) -C client
 	$(MAKE) -C enclave
 	$(MAKE) -C host
 
 clean:
-	$(MAKE) -C client clean
 	$(MAKE) -C enclave clean
 	$(MAKE) -C host clean
 	rm -f *.pem

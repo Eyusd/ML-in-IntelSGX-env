@@ -15,7 +15,7 @@ build:
 	oeedger8r ../project.edl --untrusted --search-path $(INCDIR) --search-path $(INCDIR)/openenclave/edl/sgx
 	$(CC) -g -c $(CFLAGS) $(CINCLUDES) project_u.c
 	$(CXX) -g -c $(CXXFLAGS) $(INCLUDES) host.cpp quotefile.cpp
-	$(CXX) -o project_host host.o quotefile.o project_u.o ../client/dispatcher.o ../client/crypto.o ../client/mbedtls/libmbedcrypto.a ../client/mbedtls/libmbedtls.a ../client/mbedtls/libmbedx509.a  $(LDFLAGS)
+	$(CXX) -o project_host host.o quotefile.o project_u.o   $(LDFLAGS)
 
 clean:
 	rm -f project_host *.o project_u.*  project_args.h

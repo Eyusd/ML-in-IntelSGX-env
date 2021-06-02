@@ -11,48 +11,48 @@
 #include <fstream>
 
 //Client functions
-#include "../client/dispatcher.h"
+//#include "../client/dispatcher.h"
 #include <iostream>  
-#include "../client/crypto.h"
+//#include "../client/crypto.h"
 #include <string.h>
 
-static client_dispatcher cdispatcher("Client1");
+//static client_dispatcher cdispatcher("Client1");
 
-void client_store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE])
-{
-    cdispatcher.store_server_public_key(pem_server_public_key);
-}
+//void client_store_server_public_key(uint8_t pem_server_public_key[PUBLIC_KEY_SIZE])
+//{
+//    cdispatcher.store_server_public_key(pem_server_public_key);
+//}
 
-void client_write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE])
-{
-    cdispatcher.write_rsa_pem(buff);
-}
+//void client_write_rsa_pem(uint8_t buff[PUBLIC_KEY_SIZE])
+//{
+//    cdispatcher.write_rsa_pem(buff);
+//}
 
-void client_store_ecdh_key(char key[256])
-{
-    cdispatcher.store_ecdh_key(key);
-}
+//void client_store_ecdh_key(char key[256])
+//{
+//    cdispatcher.store_ecdh_key(key);
+//}
 
-void client_write_ecdh_pem(char buff[512])
-{
-    size_t olen;
-    cdispatcher.write_ecdh_pem(buff, olen);
-}
+//void client_write_ecdh_pem(char buff[512])
+//{
+//    size_t olen;
+//    cdispatcher.write_ecdh_pem(buff, olen);
+//}
 
-void client_generate_secret()
-{
-    cdispatcher.generate_secret();
-}
+//void client_generate_secret()
+//{
+//    cdispatcher.generate_secret();
+//}
 
-void client_generate_encrypted_message(uint8_t* to_encrypt, int message_size, uint8_t** encrypted_data, size_t* size_encrypted)
-{
-    cdispatcher.generate_encrypted_message(to_encrypt, message_size, encrypted_data, size_encrypted);
-}
+//void client_generate_encrypted_message(uint8_t* to_encrypt, int message_size, uint8_t** encrypted_data, size_t* size_encrypted)
+//{
+//    cdispatcher.generate_encrypted_message(to_encrypt, message_size, encrypted_data, size_encrypted);
+//}
 
-void client_decrypt_message(uint8_t* encrypted_data, size_t encrypted_data_size)
-{
-    cdispatcher.process_encrypted_message(encrypted_data, encrypted_data_size);
-}
+//void client_decrypt_message(uint8_t* encrypted_data, size_t encrypted_data_size)
+//{
+//   cdispatcher.process_encrypted_message(encrypted_data, encrypted_data_size);
+//}
 //End Client
 
 static bool EnableVerbosePrintf = false;
@@ -124,7 +124,7 @@ int main(int argc, const char* argv[])
     size_t olen;
     uint8_t* encrypted_message = NULL;
     size_t encrypted_message_size = 0;
-    uint8_t data[17] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+    uint8_t data[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 
     //Program loop
     char choice;
@@ -201,7 +201,7 @@ int main(int argc, const char* argv[])
         }
     }
 
-    client_write_rsa_pem(buff_rsa);
+    server_write_rsa_pem(enclave, buff_rsa);
     server_store_client_public_key(enclave, buff_rsa);
     fprintf(stderr, "RSA Pubkey sent by Server\n");
 
@@ -223,7 +223,7 @@ int main(int argc, const char* argv[])
         {
             case 't':
                 enclave_new_to_old(enclave);
-                csv_file = fopen("../client/dataset/trainingset2.csv", "r");
+                csv_file = fopen("../dataset/trainingset2.csv", "r");
                 compt = 0;
                 if (csv_file == NULL) {fprintf(stderr, "Impossible d'ouvrir le fichier \n"); goto exit;}
                 else {fprintf(stderr, "Training... \n");}

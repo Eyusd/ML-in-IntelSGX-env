@@ -22,13 +22,13 @@ void server_store_client_public_key(uint8_t pem_client_public_key[512]);
 void server_write_rsa_pem(uint8_t buff[512]);
 
 void server_generate_encrypted_message(
-    uint8_t to_encrypt[17],
+    uint8_t* to_encrypt,
     int message_size,
     uint8_t** encrypted_data,
     size_t* size_encrypted);
 
 void server_decrypt_message(
-    uint8_t encrypted_data[256],
+    uint8_t* encrypted_data,
     size_t encrypted_data_size);
 
 void server_store_ecdh_key(char key[256]);
@@ -561,6 +561,13 @@ oe_result_t oe_syscall_getnameinfo_ocall(
 
 oe_result_t oe_syscall_nanosleep_ocall(
     int* _retval,
+    struct oe_timespec* req,
+    struct oe_timespec* rem);
+
+oe_result_t oe_syscall_clock_nanosleep_ocall(
+    int* _retval,
+    oe_clockid_t clockid,
+    int flag,
     struct oe_timespec* req,
     struct oe_timespec* rem);
 

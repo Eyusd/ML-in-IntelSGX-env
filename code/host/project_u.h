@@ -37,14 +37,14 @@ oe_result_t server_write_rsa_pem(
 
 oe_result_t server_generate_encrypted_message(
     oe_enclave_t* enclave,
-    uint8_t to_encrypt[17],
+    uint8_t* to_encrypt,
     int message_size,
     uint8_t** encrypted_data,
     size_t* size_encrypted);
 
 oe_result_t server_decrypt_message(
     oe_enclave_t* enclave,
-    uint8_t encrypted_data[256],
+    uint8_t* encrypted_data,
     size_t encrypted_data_size);
 
 oe_result_t server_store_ecdh_key(
@@ -515,6 +515,12 @@ int oe_syscall_getnameinfo_ocall(
     int flags);
 
 int oe_syscall_nanosleep_ocall(
+    struct oe_timespec* req,
+    struct oe_timespec* rem);
+
+int oe_syscall_clock_nanosleep_ocall(
+    oe_clockid_t clockid,
+    int flag,
     struct oe_timespec* req,
     struct oe_timespec* rem);
 
